@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <PATH_7D2D_MANAGED Condition=" '$(PATH_7D2D_MANAGED)' == '' ">..\..\7DaysToDie_Data\Managed</PATH_7D2D_MANAGED>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <BaseIntermediateOutputPath>build\obj\$(AssemblyName)</BaseIntermediateOutputPath>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B411D8FD-56BA-4576-9028-BA5BA6CE37D9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PipeGrids</RootNamespace>
+    <AssemblyName>PipeGrids</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>build\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PostBuildEvent>
+      copy /Y /B "$(AssemblyName).dll" "..\..\..\$(AssemblyName).dll"
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>build\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PostBuildEvent>
+      copy /Y /B "$(AssemblyName).dll" "..\..\..\$(AssemblyName).dll"
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(PATH_7D2D_MANAGED)\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(PATH_7D2D_MANAGED)\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LogLibrary">
+      <HintPath>$(PATH_7D2D_MANAGED)\LogLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.Xml.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.Data.DataSetExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>$(PATH_7D2D_MANAGED)\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Messages\ActionAddIrrigation.cs" />
+    <Compile Include="Messages\ActionRemoveIrrigation.cs" />
+    <Compile Include="Messages\MsgConnectorQuery.cs" />
+    <Compile Include="Messages\MsgDescriptionResponse.cs" />
+    <Compile Include="PipeGridBlocks\BlockPipeConnection.cs" />
+    <Compile Include="Helpers\ConnectionHelper.cs" />
+    <Compile Include="Interfaces\IfaceGridNodeManaged.cs" />
+    <Compile Include="PipeGridBlocks\BlockPipeIrrigation.cs" />
+    <Compile Include="PipeGridBlocks\BlockPipePump.cs" />
+    <Compile Include="PipeGridNodes\PipePump.cs" />
+    <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
+    <Compile Include="Utils\IPersistable.cs" />
+    <Compile Include="Interfaces\IActionClient.cs" />
+    <Compile Include="Interfaces\IActionServer.cs" />
+    <Compile Include="KdTreeLib\HyperRect.cs" />
+    <Compile Include="KdTreeLib\IKdTree.cs" />
+    <Compile Include="KdTreeLib\IPriorityQueue.cs" />
+    <Compile Include="KdTreeLib\KdTree.cs" />
+    <Compile Include="KdTreeLib\KdTreeNode.cs" />
+    <Compile Include="KdTreeLib\Math\IntCubeMath.cs" />
+    <Compile Include="KdTreeLib\Math\IntegerMath.cs" />
+    <Compile Include="KdTreeLib\Math\ITypeMath.cs" />
+    <Compile Include="KdTreeLib\Math\TypeMath.cs" />
+    <Compile Include="KdTreeLib\NearestNeighbourList.cs" />
+    <Compile Include="KdTreeLib\PriorityQueue.cs" />
+    <Compile Include="Messages\ActionStopManager.cs" />
+    <Compile Include="Messages\ActionRemoveConnection.cs" />
+    <Compile Include="Messages\ActionAddConnection.cs" />
+    <Compile Include="Messages\RemotePackage.cs" />
+    <Compile Include="PipeGridNodes\PipeConnection.cs" />
+    <Compile Include="PipeGridNodes\PipeGrid.cs" />
+    <Compile Include="Utils\FullRotation.cs" />
+    <Compile Include="Interfaces\IRemoteResponse.cs" />
+    <Compile Include="Interfaces\IRemoteQuery.cs" />
+    <Compile Include="Interfaces\IBlockConnection.cs" />
+    <Compile Include="Interfaces\IfacePipeGridAPI.cs" />
+    <Compile Include="PipeGridBlocks\ImpBlockGridNodeUnpowered.cs" />
+    <Compile Include="Harmony\OcbPipeGrids.cs" />
+    <Compile Include="Harmony\AssemblyInfo.cs" />
+    <Compile Include="Helpers\PipeBlockHelper.cs" />
+    <Compile Include="PipeGridProcess\PipeGridClient.cs" />
+    <Compile Include="PipeGridProcess\PipeGridInterface.cs" />
+    <Compile Include="Interfaces\IfaceGridNodeFactory.cs" />
+    <Compile Include="Messages\MsgConnectorResponse.cs" />
+    <Compile Include="NetPackages\NetPkgWorkerAnswer.cs" />
+    <Compile Include="NetPackages\NetPkgWorkerQuery.cs" />
+    <Compile Include="Messages\RemoteResponse.cs" />
+    <Compile Include="PipeGridNodes\PipeNode.cs" />
+    <Compile Include="PipeGridProcess\PipeGridManager.cs" />
+    <Compile Include="PipeGridProcess\PipeGridRunner.cs" />
+    <Compile Include="PipeGridProcess\PipeGridWorker.cs" />
+    <Compile Include="Messages\RemoteQuery.cs" />
+    <Compile Include="Messages\MsgDescriptionQuery.cs" />
+    <Compile Include="NetPackages\PipeGridPackages.cs" />
+    <Compile Include="Ticker\GlobalTicker.cs" />
+    <Compile Include="Ticker\ITickable.cs" />
+    <Compile Include="Ticker\ScheduledTick.cs" />
+    <Compile Include="PipeGridStructs\BlockConnector.cs" />
+    <Compile Include="Utils\PersistedData.cs" />
+    <Compile Include="Utils\SingletonInstance.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\blocks.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

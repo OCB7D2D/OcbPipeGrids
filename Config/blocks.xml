@@ -1,0 +1,111 @@
+<configs>
+
+	<append xpath="/blocks/block[starts-with(@name, 'metalPipe')]">
+		<property name="Class" value="PipeConnection, PipeGrids" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeStraight']">
+		<property name="PipeConnectors" value="forward,back" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeCorner']">
+		<property name="PipeConnectors" value="forward,right" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeJoint']">
+		<property name="PipeConnectors" value="forward,left,back" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeFlange']">
+		<property name="PipeConnectors" value="back" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeValve']">
+		<property name="PipeConnectors" value="down" />
+	</append>
+
+	<append xpath="/blocks/block[@name='metalPipeCap']">
+		<property name="PipeConnectors" value="down" />
+	</append>
+
+	<append xpath="/blocks">
+
+		<block name="ocbWaterPipeIrrigation">
+
+		<property name="Class" value="PipeIrrigation, PipeGrids"/>
+
+			<property name="CreativeMode" value="Player"/>
+			<property name="Tags" value="door"/>
+			<property name="CustomIcon" value="AutoHarvest"/>
+			<property name="Material" value="Msteel"/>
+			<property name="StabilitySupport" value="true"/>
+			<!--
+			<property name="Shape" value="ModelEntity" />
+			<property name="Model" value="#@modfolder:Resources/AutoHarvest.unity3d?WaterPipeWellHead1Prefab" />
+				-->
+			<property name="DisplayType" value="blockMulti"/>
+			<property name="MultiBlockDim" value="3,1,3"/>
+			<property name="ModelOffset" value=".5,.5,.5"/>
+
+			<property name="AllowAllRotations" value="false"/>
+
+			<property name="Shape" value="New"/>
+			<property name="LightOpacity" value="4"/>
+			<property name="Path" value="solid"/>
+			<property name="Texture" value="597"/>
+			<property name="ImposterDontBlock" value="true"/>
+
+			<property name="Shape" value="New"/>
+			<property name="LightOpacity" value="4"/>
+			<property name="Path" value="solid"/>
+			<property name="Model" value="pipe_straight"/>
+			<property name="Texture" value="597"/>
+			<property name="ImposterDontBlock" value="true"/>
+
+			<property name="Shape" value="New"/>
+			<property name="Model" value="#@modfolder:Resources/WaterPipeIrrigation.unity3d?WaterIrrigationPrefab"/>
+
+			<property name="IsTerrainDecoration" value="false"/>
+			<property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
+			<property name="Group" value="Basics,Building,advBuilding"/>
+			<property name="DescriptionKey" value="ocbWaterPipeSource"/>
+			<property name="EconomicValue" value="10"/>
+			<property name="EconomicBundleSize" value="10"/>
+			<property name="FilterTags" value="floot"/>
+			<property name="DisplayType" value="blockHardened"/>
+
+			<property class="RepairItems">
+				<property name="resourceForgedSteel" value="40"/>
+				<property name="resourceElectricParts" value="40"/>
+				<property name="resourceMechanicalParts" value="10"/>
+			</property>
+
+			<drop event="Destroy" name="resourceForgedSteel" count="5,10"/>
+			<drop event="Destroy" name="resourceElectricParts" count="5,20" tag="salvageHarvest"/>
+			<drop event="Destroy" name="resourceMechanicalParts" count="5,10" tag="salvageHarvest"/>
+			<drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
+
+			<!--<property name="CanPickup" value="true" />
+			<property name="TakeDelay" value="30"/>-->
+			<property name="RequiredPower" value="20"/>
+			<property name="AutoHarvestSpeed" value="4"/>
+			<property name="LookupsPerTick" value="2000"/>
+
+			<property name="WaterPipeOut" value="true"/>
+			<property name="DisplayInfo" value="Custom" />
+
+			<property name="PipeConnectors" value="up" />
+			<property name="PipeMaxConnection" value="1" />
+
+			<property name="MaxFillState" value="300"/>
+
+			<property name="Shape" value="New"/>
+			<property name="LightOpacity" value="4"/>
+			<property name="Path" value="solid"/>
+			<property name="Texture" value="597"/>
+			<property name="ImposterDontBlock" value="true"/>
+	</block>
+	</append>
+
+</configs>
