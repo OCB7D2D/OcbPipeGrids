@@ -101,6 +101,7 @@
     <Compile Include="PipeGridNodes\PipePump.cs" />
     <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
     <Compile Include="PipeGridNodes\PipeReservoir.cs" />
+    <Compile Include="PipeGridNodes\PipeWell.cs" />
     <Compile Include="Utils\IPersistable.cs" />
     <Compile Include="Interfaces\IActionClient.cs" />
     <Compile Include="Interfaces\IActionServer.cs" />

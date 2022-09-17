@@ -7,7 +7,7 @@ namespace PipeManager
     public abstract class PipeNode : ITickable, IfaceGridNodeManaged
     {
 
-        public static uint FooBar = 1;
+        public int BlockID = 0; // Air
 
         public virtual uint StorageID => 0;
 
@@ -21,10 +21,11 @@ namespace PipeManager
 
         public PipeGridManager Manager { get; protected set; }
 
-        protected PipeNode(Vector3i position, byte rotation)
+        protected PipeNode(Vector3i position, BlockValue bv)
         {
+            BlockID = bv.type;
             WorldPos = position;
-            Rotation = rotation;
+            Rotation = bv.rotation;
         }
 
         public PipeNode(BinaryReader br)
@@ -33,6 +34,7 @@ namespace PipeManager
                 br.ReadInt32(),
                 br.ReadInt32(),
                 br.ReadInt32());
+            BlockID = br.ReadInt32();
         }
 
         public virtual void Write(BinaryWriter bw)
@@ -40,7 +42,15 @@ namespace PipeManager
             bw.Write(WorldPos.x);
             bw.Write(WorldPos.y);
             bw.Write(WorldPos.z);
+            bw.Write(BlockID);
         }
+
+        // Return block of given type (may return null)
+        public bool GetBlock<T>(out T var) where T : class
+            => (var = Block.list[BlockID] as T) != null;
+
+        // Base method to get base block instance
+        public Block GetBlock() => Block.list[BlockID];
 
         public PipeNode AttachToManager(PipeGridManager manager)
         {

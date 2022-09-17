@@ -3,33 +3,33 @@
     public class ActionAddPump : RemoteQuery<NetPkgActionAddPump>
     {
 
-        private byte Rotation;
+        private BlockValue BV;
         private byte ConnectMask;
 
-        public void Setup(Vector3i position, byte rotation, byte mask)
+        public void Setup(Vector3i position, BlockValue bv, byte mask)
         {
             base.Setup(position);
-            Rotation = rotation;
             ConnectMask = mask;
+            BV = bv;
         }
 
         public override void ProcessOnServer(PipeGridWorker worker)
         {
-            new PipePump(Position, ConnectMask, Rotation)
+            new PipePump(Position, ConnectMask, BV)
                 .AttachToManager(worker.Manager);
         }
 
         public override void Read(PooledBinaryReader br)
         {
             base.Read(br);
-            Rotation = br.ReadByte();
+            BV.rawData = br.ReadUInt32();
             ConnectMask = br.ReadByte();
         }
 
         public override void Write(PooledBinaryWriter bw)
         {
             base.Write(bw);
-            bw.Write(Rotation);
+            bw.Write(BV.rawData);
             bw.Write(ConnectMask);
         }
 

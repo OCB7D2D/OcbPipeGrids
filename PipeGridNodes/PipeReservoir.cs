@@ -16,8 +16,8 @@ namespace PipeManager
 
         public bool IsPowered { get; set; }
 
-        public PipeReservoir(Vector3i position, byte connectMask, byte rotation)
-            : base(position, connectMask, rotation) { }
+        public PipeReservoir(Vector3i position, byte connectMask, BlockValue bv)
+            : base(position, connectMask, bv) { }
 
         public PipeReservoir(
             BinaryReader br)

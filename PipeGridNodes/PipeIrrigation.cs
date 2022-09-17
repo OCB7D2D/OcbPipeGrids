@@ -10,8 +10,8 @@ namespace PipeManager
 
         public override uint StorageID => 3;
 
-        public PipeIrrigation(Vector3i position, byte connectMask, byte rotation)
-            : base(position, connectMask, rotation) { }
+        public PipeIrrigation(Vector3i position, byte connectMask, BlockValue bv)
+            : base(position, connectMask, bv) { }
 
 
         public PipeIrrigation(

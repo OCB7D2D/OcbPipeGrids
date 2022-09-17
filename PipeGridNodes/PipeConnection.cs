@@ -23,8 +23,8 @@ namespace PipeManager
         public PipeConnection(
             Vector3i position,
             byte connectMask,
-            byte rotation)
-        : base(position, rotation)
+            BlockValue bv)
+        : base(position, bv)
         {
             ConnectMask = connectMask;
         }
