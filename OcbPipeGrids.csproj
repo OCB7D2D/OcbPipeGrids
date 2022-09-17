@@ -11,13 +11,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PipeGrids</RootNamespace>
     <AssemblyName>PipeGrids</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <!-- <LangVersion>11.0</LangVersion> -->
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>build\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -39,8 +40,14 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>$(PATH_7D2D_MANAGED)\mscorlib.dll</HintPath>
+    </Reference>
     <Reference Include="0Harmony">
       <HintPath>$(PATH_7D2D_MANAGED)\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="InControl">
+      <HintPath>$(PATH_7D2D_MANAGED)\InControl.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(PATH_7D2D_MANAGED)\Assembly-CSharp.dll</HintPath>
@@ -69,77 +76,230 @@
     <Reference Include="UnityEngine">
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystem">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\ActionAddIrrigation.cs" />
-    <Compile Include="Messages\ActionRemoveIrrigation.cs" />
-    <Compile Include="Messages\MsgConnectorQuery.cs" />
-    <Compile Include="Messages\MsgDescriptionResponse.cs" />
-    <Compile Include="PipeGridBlocks\BlockPipeConnection.cs" />
-    <Compile Include="Helpers\ConnectionHelper.cs" />
-    <Compile Include="Interfaces\IfaceGridNodeManaged.cs" />
-    <Compile Include="PipeGridBlocks\BlockPipeIrrigation.cs" />
-    <Compile Include="PipeGridBlocks\BlockPipePump.cs" />
-    <Compile Include="PipeGridNodes\PipePump.cs" />
-    <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
-    <Compile Include="Utils\IPersistable.cs" />
-    <Compile Include="Interfaces\IActionClient.cs" />
-    <Compile Include="Interfaces\IActionServer.cs" />
-    <Compile Include="KdTreeLib\HyperRect.cs" />
-    <Compile Include="KdTreeLib\IKdTree.cs" />
-    <Compile Include="KdTreeLib\IPriorityQueue.cs" />
-    <Compile Include="KdTreeLib\KdTree.cs" />
-    <Compile Include="KdTreeLib\KdTreeNode.cs" />
-    <Compile Include="KdTreeLib\Math\IntCubeMath.cs" />
-    <Compile Include="KdTreeLib\Math\IntegerMath.cs" />
-    <Compile Include="KdTreeLib\Math\ITypeMath.cs" />
-    <Compile Include="KdTreeLib\Math\TypeMath.cs" />
-    <Compile Include="KdTreeLib\NearestNeighbourList.cs" />
-    <Compile Include="KdTreeLib\PriorityQueue.cs" />
-    <Compile Include="Messages\ActionStopManager.cs" />
-    <Compile Include="Messages\ActionRemoveConnection.cs" />
-    <Compile Include="Messages\ActionAddConnection.cs" />
-    <Compile Include="Messages\RemotePackage.cs" />
-    <Compile Include="PipeGridNodes\PipeConnection.cs" />
-    <Compile Include="PipeGridNodes\PipeGrid.cs" />
-    <Compile Include="Utils\FullRotation.cs" />
-    <Compile Include="Interfaces\IRemoteResponse.cs" />
-    <Compile Include="Interfaces\IRemoteQuery.cs" />
-    <Compile Include="Interfaces\IBlockConnection.cs" />
-    <Compile Include="Interfaces\IfacePipeGridAPI.cs" />
-    <Compile Include="PipeGridBlocks\ImpBlockGridNodeUnpowered.cs" />
+    <Compile Include="Harmony\MicroSplatTstCmd.cs" />
+    <Compile Include="Sources\1-Bugfixes\FixVariantHandleFace.cs" />
+    <Compile Include="Harmony\ReturnVariantHelper.cs" />
+    <Compile Include="Sources\0-Patches\TileEntityLocks.cs" />
+    <Compile Include="Sources\3-MultiNode\IMultiNodeBlock.cs" />
+    <Compile Include="Sources\2-CustomBlockParser\CustomBlockParser.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\ActionSetBlockValue.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\ActionBlockBase.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\RemoteBasePackage.cs" />
+    <Compile Include="Sources\3-MultiNode\BlockConfig.cs" />
+    <Compile Include="Sources\3-NodeBase\MsgBlockNode.cs" />
+    <Compile Include="Sources\4-DynamicPlantGrowth\BlockShapeModelEntityPlantGrowth.cs" />
+    <Compile Include="Sources\4-DynamicPlantGrowth\BlockShapeExt3dModelPlantGrowth.cs" />
+    <Compile Include="Sources\4-PowerStates\HarmonyHook.cs" />
+    <Compile Include="Sources\4-VisualStates\VisualStateLevel.cs" />
+    <Compile Include="Sources\4-VisualStates\VisualStatePlants.cs" />
+    <Content Include="Config\blocks.irrigation.xml" />
+    <Content Include="Config\blocks.pipe-pump.xml" />
+    <Content Include="Config\blocks.pipe-source.xml" />
+    <Content Include="Config\blocks.pipe-drain.xml" />
+    <Content Include="Config\blocks.pipe-injector.xml" />
+    <Content Include="Config\blocks.pipe-ocb.xml" />
+    <Content Include="Config\blocks.pipe-vanilla-small.xml" />
+    <Content Include="Config\blocks.sprinkler-outdoor.xml" />
+    <Content Include="Config\blocks.tower-tank.xml" />
+    <Content Include="Config\blocks.sprinkler-indoor.xml" />
+    <Content Include="Config\blocks.well.xml" />
+    <Content Include="Config\blocks.composter.xml" />
+    <Content Include="Config\blocks.farm-plots.xml" />
+    <Content Include="Config\blocks.boiler.xml" />
+    <Content Include="Config\blocks.converter.xml" />
+    <Compile Include="Sources\4-DynamicPlantGrowth\BlockShapeBillboardPlantGrowth.cs" />
+    <Compile Include="Sources\4-DynamicPlantGrowth\BlockShapeNewPlantGrowth.cs" />
+    <Compile Include="Sources\3-BlockBase\BlockShapePipe.cs" />
+    <Compile Include="Sources\0-Patches\CustomTerrain.cs" />
+    <Compile Include="Sources\1-Bugfixes\FixBlockScheduler.cs" />
+    <Compile Include="Sources\1-Interfaces\IBoundHelper.cs" />
+    <Compile Include="Sources\4-ExchangeItems\ItemActionExchangeInteraction.cs" />
+    <Compile Include="Sources\0-Patches\LateBlockChanges.cs" />
+    <Compile Include="Sources\1-Bugfixes\FixNewShapeWire.cs" />
+    <Compile Include="0-Old\NewShapeRenderPipeFaces.cs" />
+    <Compile Include="0-Old\TerrainTest.cs" />
+    <Compile Include="Sources\4-VisualStates\VisualStateHelper.cs" />
+    <Compile Include="Sources\1-Interfaces\Plantation.cs" />
+    <Compile Include="Sources\2-NodeManagerFacility\NodeManagerClient.cs" />
+    <Compile Include="Sources\5-BiomeWeather\ActionUpdateWeather.cs" />
+    <Compile Include="Sources\5-BiomeWeather\BiomeMapping.cs" />
+    <Compile Include="Sources\5-BiomeWeather\NodeManagerInterface.cs" />
+    <Compile Include="Sources\5-BiomeWeather\NodeManagerWeather.cs" />
+    <Compile Include="Sources\5-PipeConnections\NodeManagerMother.cs" />
+    <Compile Include="Sources\5-PipeGridBlocks\RemoteNodeReset.cs" />
+    <Compile Include="Sources\6-GrowLight\NodeManagerGrowLights.cs" />
+    <Compile Include="Sources\2-NodeManagerWorker\NodeManagerSprinklers.cs" />
+    <Compile Include="Sources\4-VisualStates\InterfacesVisualStates.cs" />
+    <Compile Include="Sources\4-VisualStates\NodeManagerVisualStates.cs" />
+    <Compile Include="Sources\4-VisualStates\ActionRegisterVisualState.cs" />
+    <Compile Include="Sources\4-VisualStates\MsgUpdateVisualStates.cs" />
+    <Compile Include="Sources\6-PipeInjector\BlockFluidInjector.cs" />
+    <Compile Include="Sources\4-ChestFacility\ImpBlockSecureChest.cs" />
+    <Compile Include="Sources\6-PipeInjector\PipeFluidInjector.cs" />
+    <Compile Include="Sources\6-GrowLight\BlockPlantationGrowLight.cs" />
+    <Compile Include="Sources\6-PipeDrain\BlockPipeDrain.cs" />
+    <Compile Include="Sources\6-PipeDrain\PipeDrain.cs" />
+    <Compile Include="Sources\6-PipePump\BlockPump.cs" />
+    <Compile Include="Sources\6-PipePump\PipePump.cs" />
+    <Compile Include="Sources\6-SprinklerIndoor\BlockSprinklerIndoor.cs" />
+    <Compile Include="Sources\6-SprinklerIndoor\SprinklerIndoor.cs" />
+    <Compile Include="Sources\6-SprinklerOutdoor\BlockPlantationSprinkler.cs" />
+    <Compile Include="Sources\4-ExchangeItems\MsgExchangeResponse.cs" />
+    <Compile Include="Sources\4-ExchangeItems\MsgExchangeQuery.cs" />
+    <Compile Include="Sources\4-ChestFacility\ImpBlockChest.cs" />
+    <Content Include="Config\blocks.plants.xml" />
+    <Content Include="Config\materials.xml" />
+    <Content Include="Config\recipes.a20.xml" />
+    <Content Include="Config\shapes.xml" />
+    <Content Include="Config\recipes.xml" />
+    <Content Include="Config\sounds.xml" />
+    <Content Include="0-Old\PlantationGrowing - Copy.css" />
+    <Compile Include="Sources\6-GrowLight\PlantationGrowLight.cs" />
+    <Compile Include="Sources\6-SprinklerOutdoor\PlantationSprinkler.cs" />
+    <Compile Include="Sources\0-Settings\Constants.cs" />
+    <Compile Include="Sources\5-RemoteDescription\NodeManagerMother.cs" />
+    <Compile Include="Sources\Utils\BoundsHelper.cs" />
+    <Compile Include="Sources\Utils\BlockConfig.cs" />
+    <Compile Include="Sources\Utils\EasingFunctions.cs" />
+    <Compile Include="Sources\Utils\ModXmlPatcher.cs" />
+    <Compile Include="Sources\Utils\PlantHelper.cs" />
+    <Compile Include="Sources\Utils\ReachHelper.cs" />
+    <Content Include="0-Old\TileEntityPoweredProductor.css" />
+    <Compile Include="Harmony\WaterExchange.cs" />
+    <Compile Include="Sources\1-Interfaces\IBlockNode.cs" />
+    <Compile Include="Sources\1-Interfaces\ILootChest.cs" />
+    <Compile Include="Sources\1-Interfaces\ISunLight.cs" />
+    <Compile Include="Sources\1-Interfaces\IPoweredNode.cs" />
+    <Compile Include="Sources\1-Interfaces\IBlockReservoir.cs" />
+    <Compile Include="Sources\0-KdTreeLib\AddDuplicateBehavior.cs" />
+    <Compile Include="Sources\0-KdTreeLib\DuplicateNodeError.cs" />
+    <Compile Include="Sources\0-KdTreeLib\HyperRect.cs" />
+    <Compile Include="Sources\0-KdTreeLib\KdTree.cs" />
+    <Compile Include="Sources\0-KdTreeLib\KdTreeNode.cs" />
+    <Compile Include="Sources\0-KdTreeLib\Metric\IMetric.cs" />
+    <Compile Include="Sources\0-KdTreeLib\Metric\MetricChebyshev.cs" />
+    <Compile Include="Sources\0-KdTreeLib\Metric\MetricEuclidean.cs" />
+    <Compile Include="Sources\0-KdTreeLib\Metric\MetricManhatten.cs" />
+    <Compile Include="Sources\0-KdTreeLib\NearestNeighbourList.cs" />
+    <Compile Include="Sources\0-KdTreeLib\PriorityQueue.cs" />
+    <Compile Include="Sources\3-BlockBase\BlockRemoteDescPowered.cs" />
+    <Compile Include="Sources\3-BlockBase\BlockRemoteDesc.cs" />
+    <Compile Include="Sources\3-BlockBase\BlockPowered.cs" />
+    <Compile Include="Sources\3-BlockBase\BlockBase.cs" />
+    <Compile Include="Sources\4-ChestFacility\LootBlock.cs" />
+    <Compile Include="Sources\4-ChestFacility\NodeManagerChests.cs" />
+    <Compile Include="Sources\6-FarmLand\NodeManagerFarmLands.cs" />
+    <Compile Include="Sources\6-FarmPlot\NodeManagerFarmPlots.cs" />
+    <Compile Include="Sources\6-FarmComposter\NodeManagerComposters.cs" />
+    <Compile Include="Sources\4-PowerStates\ActionSetPower.cs" />
+    <Compile Include="Sources\3-NodeBase\ActionBlockNode.cs" />
+    <Compile Include="Sources\NodeMessages\ActionUpdateLightLevel.cs" />
+    <Compile Include="Sources\4-ExchangeFluids\MsgWaterExchangeQuery.cs" />
+    <Compile Include="Sources\4-ExchangeFluids\MsgWaterExchangeResponse.cs" />
+    <Compile Include="Sources\4-ExchangeFluids\MsgFillStateResponse.cs" />
+    <Compile Include="Sources\4-ExchangeFluids\MsgFillStateQuery.cs" />
+    <Compile Include="Sources\5-PipeConnections\MsgConnectorQuery.cs" />
+    <Compile Include="Sources\5-RemoteDescription\MsgDescriptionResponse.cs" />
+    <Compile Include="Sources\6-PipeWaterBoiler\BlockWaterBoiler.cs" />
+    <Compile Include="Sources\6-FluidConverter\BlockFluidConverter.cs" />
+    <Compile Include="Sources\5-PipeConnections\BlockPipeConnection.cs" />
+    <Compile Include="Sources\5-PipeConnections\ConnectionHelper.cs" />
+    <Compile Include="Sources\1-Interfaces\IfaceGridNodeManaged.cs" />
+    <Compile Include="Sources\6-PipeIrrigation\BlockIrrigation.cs" />
+    <Compile Include="Sources\6-PipeReservoir\BlockReservoir.cs" />
+    <Compile Include="Sources\6-FarmWell\BlockFarmWell.cs" />
+    <Compile Include="Sources\6-PipeIntake\BlockPipeSource.cs" />
+    <Compile Include="Sources\6-PipeTank\BlockTank.cs" />
+    <Compile Include="Sources\5-PipeGridBlocks\ImpBlockGridNodePowered.cs" />
+    <Compile Include="Sources\5-PipeGridBlocks\ImpBlockPipeReservoirPowered.cs" />
+    <Compile Include="Sources\5-PipeGridBlocks\ImpBlockPipeReservoirUnpowered.cs" />
+    <Compile Include="Sources\3-NodeBase\NodeBlock.cs" />
+    <Compile Include="Sources\6-PipeWaterBoiler\PipeWaterBoiler.cs" />
+    <Compile Include="Sources\6-FluidConverter\PipeFluidConverter.cs" />
+    <Compile Include="Sources\6-PipeIntake\PipeSource.cs" />
+    <Compile Include="Sources\6-PipeTank\PipeTank.cs" />
+    <Compile Include="Sources\6-PipeIrrigation\PipeIrrigation.cs" />
+    <Compile Include="Sources\6-PipeReservoir\PipeReservoir.cs" />
+    <Compile Include="Sources\6-FarmWell\FarmWell.cs" />
+    <Compile Include="Sources\6-PipeIrrigation\NodeManagerIrrigation.cs" />
+    <Compile Include="Sources\5-PipeGridFacility\NodeManagerGrids.cs" />
+    <Compile Include="Sources\4-PowerStates\NodeManager.cs" />
+    <Compile Include="Sources\6-FarmWell\NodeManagerWells.cs" />
+    <Compile Include="Sources\6-PlantGrowing\NodeManagerPlantation.cs" />
+    <Compile Include="Sources\5-PipeConnections\NodeManagerConnections.cs" />
+    <Compile Include="Sources\6-FarmLand\BlockPlantationFarmLand.cs" />
+    <Compile Include="Sources\6-FarmPlot\BlockPlantationFarmPlot.cs" />
+    <Compile Include="Sources\6-FarmComposter\BlockComposter.cs" />
+    <Compile Include="Sources\6-PlantGrowing\BlockPlantationGrowing.cs" />
+    <Compile Include="Sources\4-ChestFacility\ActionUpdateChest.cs" />
+    <Compile Include="Sources\4-ChestFacility\ActionModifiedChest.cs" />
+    <Compile Include="Sources\4-ChestFacility\ExecuteChestModification.cs" />
+    <Compile Include="Sources\PlantationMessages\ExecuteBlockChange.cs" />
+    <Compile Include="Sources\4-VisualStates\ActionUpdateLightLevels.cs" />
+    <Compile Include="Sources\6-FarmLand\PlantationFarmLand.cs" />
+    <Compile Include="Sources\6-FarmPlot\PlantationFarmPlot.cs" />
+    <Compile Include="Sources\6-FarmComposter\PlantationComposter.cs" />
+    <Compile Include="Sources\6-PlantGrowing\PlantationGrowing.cs" />
+    <Compile Include="Sources\Utils\BlockHelper.cs" />
+    <Compile Include="Sources\Utils\HarmonyFieldProxy.cs" />
+    <Compile Include="Sources\Utils\IPersistable.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\IActionWorker.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\IActionMother.cs" />
+    <Compile Include="Sources\NodeMessages\ActionStopManager.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\RemoteNodePackage.cs" />
+    <Compile Include="Sources\5-PipeConnections\PipeConnection.cs" />
+    <Compile Include="Sources\5-PipeGridFacility\PipeGrid.cs" />
+    <Compile Include="Sources\Utils\FullRotation.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\IMessageClient.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\IMessageWorker.cs" />
+    <Compile Include="Sources\5-PipeConnections\IBlockConnection.cs" />
+    <Compile Include="Sources\5-PipeGridBlocks\ImpBlockGridNodeUnpowered.cs" />
     <Compile Include="Harmony\OcbPipeGrids.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
-    <Compile Include="Helpers\PipeBlockHelper.cs" />
-    <Compile Include="PipeGridProcess\PipeGridClient.cs" />
-    <Compile Include="PipeGridProcess\PipeGridInterface.cs" />
-    <Compile Include="Interfaces\IfaceGridNodeFactory.cs" />
-    <Compile Include="Messages\MsgConnectorResponse.cs" />
-    <Compile Include="NetPackages\NetPkgWorkerAnswer.cs" />
-    <Compile Include="NetPackages\NetPkgWorkerQuery.cs" />
-    <Compile Include="Messages\RemoteResponse.cs" />
-    <Compile Include="PipeGridNodes\PipeNode.cs" />
-    <Compile Include="PipeGridProcess\PipeGridManager.cs" />
-    <Compile Include="PipeGridProcess\PipeGridRunner.cs" />
-    <Compile Include="PipeGridProcess\PipeGridWorker.cs" />
-    <Compile Include="Messages\RemoteQuery.cs" />
-    <Compile Include="Messages\MsgDescriptionQuery.cs" />
-    <Compile Include="NetPackages\PipeGridPackages.cs" />
-    <Compile Include="Ticker\GlobalTicker.cs" />
-    <Compile Include="Ticker\ITickable.cs" />
-    <Compile Include="Ticker\ScheduledTick.cs" />
-    <Compile Include="PipeGridStructs\BlockConnector.cs" />
-    <Compile Include="Utils\PersistedData.cs" />
-    <Compile Include="Utils\SingletonInstance.cs" />
+    <Compile Include="Sources\Helpers\NodeBlockHelper.cs" />
+    <Compile Include="Sources\2-NodeManagerFacility\NodeManagerInterface.cs" />
+    <Compile Include="Sources\5-PipeConnections\MsgConnectorResponse.cs" />
+    <Compile Include="Sources\NodeNetPackages\NetPkgWorkerAnswer.cs" />
+    <Compile Include="Sources\NodeNetPackages\NetPkgWorkerQuery.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\ServerResponse.cs" />
+    <Compile Include="Sources\3-NodeBase\NodeBase.cs" />
+    <Compile Include="Sources\2-NodeManagerWorker\NodeManagerBase.cs" />
+    <Compile Include="Sources\2-NodeManagerFacility\NodeManagerWorker.cs" />
+    <Compile Include="Sources\2-NodeManagerComs\ServerQuery.cs" />
+    <Compile Include="Sources\5-RemoteDescription\MsgDescriptionQuery.cs" />
+    <Compile Include="Sources\NodeNetPackages\PipeGridPackages.cs" />
+    <Compile Include="Sources\0-Ticker\GlobalTicker.cs" />
+    <Compile Include="Sources\0-Ticker\ITickable.cs" />
+    <Compile Include="Sources\0-Ticker\ScheduledTick.cs" />
+    <Compile Include="Sources\5-PipeConnections\BlockConnector.cs" />
+    <Compile Include="Sources\Utils\PersistedData.cs" />
+    <Compile Include="Sources\Utils\SingletonInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\blocks.pipe-vanilla-metal.xml" />
+    <Content Include="Config\items.xml" />
     <Content Include="Config\blocks.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

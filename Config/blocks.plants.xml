@@ -1,0 +1,473 @@
+﻿<configs>
+
+
+	<append xpath="/blocks/block[@name='plantedCorn1']">
+		<property name="CreativeMode" value="Player"/>
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+
+		<property name="PlantScaleMin" value="1,.3" />
+		<property name="PlantScaleFactor" value="0,1.2" />
+
+		<property name="SoilMaintenanceFactor" value="0.05" />
+		<property name="SoilMaintenanceExponent" value="2.35" />
+		<property name="SoilImprovementFactor" value="0.01" />
+		<property name="WaterMaintenanceFactor" value="0.05" />
+		<property name="WaterMaintenanceExponent" value="1.65" />
+		<property name="WaterImprovementFactor" value="0.01" />
+		<property name="SprinklerMaintenanceFactor" value="0.02" />
+		<property name="SprinklerMaintenanceExponent" value="1.65" />
+		<property name="SprinklerImprovementFactor" value="0.03" />
+		<property name="GrowthMaintenanceFactor" value="0.05" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+
+	<append xpath="/blocks/block[@name='plantedCorn2']">
+		<property name="CreativeMode" value="Player"/>
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+
+		<property name="PlantScaleMin" value="1,.7" />
+		<property name="PlantScaleFactor" value="0,.7" />
+		
+		<property name="SoilMaintenanceFactor" value="0.1" />
+		<property name="SoilMaintenanceExponent" value="0.1" />
+		<property name="SoilImprovementFactor" value="0.01" />
+		<property name="WaterMaintenanceFactor" value="0.2" />
+		<property name="WaterMaintenanceExponent" value="0.2" />
+		<property name="WaterImprovementFactor" value="0.02" />
+		<property name="GrowthMaintenanceFactor" value="0.25" />
+		<property name="SprinklerMaintenanceFactor" value="0.03" />
+		<property name="SprinklerMaintenanceExponent" value="1.65" />
+		<property name="SprinklerImprovementFactor" value="0.05" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="PlantGrowing.Next" value="plantedCorn1"/>
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+
+	<append xpath="/blocks/block[@name='plantedHop1']">
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="PlantScaleMin" value=".3,.5" />
+		<property name="PlantScaleFactor" value=".7,.7" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+	<append xpath="/blocks/block[@name='plantedHop2']">
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="PlantScaleMin" value=".3,.8" />
+		<property name="PlantScaleFactor" value=".8,.5" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+
+  <append xpath="/blocks/block[@name='plantedMushroom1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".5,.5" />
+    <property name="PlantScaleFactor" value=".2,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedMushroom2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".7,.6" />
+    <property name="PlantScaleFactor" value=".4,.9" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedPotato1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedPotato2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedPotato1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedYucca1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedYucca2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedYucca1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedCotton1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".5,.6" />
+    <property name="PlantScaleFactor" value=".6,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedCotton2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".5,.6" />
+    <property name="PlantScaleFactor" value=".6,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedCotton1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedCoffee1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedCoffee2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedCoffee1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedGoldenrod1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedGoldenrod2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedGoldenrod1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedAloe1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedAloe2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedAloe1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedBlueberry1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedBlueberry2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedBlueberry1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedChrysanthemum1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedChrysanthemum2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedChrysanthemum1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedGraceCorn1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedGraceCorn2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedGraceCorn1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedHop1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedHop2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedHop1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedSnowberry1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedSnowberry2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedSnowberry1"/>
+  </append>
+
+  <append xpath="/blocks/block[@name='plantedPumpkin1']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.5" />
+    <property name="PlantScaleFactor" value=".7,.7" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[@name='plantedPumpkin2']">
+    <property name="Class" value="PlantationGrowing, PipeGrids" />
+    <property name="PlantScaleMin" value=".3,.8" />
+    <property name="PlantScaleFactor" value=".8,.5" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="DisplayInfo" value="Custom" />
+    <property name="PlantGrowing.Next" value="plantedPumpkin1"/>
+  </append>
+  
+  <append xpath="/blocks">
+
+		<block name="plantedCorn1x">
+			<property name="Extends" value="cropsGrowingMaster" param1="CustomIcon"/>
+			<property name="CreativeMode" value="Player"/>
+			<property name="UnlockedBy" value="perkLivingOffTheLand,plantedCorn1Schematic"/>
+			<property name="Material" value="Mcorn"/>
+			<!-- mostly for the particle effect -->
+			<property name="Shape" value="New"/>
+			<property name="Model" value="corn_sprout_shape"/>
+			<property name="Place" value="Door"/>
+			<property name="PlaceAsRandomRotation" value="true"/>
+      <!-- <property name="Mesh" value="transparent"/> -->
+      <property name="MultiBlockDim" value="1,3,1"/>
+			<property name="Texture" value="529"/>
+			<property name="PlantGrowing.Next" value="plantedCorn2"/>
+			<property name="Group" value="Food/Cooking"/>
+			<drop event="Destroy" name="plantedCorn1" count="1"/>
+		</block>
+
+		<block name="plantedCorn2x">
+			<property name="Extends" value="plantedCorn1x"/>
+			<property name="CreativeMode" value="Player"/>
+			<property name="Shape" value="New"/>
+			<property name="Model" value="corn_growth_shape"/>
+			<!-- <property name="Mesh" value="transparent"/> -->
+			<property name="MultiBlockDim" value="1,3,1"/>
+			<property name="Texture" value="529"/>
+			<property name="PlantGrowing.Next" value="plantedCorn3HarvestPlayer"/>
+			<drop event="Destroy" name="plantedCorn1" count="1"/>
+		</block>
+
+
+		<block name="plantedMushroom1a">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom1" />
+			<property name="FixedGrowth" value="0"/>
+		</block>
+		<block name="plantedMushroom1b">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom1" />
+			<property name="FixedGrowth" value="25"/>
+		</block>
+		<block name="plantedMushroom1c">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom1" />
+			<property name="FixedGrowth" value="50"/>
+		</block>
+		<block name="plantedMushroom1d">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom1" />
+			<property name="FixedGrowth" value="75"/>
+		</block>
+		<block name="plantedMushroom1e">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom1" />
+			<property name="FixedGrowth" value="100"/>
+		</block>
+
+		<block name="plantedMushroom2a">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom2" />
+			<property name="FixedGrowth" value="0"/>
+		</block>
+		<block name="plantedMushroom2b">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom2" />
+			<property name="FixedGrowth" value="25"/>
+		</block>
+		<block name="plantedMushroom2c">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom2" />
+			<property name="FixedGrowth" value="50"/>
+		</block>
+		<block name="plantedMushroom2d">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom2" />
+			<property name="FixedGrowth" value="75"/>
+		</block>
+		<block name="plantedMushroom2e">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedMushroom2" />
+			<property name="FixedGrowth" value="100"/>
+		</block>
+
+		<block name="plantedCorn1a">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn1" />
+			<property name="FixedGrowth" value="0"/>
+		</block>
+		<block name="plantedCorn1b">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn1" />
+			<property name="FixedGrowth" value="25"/>
+		</block>
+		<block name="plantedCorn1c">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn1" />
+			<property name="FixedGrowth" value="50"/>
+		</block>
+		<block name="plantedCorn1d">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn1" />
+			<property name="FixedGrowth" value="75"/>
+		</block>
+		<block name="plantedCorn1e">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn1" />
+			<property name="FixedGrowth" value="100"/>
+		</block>
+
+
+		<block name="plantedCorn2a">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn2" />
+			<property name="FixedGrowth" value="0"/>
+		</block>
+		<block name="plantedCorn2b">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn2" />
+			<property name="FixedGrowth" value="25"/>
+		</block>
+		<block name="plantedCorn2c">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn2" />
+			<property name="FixedGrowth" value="50"/>
+		</block>
+		<block name="plantedCorn2d">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn2" />
+			<property name="FixedGrowth" value="75"/>
+		</block>
+		<block name="plantedCorn2e">
+			<property name="CreativeMode" value="Player"/>
+			<property name="Extends" value="plantedCorn2" />
+			<property name="FixedGrowth" value="100"/>
+		</block>
+
+
+
+
+
+
+
+
+
+    <block name="plantedCotton1a">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton1" />
+      <property name="FixedGrowth" value="0"/>
+    </block>
+    <block name="plantedCotton1b">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton1" />
+      <property name="FixedGrowth" value="25"/>
+    </block>
+    <block name="plantedCotton1c">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton1" />
+      <property name="FixedGrowth" value="50"/>
+    </block>
+    <block name="plantedCotton1d">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton1" />
+      <property name="FixedGrowth" value="75"/>
+    </block>
+    <block name="plantedCotton1e">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton1" />
+      <property name="FixedGrowth" value="100"/>
+    </block>
+
+
+    <block name="plantedCotton2a">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton2" />
+      <property name="FixedGrowth" value="0"/>
+    </block>
+    <block name="plantedCotton2b">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton2" />
+      <property name="FixedGrowth" value="25"/>
+    </block>
+    <block name="plantedCotton2c">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton2" />
+      <property name="FixedGrowth" value="50"/>
+    </block>
+    <block name="plantedCotton2d">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton2" />
+      <property name="FixedGrowth" value="75"/>
+    </block>
+    <block name="plantedCotton2e">
+      <property name="CreativeMode" value="Player"/>
+      <property name="Extends" value="plantedCotton2" />
+      <property name="FixedGrowth" value="100"/>
+    </block>
+
+
+
+
+  </append>
+
+</configs>

@@ -1,0 +1,53 @@
+﻿<configs>
+
+    <append xpath="/blocks">
+
+      <block name="ocbWaterFluidInjector">
+
+        <property name="PipeDiameter" value="0,1,2,3,4,5,6,7"/>
+
+        <property name="CreativeMode" value="Player"/>
+        <property name="Tags" value="door"/>
+        <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
+        <property name="Material" value="Msteel"/>
+        <property name="StabilitySupport" value="true"/>
+        <property name="IsTerrainDecoration" value="false"/>
+        <property name="Group" value="Basics,Building,advBuilding"/>
+        <property name="EconomicValue" value="10"/>
+        <property name="EconomicBundleSize" value="10"/>
+        <property name="FilterTags" value="floot"/>
+        <property name="DisplayType" value="blockHardened"/>
+        <property name="CustomIcon" value="AutoHarvest"/>
+        <property name="DescriptionKey" value="ocbWaterPipeSource"/>
+
+        <property name="Shape" value="New"/>
+        <property name="Class" value="FluidInjector, PipeGrids"/>
+
+        <property name="Model" value="#@modfolder:Resources/WaterPipePump.unity3d?WaterPipePump" />
+
+        <property name="ModelOffset" value=".5,.5,.5"/>
+        <property name="Path" value="solid"/>
+        <property name="Texture" value="597"/>
+        <property name="MaxFillState" value="75"/>
+
+
+
+        <property name="RequiredPower" value="8"/>
+        <property name="AutoHarvestSpeed" value="4"/>
+        <property name="LookupsPerTick" value="2000"/>
+
+        <property name="WaterPipePump" value="true"/>
+        <property name="DisplayInfo" value="Custom" />
+
+        <property name="PipeMaxConnection" value="2" />
+        <property name="PipeConnectors" value="forward,back" />
+
+        <property name="Path" value="solid"/>
+        <property name="Texture" value="597"/>
+        <property name="LootList" value="storageCrate"/>
+        <property name="LPHardnessScale" value="8"/>
+      </block>    
+
+    </append>
+
+</configs>

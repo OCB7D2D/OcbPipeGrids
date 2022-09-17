@@ -1,0 +1,169 @@
+﻿<configs>
+
+  <!--
+  <append xpath="/blocks/block[starts-with(@name,'pipeSmall')]">
+    <property name="CreativeMode" value="Dev"/>
+  </append>
+  -->
+
+  <!-- Setup pipes to return variant helper on destroy -->
+  <setattribute xpath="/blocks/block[@name='pipeSmall1x1']/drop[@event='Destroy']"
+                name="name">pipeSmallNodeVariantHelper</setattribute>
+
+  <append xpath="/blocks">
+
+  <!-- Small pipes centered variants -->
+
+    <block name="pipeSmall1x1Node">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmall1x1"/>
+      <property name="CustomIcon" value="pipeSmall1x1"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,back" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="North"/>
+    </block>
+
+    <block name="pipeSmallJointNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallJoint"/>
+      <property name="CustomIcon" value="pipeSmallJoint"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,up,back" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Top"/>
+    </block>
+
+    <block name="pipeSmallCornerNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallCorner"/>
+      <property name="CustomIcon" value="pipeSmallCorner"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,down" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="North"/>
+    </block>
+
+    <block name="pipeSmallValveNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallValve"/>
+      <property name="CustomIcon" value="pipeSmallValve"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="back" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="South"/>
+    </block>
+
+    <block name="pipeSmallCapNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallCap"/>
+      <property name="CustomIcon" value="pipeSmallCap"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="back" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="South"/>
+    </block>
+
+    <!-- Center to wall connector -->
+
+    <block name="pipeSmallWallCenterBridgeNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWallCenterBridge"/>
+      <property name="CustomIcon" value="pipeSmallWallCenterBridge"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,back:3" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="North"/>
+    </block>
+
+    <!-- Small pipes wall variants -->
+
+    <block name="pipeSmallWall1x1Node">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWall1x1"/>
+      <property name="CustomIcon" value="pipeSmallWall1x1"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward:1,back:3" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="pipeSmallWallJointNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWallJoint"/>
+      <property name="CustomIcon" value="pipeSmallWallJoint"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward:1,left:4,back:3" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="pipeSmallWallCornerNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWallCorner"/>
+      <property name="CustomIcon" value="pipeSmallWallCorner"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward:1,right:2" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="pipeSmallWallValveNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWallValve"/>
+      <property name="CustomIcon" value="pipeSmallWallValve"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward:1,back:3" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="pipeSmallWallCapNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="Extends" value="pipeSmallWallCap"/>
+      <property name="CustomIcon" value="pipeSmallWallCap"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="back:3" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="pipeSmallWallCornerEdge">
+      <property name="Extends" value="pipeSmallWall1x1" param1="Model,Shape,Mesh"/>
+      <property name="Shape" value="ModelEntity"/>
+      <property name="ModelOffset" value="0.5,0,0.5"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="Model" value="#@modfolder:Resources/WallPipeCornerSmall.unity3d?WallPipeCornerSmall"/>
+      <property name="PipeConnectors" value="forward:3,up:1" />
+      <property name="DisplayInfo" value="Custom" />
+      <property name="PipeDiameter" value="1"/>
+      <property name="EconomicValue" value="60"/>
+      <property name="Texture" value="534"/>
+      <property name="HandleFace" value="Top"/>
+
+    </block>
+
+    <!-- Variant Helper -->
+
+    <block name="pipeSmallNodeVariantHelper">
+      <property name="Extends" value="pipeSmall1x1Node" />
+      <property name="ItemTypeIcon" value="all_blocks" />
+      <property name="SelectAlternates" value="true" />
+      <property name="PlaceAltBlockValue" value="pipeSmall1x1Node,pipeSmallJointNode,pipeSmallCornerNode,pipeSmallValveNode,pipeSmallCapNode,pipeSmallWallCenterBridgeNode,pipeSmallWall1x1Node,pipeSmallWallJointNode,pipeSmallWallCornerNode,pipeSmallWallValveNode,pipeSmallWallCapNode,pipeSmallWallCornerEdge" />
+      <property name="DescriptionKey" value="pipeSmallNodeVariantHelperDesc" />
+    </block>
+
+  </append>
+
+</configs>

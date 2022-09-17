@@ -1,0 +1,74 @@
+﻿<configs>
+
+    <append xpath="/blocks">
+
+
+      <block name="OcbSprinklerOutdoor">
+
+        <property name="BlockReach" value="12,2,12" />
+        <property name="ReachOffset" value="0,-1,0" />
+
+        <property name="DisplayInfo" value="Custom" />
+        <property name="IsPowered" value="True" />
+
+        <property name="MaxFillState" value="3" />
+
+        <property name="CreativeMode" value="Player"/>
+        <!--<property name="Tags" value="safes,hardenedSafe"/>-->
+        <property name="Class" value="PlantationSprinkler, PipeGrids"/>
+        <property name="PipeDiameter" value="0,1,2,3,4,5,6,7" />
+        <property name="PipeConnectors" value="down" />
+
+        <property name="SoundSprinklerLoop" value="SprinklerLoop"/>
+
+        <!--
+			-->
+        <property name="AllowAllRotations" value="false"/>
+        <property name="OnlySimpleRotations" value="true"/>
+        <property name="DisplayType" value="blockHardened"/>
+
+        <!-- <property name="CustomIcon" value="ClaimAutoRepair"/> -->
+        <property name="Material" value="Msteel"/>
+        <property name="StabilitySupport" value="true"/>
+        <property name="Shape" value="ModelEntity" />
+        <property name="Model" value="#@modfolder:Resources/gupSprinklerBlock2.unity3d?gupLargeSprinkler2"/>
+        <property name="IsTerrainDecoration" value="false"/>
+        <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
+        <property name="LootList" value="storageCrate"/>
+        <property name="LPHardnessScale" value="8"/>
+        <property name="Group" value="Storage,Building,advBuilding,Blocks,Player"/>
+        <property name="DescriptionKey" value="ocbBlockClaimAutoRepairDesc"/>
+        <property name="EconomicValue" value="200"/>
+        <property name="EconomicBundleSize" value="5"/>
+        <property name="Stacknumber" value="5"/>
+        <property name="FilterTags" value="floot"/>
+        <property name="DisplayType" value="blockHardened"/>
+
+        <property name="CanPickup" value="true" />
+        <property name="TakeDelay" value="30"/>
+        <!--
+			<property name="DisplayType" value="blockMulti"/>
+			<property name="MultiBlockDim" value="1,2,1"/>
+			-->
+        <!-- <property name="ModelOffset" value="0,0.5,0"/> -->
+
+        <property name="Stacknumber" value="5"/>
+
+        <property name="UnlockedBy" value="perkAdvancedEngineering"/>
+
+        <property class="RepairItems">
+          <property name="resourceForgedSteel" value="40"/>
+          <property name="resourceElectricParts" value="40"/>
+          <property name="resourceMechanicalParts" value="10"/>
+        </property>
+
+        <drop event="Destroy" name="resourceForgedSteel" count="5,10"/>
+        <drop event="Destroy" name="resourceElectricParts" count="5,20" tag="salvageHarvest"/>
+        <drop event="Destroy" name="resourceMechanicalParts" count="5,10" tag="salvageHarvest"/>
+        <drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
+
+      </block>
+      
+    </append>
+
+</configs>

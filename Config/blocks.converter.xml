@@ -1,0 +1,148 @@
+﻿<configs>
+
+    <append xpath="/blocks">
+
+      <!--
+      <block name="OcbFarmFluidConverterInput">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="Reservoir, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="FluidType" value="2" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+      -->
+
+      <block name="OcbFarmFluidConverterConnect0">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="PipeConnection, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="FluidType" value="2" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+
+      <block name="OcbFarmFluidConverterOutput1">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="Reservoir, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="MaxFillState" value="75" />
+        <property name="FluidType" value="3" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+
+      <block name="OcbFarmFluidConverterOutput2">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="Reservoir, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="MaxFillState" value="75" />
+        <property name="FluidType" value="4" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+
+      <block name="OcbFarmFluidConverterConnect1">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="PipeConnection, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="FluidType" value="3" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+
+      <block name="OcbFarmFluidConverterConnect2">
+        <property name="CreativeMode" value="None" />
+        <property name="Class" value="PipeConnection, PipeGrids" />
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="FluidType" value="4" />
+        <property name="PipeDiameter" value="2"/>
+        <property name="Material" value="Msteel" />
+      </block>
+
+      <block name="OcbFarmFluidConverter">
+
+            <property name="InputPosition" value="0,0,0"/>
+            <property name="OutputPosition" value="0,0,1"/>
+
+            <property name="WorkstationWindow" value="workstation_forge"/>
+
+            <property class="Workstation">
+                <property name="CraftingAreaRecipes" value="forge"/>
+                <property name="Modules" value="tools,output,fuel,material_input"/>
+                <property name="InputMaterials" value="iron,brass,lead,glass,stone,clay"/>
+            </property>
+            <property name="WorkstationIcon" value="ui_game_symbol_forge"/>
+            <property name="HeatMapStrength" value="6"/>
+            <property name="HeatMapTime" value="5000"/>
+            <property name="HeatMapFrequency" value="1000"/>
+        <!--
+            <property name="BuffsWhenWalkedOn" value="buffBurningEnvironment"/>
+            <property name="ActiveRadiusEffects" value="buffCampfireAOE(5)"/>
+            -->
+            <property name="OpenSound" value="forge_open"/>
+            <property name="CloseSound" value="forge_close"/>
+            <property name="CraftSound" value="forge_smelt_click"/>
+            <property name="CraftCompleteSound" value="forge_item_complete"/>
+            <property name="WorkstationJournalTip" value="forgeTip"/>
+
+
+            <property name="CreativeMode" value="Player"/>
+            <property name="MaxFillState" value="2000"/>
+            <property name="Tags" value="safes,hardenedSafe"/>
+            <property name="Class" value="FluidConverter, PipeGrids"/>
+
+        <property name="PipeConnectors" value="forward,back" />
+        <property name="BreakSegment" value="true" />
+        <property name="FluidType" value="2" />
+        <property name="PipeDiameter" value="2"/>
+
+
+        <property name="CustomIcon" value="ocbWaterConverter"/>
+            <property name="Material" value="Msteel"/>
+            <property name="StabilitySupport" value="true"/>
+            <property name="Shape" value="ModelEntity" />
+            <property name="Model" value="#@modfolder:Resources/FluidConverter.unity3d?FluidConverter" />
+            <property name="IsTerrainDecoration" value="false"/>
+            <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
+            <property name="LootList" value="storageCrate"/>
+            <property name="LPHardnessScale" value="8"/>
+            <property name="Group" value="Storage,Building,advBuilding,Blocks,Player"/>
+            <property name="DescriptionKey" value="ocbBlockClaimAutoRepairDesc"/>
+            <property name="EconomicValue" value="200"/>
+            <property name="EconomicBundleSize" value="5"/>
+            <property name="Stacknumber" value="5"/>
+            <property name="FilterTags" value="floot"/>
+            <property name="DisplayType" value="blockHardened"/>
+
+            <property name="CanPickup" value="true" />
+            <property name="TakeDelay" value="30"/>
+
+            <property name="DisplayType" value="blockMulti"/>
+            <property name="MultiBlockDim" value="3,2,2"/>
+
+            <property name="Stacknumber" value="5"/>
+
+            <property name="UnlockedBy" value="perkAdvancedEngineering"/>
+
+            <property class="RepairItems">
+                <property name="resourceForgedSteel" value="40"/>
+                <property name="resourceElectricParts" value="40"/>
+                <property name="resourceMechanicalParts" value="10"/>
+            </property>
+
+            <drop event="Destroy" name="resourceForgedSteel" count="5,10"/>
+            <drop event="Destroy" name="resourceElectricParts" count="5,20" tag="salvageHarvest"/>
+            <drop event="Destroy" name="resourceMechanicalParts" count="5,10" tag="salvageHarvest"/>
+            <drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
+
+        </block>
+    </append>
+
+</configs>

@@ -1,0 +1,25 @@
+﻿<configs>
+
+  <append xpath="/materials">
+
+    <material id="MresourceFertilizer">
+      <property name="damage_category" value="organic"/>
+      <property name="surface_category" value="organic"/>
+      <property name="Experience" value="200"/>
+    </material>
+
+    <material id="Mfarmplot">
+			<property name="damage_category" value="earth"/>
+			<property name="surface_category" value="earth"/>
+			<property name="Hardness" type="float" value="1"/>
+			<property name="stepsound" value="dirt"/>
+			<property name="fertile_level" value="20"/>
+			<property name="stability_glue" value="20"/>
+			<property name="Mass" type="int" value="10"/>
+			<property name="MaxDamage" value="500"/>
+			<property name="Experience" value="10"/>
+		</material>
+
+	</append>
+
+</configs>

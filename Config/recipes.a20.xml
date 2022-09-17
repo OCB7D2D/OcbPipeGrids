@@ -1,0 +1,27 @@
+﻿<configs>
+
+  <append xpath="/recipes">
+
+    <recipe name="metalPipeNodeVariantHelper"
+        craft_time="40" craft_area="workbench"
+        tags="workbenchCrafting">
+
+      <ingredient name="resourceMetalPipe" count="12"/>
+      <ingredient name="resourceScrapLead" count="8"/>
+      <ingredient name="resourceScrapIron" count="8"/>
+      
+    </recipe>
+
+    <recipe name="pipeSmallNodeVariantHelper"
+        craft_time="30" craft_area="workbench"
+        tags="workbenchCrafting">
+
+      <ingredient name="resourceMetalPipe" count="8"/>
+      <ingredient name="resourceScrapLead" count="6"/>
+      <ingredient name="resourceScrapIron" count="6"/>
+
+    </recipe>
+
+  </append>
+
+</configs>

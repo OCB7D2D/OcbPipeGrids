@@ -1,0 +1,16 @@
+﻿<configs>
+
+	<append xpath="/shapes">
+
+		<shape name="pipe">
+			<property name="Path" value="solid"/>
+			<property name="Shape" value="New"/>
+			<property name="Model" value="cube"/>
+			<property name="CustomIcon" value="shapeCube"/>
+			<property name="ShapeCategories" value="Basic,Square"/>
+			<property name="MaterialHitpointMultiplier" value="1"/>
+		</shape>
+	
+	</append>
+
+</configs>

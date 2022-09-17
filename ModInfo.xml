@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xml>
 	<ModInfo>
-		<Name value="OcbAutoHarvest" />
+		<Name value="OcbPipeGrids" />
 		<Description value="Auto harvest a certain area around this block" />
-		<Website value="https://github.com/OCB7D2D/OcbAutoHarvest" />
+		<Website value="https://github.com/OCB7D2D/OcbPipeGrids" />
 		<Author value="ocbMaurice" />
 		<Version value="0.9.0" compat="A20"/>
 	</ModInfo>

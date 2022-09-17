@@ -1,0 +1,140 @@
+﻿<configs>
+
+  <!--
+	<append xpath="/blocks/block[starts-with(@name, 'metalPipe')]">
+		<property name="Class" value="PipeConnection, PipeGrids" />
+		<property name="DisplayInfo" value="Custom" />
+		<property name="PipeDiameter" value="4"/>
+	</append>
+  -->
+
+  <!-- Setup pipes to return variant helper on destroy -->
+  <setattribute xpath="/blocks/block[@name='metalPipeStraight']/drop[@event='Destroy']"
+                name="name">metalPipeNodeVariantHelper</setattribute>
+
+  <append xpath="/blocks">
+
+    <!-- Metal pipes centered variants -->
+
+    <block name="metalPipeStraightNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeStraight"/>
+      <property name="CustomIcon" value="metalPipeStraight"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,back" />
+      <property name="Shape" value="Pipe, PipeGrids"/>
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="North"/>
+    </block>
+
+    <block name="metalPipeCornerNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeCorner"/>
+      <property name="CustomIcon" value="metalPipeCorner"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,right" />
+      <property name="Shape" value="Pipe, PipeGrids"/>
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="North"/>
+    </block>
+
+    <block name="metalPipeJointNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeJoint"/>
+      <property name="CustomIcon" value="metalPipeJoint"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="forward,left,back" />
+      <property name="Shape" value="Pipe, PipeGrids"/>
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="West"/>
+    </block>
+
+    <block name="metalPipeFlangeNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeFlange"/>
+      <property name="CustomIcon" value="metalPipeFlange"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="back" />
+      <property name="Shape" value="Pipe, PipeGrids"/>
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="South"/>
+    </block>
+
+    <block name="metalPipeValveNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeValve"/>
+      <property name="CustomIcon" value="metalPipeValve"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="down" />
+      <!-- <property name="Shape" value="Pipe, PipeGrids"/> -->
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <block name="metalPipeCapNode">
+      <property name="CreativeMode" value="Dev"/>
+      <property name="DisplayInfo" value="Custom" />
+      <property name="Extends" value="metalPipeCap"/>
+      <property name="CustomIcon" value="metalPipeCap"/>
+      <property name="Class" value="PipeConnection, PipeGrids" />
+      <property name="PipeConnectors" value="down" />
+      <property name="Shape" value="Pipe, PipeGrids"/>
+      <property name="PipeDiameter" value="4"/>
+      <property name="HandleFace" value="Bottom"/>
+    </block>
+
+    <!-- Variant Helper -->
+
+    <block name="metalPipeNodeVariantHelper">
+      <property name="Extends" value="metalPipeStraightNode" />
+      <property name="ItemTypeIcon" value="all_blocks" />
+      <property name="SelectAlternates" value="true" />
+      <property name="PlaceAltBlockValue" value="metalPipeStraightNode,metalPipeCornerNode,metalPipeJointNode,metalPipeFlangeNode,metalPipeValveNode,metalPipeCapNode" />
+      <property name="DescriptionKey" value="metalPipeNodeVariantHelperDesc" />
+    </block>
+
+  </append>
+
+
+  <append xpath="/blocks">
+
+    <!--
+
+
+-->
+  </append>
+
+  <!-- 
+		  pipeSmallJoint,
+		  pipeSmall1x1,
+		pipeSmall1x3,
+		pipeSmallBroke,
+		  pipeSmallCap,
+		  pipeSmallCorner,
+		pipeSmallValve,
+		  pipeSmallWall1x1,
+		pipeSmallWall1x3,
+		pipeSmallWallBroke,
+		  pipeSmallWallCap,
+		pipeSmallWallCenterBridge,
+		  pipeSmallWallCorner,
+		  pipeSmallWallJoint,
+		  pipeSmallWallValve
+	-->
+<!--
+  <append xpath="/blocks/block[starts-with(@name, 'ductStraight')]">
+    <property name="Class" value="PipeConnection, PipeGrids" />
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+  <append xpath="/blocks/block[starts-with(@name, 'ductCorner')]">
+    <property name="Class" value="PipeConnection, PipeGrids" />
+    <property name="OnlySimpleRotations" value="true"/>
+    <property name="DisplayInfo" value="Custom" />
+  </append>
+-->
+</configs>

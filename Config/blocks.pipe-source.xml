@@ -1,0 +1,63 @@
+﻿<configs>
+
+    <append xpath="/blocks">
+
+      <block name="ocbWaterPipeSource">
+
+        <property name="HandleFace" value="Top"/>
+
+        <property name="PipeDiameter" value="4"/>
+
+        <property name="CreativeMode" value="Player"/>
+        <property name="Tags" value="door"/>
+        <property name="Class" value="PipeSource, PipeGrids"/>
+
+        <property name="CustomIcon" value="AutoHarvest"/>
+        <property name="Material" value="Msteel"/>
+        <property name="StabilitySupport" value="true"/>
+
+        <property name="Shape" value="New"/>
+        <property name="Path" value="solid"/>
+        <property name="ModelOffset" value=".5,.5,.5"/>
+        <property name="Texture" value="597"/>
+
+        <property name="Model" value="#@modfolder:Resources/WaterPipeSource.unity3d?WaterPipeSource" />
+
+        <property name="IsTerrainDecoration" value="false"/>
+        <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
+        <property name="Group" value="Basics,Building,advBuilding"/>
+        <property name="DescriptionKey" value="ocbWaterPipeSource"/>
+        <property name="EconomicValue" value="10"/>
+        <property name="EconomicBundleSize" value="10"/>
+        <property name="FilterTags" value="floot"/>
+        <property name="DisplayType" value="blockHardened"/>
+
+        <property class="RepairItems">
+          <property name="resourceForgedSteel" value="40"/>
+          <property name="resourceElectricParts" value="40"/>
+          <property name="resourceMechanicalParts" value="10"/>
+        </property>
+
+        <drop event="Destroy" name="resourceForgedSteel" count="5,10"/>
+        <drop event="Destroy" name="resourceElectricParts" count="5,20" tag="salvageHarvest"/>
+        <drop event="Destroy" name="resourceMechanicalParts" count="5,10" tag="salvageHarvest"/>
+        <drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
+
+        <property name="CanPickup" value="true" />
+        <property name="TakeDelay" value="30"/>
+        <property name="RequiredPower" value="25"/>
+        <property name="PipeConnectors" value="up" />
+
+        <property name="DisplayInfo" value="Custom" />
+        <property name="WaterBlockRange" value="1,1,2" />
+        <property name="AirBlockRange" value="1,1,1" />
+        <property name="MinWaterBlocks" value="12" />
+        <property name="MinAirBlocks" value="6" />
+
+        <property name="MaxFillState" value="500"/>
+
+      </block>
+
+    </append>
+
+</configs>
