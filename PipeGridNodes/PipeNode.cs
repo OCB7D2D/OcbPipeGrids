@@ -7,25 +7,26 @@ namespace PipeManager
     public abstract class PipeNode : ITickable, IfaceGridNodeManaged
     {
 
-        public int BlockID = 0; // Air
+        public BlockValue BV = BlockValue.Air; // Air
 
         public virtual uint StorageID => 0;
 
         public virtual ulong NextTick => 200;
 
-        public byte Rotation { get; } = 0;
-
         public Vector3i WorldPos { get; private set; }
 
         public int[] KdKey => new int[] { WorldPos.x, WorldPos.y, WorldPos.z };
+
+        public int BlockID => BV.type;
+
+        public byte Rotation => BV.rotation;
 
         public PipeGridManager Manager { get; protected set; }
 
         protected PipeNode(Vector3i position, BlockValue bv)
         {
-            BlockID = bv.type;
+            BV = bv;
             WorldPos = position;
-            Rotation = bv.rotation;
         }
 
         public PipeNode(BinaryReader br)
@@ -34,7 +35,7 @@ namespace PipeManager
                 br.ReadInt32(),
                 br.ReadInt32(),
                 br.ReadInt32());
-            BlockID = br.ReadInt32();
+            BV.rawData = br.ReadUInt32();
         }
 
         public virtual void Write(BinaryWriter bw)
@@ -42,15 +43,17 @@ namespace PipeManager
             bw.Write(WorldPos.x);
             bw.Write(WorldPos.y);
             bw.Write(WorldPos.z);
-            bw.Write(BlockID);
+            bw.Write(BV.rawData);
         }
+
+        // Base method to get base block instance
+        // We assume it is safe to access Blocks concurrently
+        // Since these should never change once loaded on startup
+        // public Block GetBlock() => Block.list[BlockID];
 
         // Return block of given type (may return null)
         public bool GetBlock<T>(out T var) where T : class
             => (var = Block.list[BlockID] as T) != null;
-
-        // Base method to get base block instance
-        public Block GetBlock() => Block.list[BlockID];
 
         public PipeNode AttachToManager(PipeGridManager manager)
         {

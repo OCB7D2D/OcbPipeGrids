@@ -25,6 +25,8 @@ public class OcbPipeGrids : IModApi
 		PipeGridManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
 		PipeGridManager.RegisterFactory(4, (br) => new PipeSource(br));
 
+		PipeGridManager.RegisterFactory(9, (br) => new PipeWell(br));
+
 	}
 
 	private void GameUpdate()

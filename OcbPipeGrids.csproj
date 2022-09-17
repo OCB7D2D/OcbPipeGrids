@@ -77,6 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Interfaces\IPoweredNode.cs" />
     <Compile Include="Interfaces\IBlockReservoir.cs" />
     <Compile Include="Messages\ActionSetPower.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="Interfaces\IfaceGridNodeManaged.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeIrrigation.cs" />
+    <Compile Include="PipeGridBlocks\BlockPipeWell.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeSource.cs" />
     <Compile Include="PipeGridBlocks\BlockPipePump.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockGridNodePowered.cs" />
