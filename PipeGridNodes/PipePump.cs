@@ -2,7 +2,7 @@
 
 namespace PipeManager
 {
-    public class PipePump : PipeConnection
+    public class PipePump : PipeReservoir, IPoweredNode
     {
         public override uint StorageID => 2;
 
@@ -18,7 +18,7 @@ namespace PipeManager
 
         public override string GetCustomDescription()
         {
-            return "PipePump";
+            return "PipePump -> " + base.GetCustomDescription();
         }
 
     }

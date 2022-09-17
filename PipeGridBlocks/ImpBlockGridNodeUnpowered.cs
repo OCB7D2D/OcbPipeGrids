@@ -69,6 +69,15 @@ public abstract class ImpBlockGridNodeUnpowered : Block, IBlockConnection
 			.GetCustomDescription(pos, bv);
 	}
 
+	public override string GetActivationText(
+		WorldBase world, BlockValue bv,
+		int clrIdx, Vector3i pos,
+		EntityAlive focused)
+	{
+		return base.GetActivationText(world, bv, clrIdx, pos, focused) 
+			+ "\n" + GetCustomDescription(pos, bv);
+	}
+
 	private BlockActivationCommand[] cmds = new BlockActivationCommand[0]
 	{
 	//new BlockActivationCommand("activate", "electric_switch", true),

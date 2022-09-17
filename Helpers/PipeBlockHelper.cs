@@ -3,6 +3,12 @@
 public static class PipeBlockHelper
 {
 
+	static public void InitBlock(IBlockReservoir block)
+	{
+		if (block.Block.Properties.Contains("MaxFillState")) block.MaxFillState =
+			float.Parse(block.Block.Properties.GetString("MaxFillState"));
+	}
+
 	static public void InitBlock(IBlockConnection block)
 	{
 		if (block.Block.Properties.Contains("PipeConnectors"))

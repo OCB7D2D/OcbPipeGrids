@@ -1,6 +1,6 @@
 ﻿using PipeManager;
 
-class BlockPipeIrrigation : ImpBlockGridNodeUnpowered
+class BlockPipeIrrigation : ImpBlockGridNodePowered
 {
 
 	public override void CreateGridItem(Vector3i position, BlockValue bv)

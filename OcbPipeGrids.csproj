@@ -77,7 +77,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IPoweredNode.cs" />
+    <Compile Include="Interfaces\IBlockReservoir.cs" />
+    <Compile Include="Messages\ActionSetPower.cs" />
+    <Compile Include="Messages\ActionAddPump.cs" />
+    <Compile Include="Messages\ActionAddSource.cs" />
     <Compile Include="Messages\ActionAddIrrigation.cs" />
+    <Compile Include="Messages\ActionRemovePump.cs" />
+    <Compile Include="Messages\ActionRemoveSource.cs" />
     <Compile Include="Messages\ActionRemoveIrrigation.cs" />
     <Compile Include="Messages\MsgConnectorQuery.cs" />
     <Compile Include="Messages\MsgDescriptionResponse.cs" />
@@ -85,9 +92,15 @@
     <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="Interfaces\IfaceGridNodeManaged.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeIrrigation.cs" />
+    <Compile Include="PipeGridBlocks\BlockPipeSource.cs" />
     <Compile Include="PipeGridBlocks\BlockPipePump.cs" />
+    <Compile Include="PipeGridBlocks\ImpBlockGridNodePowered.cs" />
+    <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirPowered.cs" />
+    <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirUnpowered.cs" />
+    <Compile Include="PipeGridNodes\PipeSource.cs" />
     <Compile Include="PipeGridNodes\PipePump.cs" />
     <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
+    <Compile Include="PipeGridNodes\PipeReservoir.cs" />
     <Compile Include="Utils\IPersistable.cs" />
     <Compile Include="Interfaces\IActionClient.cs" />
     <Compile Include="Interfaces\IActionServer.cs" />

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace PipeManager
 {
-    class PipeIrrigation : PipePump
+    class PipeIrrigation : PipePump, IPoweredNode
     {
 
         public override ulong NextTick => 30;

@@ -23,6 +23,7 @@ public class OcbPipeGrids : IModApi
 		PipeGridManager.RegisterFactory(1, (br) => new PipeConnection(br));
 		PipeGridManager.RegisterFactory(2, (br) => new PipePump(br));
 		PipeGridManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
+		PipeGridManager.RegisterFactory(4, (br) => new PipeSource(br));
 
 	}
 
@@ -60,6 +61,23 @@ public class OcbPipeGrids : IModApi
 				PipeGridInterface.Instance.Cleanup();
         }
     }
+
+	[HarmonyPatch(typeof(PowerConsumer))]
+	[HarmonyPatch("IsPoweredChanged")]
+	public class IsPoweredChanged
+	{
+		static void Prefix(
+			PowerItem __instance,
+			bool newPowered)
+		{
+			Log.Warning("Set power1 now {0} => {1}", __instance.Position, newPowered);
+			if (!PipeGridInterface.HasInstance) return;
+			if (ConnectionManager.Instance.IsServer)
+				PipeGridInterface.Instance.SetPower(
+					__instance.Position, newPowered);
+		}
+	}
+	
 
 	// Give users some feedback if placing is blocked by missing
 	// info from the PipeGridManager (applies for all clients)

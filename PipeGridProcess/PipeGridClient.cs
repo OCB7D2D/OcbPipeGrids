@@ -8,23 +8,33 @@ namespace PipeManager
         Vector3i RequestedCustomDesc = Vector3i.invalid;
         Vector3i AcquiredCustomDesc = Vector3i.invalid;
         string CustomDescription = String.Empty;
+        ulong RenewCustomDesc = 0;
 
         internal string GetCustomDescription(Vector3i position, BlockValue bv)
         {
             // Log.Out("Get custom desc {0} vs {1}", position, AcquiredCustomDesc);
             if (AcquiredCustomDesc == position)
             {
+                if (RenewCustomDesc < GameTimer.Instance.ticks)
+                {
+                    RequireCustomDesc(position);
+                }
                 return CustomDescription;
             }
             else if (RequestedCustomDesc != position)
             {
-                var query = new MsgDescriptionQuery();
-                query.Setup(position);
-                RequestedCustomDesc = position;
-                PipeGridInterface.SendToServer(query);
-
+                RequireCustomDesc(position);
             }
             return "Waiting for server";
+        }
+
+        private void RequireCustomDesc(Vector3i position)
+        {
+            var query = new MsgDescriptionQuery();
+            query.Setup(position);
+            RequestedCustomDesc = position;
+            PipeGridInterface.SendToServer(query);
+            RenewCustomDesc = GameTimer.Instance.ticks + 15;
         }
 
         internal void OnDescriptionResponse(MsgDescriptionResponse msg)

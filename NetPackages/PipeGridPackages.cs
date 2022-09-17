@@ -12,5 +12,9 @@
 
     public class NetPkgActionAddIrrigation : NetPkgWorkerQuery<ActionAddIrrigation> { }
     public class NetPkgActionRemoveIrrigation : NetPkgWorkerQuery<ActionRemoveIrrigation> { }
+    public class NetPkgActionAddSource : NetPkgWorkerQuery<ActionAddSource> { }
+    public class NetPkgActionRemoveSource : NetPkgWorkerQuery<ActionRemoveSource> { }
+    public class NetPkgActionAddPump : NetPkgWorkerQuery<ActionAddPump> { }
+    public class NetPkgActionRemovePump : NetPkgWorkerQuery<ActionRemovePump> { }
 
 }

@@ -50,6 +50,10 @@ namespace PipeManager
         public readonly KdTree<int, PipeConnection> Connections = new KdTree<int,
             PipeConnection>(3, new KdTree.Math.IntCubeMath(), AddDuplicateBehavior.Update);
 
+        // Store all powered items in a dictionary to update state
+        public readonly Dictionary<Vector3i, IPoweredNode> IsPowered
+            = new Dictionary<Vector3i, IPoweredNode>();
+
         internal bool TryGetNode(Vector3i position, out PipeConnection neighbour)
             => Connections.TryFindValueAt(KdKey(position), out neighbour);
 
@@ -122,7 +126,18 @@ namespace PipeManager
                 bw.Write(kv.Value.StorageID);
                 // Write can be overridden
                 kv.Value.Write(bw);
+                // Store power state automatically
+                if (kv.Value is IPoweredNode powered)
+                    bw.Write(powered.IsPowered);
             }
+            // bw.Write(IsPowered.Count);
+            // foreach (var kv in IsPowered)
+            // {
+            //     bw.Write(kv.Key.x);
+            //     bw.Write(kv.Key.y);
+            //     bw.Write(kv.Key.z);
+            //     bw.Write(kv.Value);
+            // }
             // bw.Write(Wells.Count);
             // foreach (var kv in Wells)
             // {
@@ -139,8 +154,14 @@ namespace PipeManager
             for (int index = 0; index < nodes; ++index)
             {
                 uint type = br.ReadUInt32();
-                InstantiateItem(type, br);
+                var node = InstantiateItem(type, br);
+                if (node is IPoweredNode powered)
+                {
+                    IsPowered[node.WorldPos] = powered;
+                    powered.IsPowered = br.ReadBoolean();
+                }
             }
+
             // int wells = br.ReadInt32();
             // for (int index = 0; index < wells; ++index)
             // {
@@ -152,8 +173,13 @@ namespace PipeManager
         // Hooks for pipe connections
         //#####################################################################
 
-        internal void RegisterConnection(PipeConnection connection)
-            => Connections.Add(KdKey(connection.WorldPos), connection);
+        internal void RegisterConnection(PipeNode node)
+        {
+            if (node is PipeConnection connection)
+                Connections.Add(KdKey(connection.WorldPos), connection);
+            if (node is IPoweredNode powered)
+                IsPowered.Add(node.WorldPos, powered);
+        }
 
         public void UnregisterConnection(Vector3i position)
         {
@@ -162,7 +188,16 @@ namespace PipeManager
                 node.Grid = null; // Invoke `UpdateGrid`
                 Connections.RemoveAt(KdKey(position));
             }
-
+            if (IsPowered.ContainsKey(position))
+                IsPowered.Remove(position);
+        }
+        public void UpdatePower(Vector3i position, bool powered)
+        {
+            if (IsPowered.TryGetValue(position,
+                out IPoweredNode node))
+            {
+                node.IsPowered = powered;
+            }
         }
 
         //#####################################################################

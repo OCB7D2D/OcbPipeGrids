@@ -76,6 +76,21 @@ namespace PipeManager
             instance = null;
         }
 
+        internal void SetPower(Vector3i position, bool powered)
+        {
+            Log.Warning("Set power now {0} => {1}", position, powered);
+            if (HasServer)
+            {
+                var action = new ActionSetPower();
+                action.Setup(position, powered);
+                Instance.Input.Enqueue(action);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public static void SendToServer(IRemoteQuery query)
         {
             if (HasServer)
