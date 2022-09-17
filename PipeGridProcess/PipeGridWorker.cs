@@ -27,9 +27,22 @@ namespace PipeManager
             return "This is my response";
         }
 
-        public void AnswerToClient(IActionClient response, IActionServer query)
+        public void AnswerToClient(IRemoteResponse response)
         {
-            Output.Enqueue(response);
+            Log.Out("Answer to client {0}", response.RecipientEntityId);
+            if (response.RecipientEntityId == -1)
+            {
+                Output.Enqueue(response);
+            }
+            else
+            {
+                Log.Out("Send package to client");
+                NetPackage pkg = response.CreateNetPackage();
+                ClientInfo client = ConnectionManager.Instance
+                    .Clients.ForEntityId(response.RecipientEntityId);
+                client.SendPackage(pkg);
+            }
+
         }
 
         public void SendToServer(IActionServer action)

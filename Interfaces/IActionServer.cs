@@ -2,7 +2,7 @@
 {
     public interface IActionClient
     {
-        int EntityId { get; }
+        int RecipientEntityId { get; }
         void ProcessOnClient(PipeGridClient client);
     }
 

@@ -66,8 +66,8 @@ namespace PipeManager
                 var query = new MsgConnectorQuery();
                 query.Setup(position); // Two steps
                 RequestedCanConnect = position;
+                Log.Out("Query CanConnect at {0}", query.Position);
                 PipeGridInterface.SendToServer(query);
-                // Log.Out("Require query at {0}", query.Position);
                 return false;
             }
             else

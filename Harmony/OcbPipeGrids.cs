@@ -18,6 +18,8 @@ public class OcbPipeGrids : IModApi
 		harmony.PatchAll(Assembly.GetExecutingAssembly());
 		ModEvents.GameUpdate.RegisterHandler(GameUpdate);
 
+		ReflectionHelpers.FindTypesImplementingBase(typeof(NetPackage), (System.Action<System.Type>)(_type => Log.Out("Package {0} vs {1}", _type.Name, _type)));
+
 		PipeGridManager.RegisterFactory(1, (br) => new PipeConnection(br));
 		PipeGridManager.RegisterFactory(2, (br) => new PipePump(br));
 		PipeGridManager.RegisterFactory(3, (br) => new PipeIrrigation(br));

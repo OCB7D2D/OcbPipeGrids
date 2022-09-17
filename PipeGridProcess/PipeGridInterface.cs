@@ -50,7 +50,7 @@ namespace PipeManager
                 Log.Out("Got a repsonse on main thread");
 
 
-                if (response.EntityId == -1)
+                if (response.RecipientEntityId == -1)
                 {
                     Log.Out("Gotcha for local");
 
@@ -60,7 +60,7 @@ namespace PipeManager
                 else
                 {
                     Log.Out("Send response to client {0}",
-                        response.EntityId);
+                        response.RecipientEntityId);
                 }
                 // ConnectionManager.Instance.Clients.ForEntityId(nameInfoToPlayerId)
 
@@ -84,9 +84,11 @@ namespace PipeManager
             }
             else
             {
+                Log.Out("Send package to server");
                 NetPackage pkg = query.CreateNetPackage();
                 ConnectionManager.Instance.SendToServer(pkg);
             }
         }
+
     }
 }

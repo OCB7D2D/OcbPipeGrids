@@ -9,7 +9,7 @@
         {
             // We should only see these for remote clients
             Log.Out("Process network package to query worker for client {0}", Msg);
-
+            Msg.SenderEntityId = this.Sender.entityId;
             PipeGridInterface.Instance.Input.Enqueue(Msg);
             Msg = default(T); // Consumed and pushed away
             // var response = new MsgConnectorResponse();
@@ -31,6 +31,7 @@
 
         public override void write(PooledBinaryWriter bw)
         {
+            base.write(bw);
             Msg.Write(bw);
         }
 

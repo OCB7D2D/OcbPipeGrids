@@ -9,7 +9,8 @@
             Log.Out("Sending back {0}", Position);
             response.Setup(Position); // Two steps
             response.Description = worker.GetCustomDesc(Position);
-            worker.AnswerToClient(response, this);
+            //worker.SendToClient(response, this);
+            worker.AnswerToClient(response);
         }
         
         protected override void SetupNetPkg(NetPkgDescriptionQuery pkg) => pkg.Setup(this);

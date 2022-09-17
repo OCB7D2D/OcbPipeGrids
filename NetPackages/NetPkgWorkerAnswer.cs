@@ -9,6 +9,9 @@
         {
             // We should only see these on remote clients (no local manager)
             Log.Out("Process network package for worker answer from server to client");
+            // Msg.RecipientEntityId = this.Sender.entityId;
+            PipeGridInterface.Instance.Output.Enqueue(Msg);
+            Msg = default(T); // Consumed and pushed away
         }
 
         public NetPkgWorkerAnswer<T> FromMsg(T msg)
@@ -25,6 +28,7 @@
 
         public override void write(PooledBinaryWriter bw)
         {
+            base.write(bw);
             Msg.Write(bw);
         }
 

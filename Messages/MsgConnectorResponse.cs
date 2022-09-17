@@ -13,15 +13,15 @@
         public override void Read(PooledBinaryReader br)
         {
             base.Read(br);
-            foreach (var nb in NB)
-                nb.read(br);
+            for (int i = 0; i < NB.Length; i++)
+                NB[i].read(br);
         }
 
         public override void Write(PooledBinaryWriter bw)
         {
             base.Write(bw);
-            foreach (var nb in NB)
-                nb.write(bw);
+            for (int i = 0; i < NB.Length; i++)
+                NB[i].write(bw);
         }
 
         protected override void SetupNetPkg(NetPkgConnectorResponse pkg) => pkg.FromMsg(this);
