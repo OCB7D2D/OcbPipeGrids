@@ -39,8 +39,6 @@ namespace PipeManager
 
         internal void OnDescriptionResponse(MsgDescriptionResponse msg)
         {
-            Log.Out("Description came back => {0} -> {1}",
-                msg.Position, msg.Description);
             AcquiredCustomDesc = msg.Position;
             CustomDescription = msg.Description;
         }

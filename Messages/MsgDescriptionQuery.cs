@@ -6,10 +6,10 @@
         public override void ProcessOnServer(PipeGridWorker worker)
         {
             var response = new MsgDescriptionResponse();
-            Log.Out("Sending back {0}", Position);
+            PipeGridManager manager = worker.Manager;
+            response.RecipientEntityId = SenderEntityId;
             response.Setup(Position); // Two steps
             response.Description = worker.GetCustomDesc(Position);
-            //worker.SendToClient(response, this);
             worker.AnswerToClient(response);
         }
         

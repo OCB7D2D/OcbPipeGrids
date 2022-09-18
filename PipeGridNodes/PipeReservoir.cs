@@ -4,7 +4,7 @@ using System.IO;
 
 namespace PipeManager
 {
-    public class PipeReservoir : PipeConnection, IPoweredNode
+    public abstract class PipeReservoir : PipeConnection, IPoweredNode
     {
         public float MaxFillState => 150f;
 
@@ -12,12 +12,12 @@ namespace PipeManager
 
         public override ulong NextTick => 15;
 
-        public override bool BreakDistance => true;
+        // public override bool BreakDistance => true;
 
         public bool IsPowered { get; set; }
 
-        public PipeReservoir(Vector3i position, byte connectMask, BlockValue bv)
-            : base(position, connectMask, bv) { }
+        public PipeReservoir(Vector3i position, BlockValue bv)
+            : base(position, bv) { }
 
         public PipeReservoir(
             BinaryReader br)

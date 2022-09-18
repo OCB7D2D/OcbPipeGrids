@@ -47,13 +47,11 @@ namespace PipeManager
                 // Now for who is that response
                 // For our local player
                 // Or for some remote client
-                Log.Out("Got a repsonse on main thread");
+                // Log.Out("Got a repsonse on main thread");
 
 
                 if (response.RecipientEntityId == -1)
                 {
-                    Log.Out("Gotcha for local");
-
                     response.ProcessOnClient(Client);
 
                 }

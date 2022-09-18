@@ -390,6 +390,29 @@ namespace KdTree
 
 		public int Count { get; private set; }
 
+		public bool ContainsKey(TKey[] point)
+        {
+			var parent = root;
+			int dimension = -1;
+			do
+			{
+				if (parent == null)
+				{
+					return false;
+				}
+				else if (TypeMath.AreEqual(point, parent.Point))
+				{
+					return true;
+				}
+
+				// Keep searching
+				dimension = (dimension + 1) % dimensions;
+				int compare = TypeMath.Compare(point[dimension], parent.Point[dimension]);
+				parent = parent[compare];
+			}
+			while (true);
+		}
+
 		public bool TryFindValueAt(TKey[] point, out TValue value)
 		{
 			var parent = root;

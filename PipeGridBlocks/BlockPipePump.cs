@@ -8,7 +8,7 @@ class BlockPipePump : ImpBlockPipeReservoirPowered
 	public override void CreateGridItem(Vector3i position, BlockValue bv)
 	{
 		var action = new ActionAddPump();
-		action.Setup(position, bv, ConnectMask);
+		action.Setup(position, bv);
 		PipeGridInterface.SendToServer(action);
 	}
 

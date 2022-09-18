@@ -3,15 +3,15 @@ using System.IO;
 
 namespace PipeManager
 {
-    class PipeIrrigation : PipePump, IPoweredNode
+    public class PipeIrrigation : PipePump, IPoweredNode
     {
 
         public override ulong NextTick => 30;
 
         public override uint StorageID => 3;
 
-        public PipeIrrigation(Vector3i position, byte connectMask, BlockValue bv)
-            : base(position, connectMask, bv) { }
+        public PipeIrrigation(Vector3i position, BlockValue bv)
+            : base(position, bv) { }
 
 
         public PipeIrrigation(
@@ -23,7 +23,8 @@ namespace PipeManager
 
         public override string GetCustomDescription()
         {
-            return "PipeIrrigation";
+            return string.Format("Irrigation {0}",
+                base.GetCustomDescription());
         }
 
         protected override void OnManagerAttached(PipeGridManager manager)

@@ -5,12 +5,17 @@ using System.IO;
 namespace PipeManager
 {
 
-    public class PipeConnection : PipeNode
+    public class PipeConnection : PipeBlock<IBlockConnection>
     {
         public override uint StorageID => 1;
-        public virtual byte ConnectMask { get; set; } = 63;
-        public virtual int MaxConnections { get; set; } = 6;
-        public virtual bool BreakDistance => false;
+
+        public byte ConnectMask => BLK?.ConnectMask ?? 63;
+        public int MaxConnections => BLK?.MaxConnections ?? 6;
+        public bool BreakDistance => BLK?.BreakDistance ?? false;
+
+        // public virtual byte ConnectMask { get; set; } = 63;
+        // public virtual int MaxConnections { get; set; } = 6;
+        // public virtual bool BreakDistance => false;
 
         class Creator : IfaceGridNodeFactory
         {
@@ -22,28 +27,25 @@ namespace PipeManager
         // Default constructor
         public PipeConnection(
             Vector3i position,
-            byte connectMask,
             BlockValue bv)
         : base(position, bv)
         {
-            ConnectMask = connectMask;
         }
 
+        // Constructor from save
         public PipeConnection(
             BinaryReader br)
         : base(br)
         {
-            Log.Out("Loading Connection");
         }
 
         // Gather neighbours and register connection
         protected override void OnManagerAttached(PipeGridManager manager)
         {
-            base.OnManagerAttached(manager);
             // First get all our neighbours
             for (int side = 0; side < 6; side++)
             {
-                if (manager.TryGetNode(
+                if (manager.TryGetNode( // TryGetConnection
                     WorldPos + FullRotation.Vector[side],
                     out PipeConnection neighbour))
                 {
@@ -51,7 +53,7 @@ namespace PipeManager
                 }
             }
             // Now register us with manager
-            AddConnection(manager);
+            base.OnManagerAttached(manager);
         }
 
         private PipeGrid _grid;
@@ -77,11 +79,9 @@ namespace PipeManager
             grid?.AddConnection(this);
         }
 
-        public void Cleanup()
+        public override void Cleanup()
         {
             Grid = null;
-            ConnectMask = 63;
-            MaxConnections = 6;
         }
 
         // Use public API below to keep Count in sync
@@ -281,7 +281,7 @@ namespace PipeManager
                 if (!CanConnect(side)) continue;
                 // Try to fetch the node at the given side
                 var offset = FullRotation.Vector[side];
-                if (manager.TryGetNode(WorldPos + offset, out neighbour))
+                if (manager.TryGetNode(WorldPos + offset, out neighbour)) // TryGetConnection
                 {
                     // Check if other one can connect to use
                     byte mirrored = FullRotation.Mirror(side);
@@ -321,7 +321,7 @@ namespace PipeManager
                 source = first;
             }
 
-            manager.RegisterConnection(this);
+            // manager.AddPipeGridNode(this);
 
             if (count == 0)
             {

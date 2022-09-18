@@ -2,12 +2,12 @@
 // All other block will probably want to inherit from this
 using PipeManager;
 
-class BlockPipeConnection : ImpBlockGridNodeUnpowered
+public class BlockPipeConnection : ImpBlockGridNodeUnpowered
 {
 	public override void CreateGridItem(Vector3i position, BlockValue bv) 
 	{
 		var action = new ActionAddConnection();
-		action.Setup(position, bv, ConnectMask);
+		action.Setup(position, bv);
 		PipeGridInterface.SendToServer(action);
 	}
 

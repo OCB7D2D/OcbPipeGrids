@@ -5,7 +5,6 @@
 
         public override void ProcessOnServer(PipeGridWorker worker)
         {
-            Log.Out("Query CanConnect on server {0}", Position);
             var response = new MsgConnectorResponse();
             PipeGridManager manager = worker.Manager;
             response.RecipientEntityId = SenderEntityId;

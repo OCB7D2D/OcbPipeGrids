@@ -78,15 +78,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\NewShapeWireFix.cs" />
+    <Compile Include="Harmony\WaterExchange.cs" />
+    <Compile Include="Interfaces\ISunLight.cs" />
+    <Compile Include="Interfaces\IConnector.cs" />
     <Compile Include="Interfaces\IPoweredNode.cs" />
     <Compile Include="Interfaces\IBlockReservoir.cs" />
     <Compile Include="Messages\ActionSetPower.cs" />
-    <Compile Include="Messages\ActionAddPump.cs" />
-    <Compile Include="Messages\ActionAddSource.cs" />
-    <Compile Include="Messages\ActionAddIrrigation.cs" />
-    <Compile Include="Messages\ActionRemovePump.cs" />
-    <Compile Include="Messages\ActionRemoveSource.cs" />
-    <Compile Include="Messages\ActionRemoveIrrigation.cs" />
+    <Compile Include="Messages\ActionRemoveBlock.cs" />
+    <Compile Include="Messages\ActionAddBlock.cs" />
+    <Compile Include="Messages\ActionUpdateLightLevel.cs" />
+    <Compile Include="Messages\MsgWaterExchangeQuery.cs" />
+    <Compile Include="Messages\MsgWaterExchangeResponse.cs" />
+    <Compile Include="Messages\MsgWaterLevelResponse.cs" />
+    <Compile Include="Messages\MsgWaterLevelQuery.cs" />
     <Compile Include="Messages\MsgConnectorQuery.cs" />
     <Compile Include="Messages\MsgDescriptionResponse.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeConnection.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="PipeGridBlocks\ImpBlockGridNodePowered.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirPowered.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirUnpowered.cs" />
+    <Compile Include="PipeGridNodes\PipeBlock.cs" />
     <Compile Include="PipeGridNodes\PipeSource.cs" />
     <Compile Include="PipeGridNodes\PipePump.cs" />
     <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
@@ -119,8 +124,6 @@
     <Compile Include="KdTreeLib\NearestNeighbourList.cs" />
     <Compile Include="KdTreeLib\PriorityQueue.cs" />
     <Compile Include="Messages\ActionStopManager.cs" />
-    <Compile Include="Messages\ActionRemoveConnection.cs" />
-    <Compile Include="Messages\ActionAddConnection.cs" />
     <Compile Include="Messages\RemotePackage.cs" />
     <Compile Include="PipeGridNodes\PipeConnection.cs" />
     <Compile Include="PipeGridNodes\PipeGrid.cs" />
@@ -155,6 +158,7 @@
     <Compile Include="Utils\SingletonInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\items.xml" />
     <Content Include="Config\blocks.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

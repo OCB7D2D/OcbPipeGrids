@@ -7,9 +7,7 @@ namespace PipeManager
     public abstract class PipeNode : ITickable, IfaceGridNodeManaged
     {
 
-        public BlockValue BV = BlockValue.Air; // Air
-
-        public virtual uint StorageID => 0;
+        public abstract uint StorageID { get; }
 
         public virtual ulong NextTick => 200;
 
@@ -17,15 +15,10 @@ namespace PipeManager
 
         public int[] KdKey => new int[] { WorldPos.x, WorldPos.y, WorldPos.z };
 
-        public int BlockID => BV.type;
-
-        public byte Rotation => BV.rotation;
-
         public PipeGridManager Manager { get; protected set; }
 
         protected PipeNode(Vector3i position, BlockValue bv)
         {
-            BV = bv;
             WorldPos = position;
         }
 
@@ -35,7 +28,6 @@ namespace PipeManager
                 br.ReadInt32(),
                 br.ReadInt32(),
                 br.ReadInt32());
-            BV.rawData = br.ReadUInt32();
         }
 
         public virtual void Write(BinaryWriter bw)
@@ -43,17 +35,7 @@ namespace PipeManager
             bw.Write(WorldPos.x);
             bw.Write(WorldPos.y);
             bw.Write(WorldPos.z);
-            bw.Write(BV.rawData);
         }
-
-        // Base method to get base block instance
-        // We assume it is safe to access Blocks concurrently
-        // Since these should never change once loaded on startup
-        // public Block GetBlock() => Block.list[BlockID];
-
-        // Return block of given type (may return null)
-        public bool GetBlock<T>(out T var) where T : class
-            => (var = Block.list[BlockID] as T) != null;
 
         public PipeNode AttachToManager(PipeGridManager manager)
         {
@@ -67,8 +49,14 @@ namespace PipeManager
             // Log.Out("Tick Node");
         }
 
+        public virtual void Cleanup()
+        {
+
+        }
+
         protected virtual void OnManagerAttached(PipeGridManager manager)
         {
+            manager.AddPipeGridNode(this);
             ulong tick = NextTick;
             if (tick == 0) return;
             manager.Schedule(tick, this);

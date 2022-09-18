@@ -24,19 +24,17 @@ namespace PipeManager
         {
             if (Manager.TryGetNode(position, out var node))
                 return node.GetCustomDescription();
-            return "This is my response";
+            return "Error: PipeNode not found";
         }
 
         public void AnswerToClient(IRemoteResponse response)
         {
-            Log.Out("Answer to client {0}", response.RecipientEntityId);
             if (response.RecipientEntityId == -1)
             {
                 Output.Enqueue(response);
             }
             else
             {
-                Log.Out("Send package to client");
                 NetPackage pkg = response.CreateNetPackage();
                 ClientInfo client = ConnectionManager.Instance
                     .Clients.ForEntityId(response.RecipientEntityId);

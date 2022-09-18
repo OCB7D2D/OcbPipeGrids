@@ -1,6 +1,6 @@
 ﻿namespace PipeManager
 {
-    public abstract class NetPkgWorkerQuery<T> : NetPackage where T : IRemoteQuery, new()
+    public abstract class NetPkgWorkerQuery<T> : NetPackage where T : class, IRemoteQuery, new()
     {
 
         T Msg;

@@ -78,37 +78,4 @@ public abstract class ImpBlockGridNodeUnpowered : Block, IBlockConnection
 			+ "\n" + GetCustomDescription(pos, bv);
 	}
 
-	private BlockActivationCommand[] cmds = new BlockActivationCommand[0]
-	{
-	//new BlockActivationCommand("activate", "electric_switch", true),
-	//new BlockActivationCommand("trigger", "wrench", true)
-	};
-
-    //public override BlockActivationCommand[] GetBlockActivationCommands(WorldBase _world, BlockValue _blockValue, int _clrIdx, Vector3i _blockPos, EntityAlive _entityFocusing)
-    //{
-	//	// Log.Out("GetBlockActivationCommands {0}", DisplayInfo);
-	//	//this.cmds[0].enabled = true;
-	//	//this.cmds[1].enabled = true;
-	//	return this.cmds;
-	//}
-
-	/*
-
-
-
-
-	public override string GetCustomDescription(
-		Vector3i _blockPos,
-		BlockValue _bv)
-	{
-		if (PipeGridManager.Instance.TryGetNode(
-			_blockPos, out PipeGridConnection connection))
-		{
-			return string.Format("Unpowered {0}", connection.Grid);
-		}
-		if (PowerManager.HasInstance)
-			PowerManager.Instance.Update();
-		return base.GetCustomDescription(_blockPos, _bv);
-	}
-	*/
 }

@@ -6,8 +6,8 @@ namespace PipeManager
     {
         public override uint StorageID => 2;
 
-        public PipePump(Vector3i position, byte connectMask, BlockValue bv)
-            : base(position, connectMask, bv) { }
+        public PipePump(Vector3i position, BlockValue bv)
+            : base(position, bv) { }
 
         public PipePump(
             BinaryReader br)

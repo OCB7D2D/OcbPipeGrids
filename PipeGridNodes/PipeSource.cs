@@ -9,8 +9,8 @@ namespace PipeManager
 
         public override ulong NextTick => 10;
 
-        public PipeSource(Vector3i position, byte connectMask, BlockValue bv)
-            : base(position, connectMask, bv) { }
+        public PipeSource(Vector3i position, BlockValue bv)
+            : base(position, bv) { }
 
         public PipeSource(
             BinaryReader br)
