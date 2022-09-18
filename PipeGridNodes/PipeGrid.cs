@@ -28,17 +28,18 @@
         // Invoked from `PipeGrid.UpdateGrid`
         internal void RemoveConnection(PipeConnection connection)
         {
+            Log.Out("Grid has connection removed");
             if (--Count == 0) Manager.RemoveGrid(this);
             // Need to update neighbours for all removals
 
-            for (int side = 0; side < 6; side++)
-            {
-                if (connection[side] != null)
-                {
-                    byte mirror = FullRotation.Mirror(side);
-                    connection[side][mirror] = null;
-                }
-            }
+            //for (int side = 0; side < 6; side++)
+            //{
+            //    if (connection[side] != null)
+            //    {
+            //        byte mirror = FullRotation.Mirror(side);
+            //        connection[side][mirror] = null;
+            //    }
+            //}
 
         }
 

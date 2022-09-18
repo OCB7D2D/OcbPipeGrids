@@ -15,7 +15,7 @@
             var response = new MsgWaterExchangeResponse();
             PipeGridManager manager = worker.Manager;
             response.RecipientEntityId = SenderEntityId;
-            Log.Out("++++ Ask for water {0} at {1}", Factor, Position);
+            Log.Out("++++ Ask for water {0} x {1} at {2}", HoldingCount, Factor, Position);
             response.Setup(Position); // Two steps
             if (manager.TryGetNode(Position, out PipeWell well))
             {

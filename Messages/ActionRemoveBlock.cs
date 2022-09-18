@@ -30,7 +30,10 @@
         where N : NetPackage
     {
         public override void ProcessOnServer(PipeGridWorker worker)
-            => worker.Manager.RemovePipeGridNode(Position);
+        {
+            Log.Out("Process disconnect on server");
+            worker.Manager.RemovePipeGridNode(Position);
+        }
         public override int GetLength() => 42;
     }
 }

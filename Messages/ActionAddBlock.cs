@@ -2,8 +2,7 @@
 {
     public class ActionAddConnection : BaseActionAddBlock<NetPkgActionAddConnection>
     {
-        public override PipeNode CreatePipeNode()
-            => new PipeConnection(Position, BV);
+        public override PipeNode CreatePipeNode() => new PipeConnection(Position, BV);
         protected override void SetupNetPkg(NetPkgActionAddConnection pkg) => pkg.Setup(this);
     }
 

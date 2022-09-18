@@ -52,7 +52,7 @@ namespace PipeManager
 
 					int count = _actionData.invData.holdingEntity.inventory.holdingCount;
 
-					Log.Warning("=============");
+					Log.Warning("============= {0}", count);
 
 					var query = new MsgWaterExchangeQuery();
 					query.Setup(wellMasterPos);

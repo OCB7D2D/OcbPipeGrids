@@ -174,7 +174,7 @@ namespace PipeManager
                 int buckets = (int)Mathf.Ceil(req / factor);
                 buckets = MathUtils.Min(count, buckets);
                 FillWater(buckets * -factor);
-                return -buckets;
+                return buckets;
             }
             else if (factor > 0)
             {

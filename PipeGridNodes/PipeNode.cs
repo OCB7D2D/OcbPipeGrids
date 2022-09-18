@@ -56,6 +56,7 @@ namespace PipeManager
 
         protected virtual void OnManagerAttached(PipeGridManager manager)
         {
+            Log.Out("On Manager Attached");
             manager.AddPipeGridNode(this);
             ulong tick = NextTick;
             if (tick == 0) return;

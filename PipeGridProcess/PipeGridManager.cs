@@ -202,8 +202,13 @@ namespace PipeManager
         {
             if (Nodes.ContainsKey(position))
                 Nodes.Remove(position);
-            if (TryGetNode(position, out PipeConnection node))
+            // Log.Out("1 Remove from pipe connection");
+            if (TryGetConnection(position, out PipeConnection node))
+            {
+                // Log.Out("2 Remove from pipe connection");
+                // node.AddConnection
                 RemoveConnection(position, node);
+            }
             if (Irrigators.ContainsKey(KdKey(position)))
                 RemoveIrrigation(position);
             if (IsPowered.ContainsKey(position))
@@ -219,12 +224,74 @@ namespace PipeManager
 
         private void RemoveConnection(Vector3i position, PipeConnection node)
         {
-            node.Grid = null; // Invoke `UpdateGrid`
-            Connections.RemoveAt(KdKey(position));
+            Log.Out("Removing COnnection from {0}", node.Grid);
+            // node.Grid = null; // Invoke `UpdateGrid`
+            // connection.AddConnection(this);
+            // Connections.RemoveAt(KdKey(position));
+            RemovePiping(position);
         }
+
+        public bool RemovePiping(Vector3i position)
+        {
+            if (Connections.TryFindValueAt(KdKey(position),
+                out PipeConnection connection))
+            {
+                Log.Out("-- FOUND PIPING {0}", connection.Grid);
+                if (connection.Grid != null)
+                {
+                    bool hasNothingYet = true;
+                    // First remove from  the existing grid
+                    // Simply counts and disposes empty grids
+                    connection.Grid = null;
+                    // Update all neighbour connections/grids
+                    for (int side = 0; side < 6; side++)
+                    {
+                        var neighbour = connection[side];
+                        if (neighbour == null) continue;
+                        if (hasNothingYet == true)
+                        {
+                            // Re-check grid if it was cyclic before
+                            if (neighbour.Grid != null && neighbour.Grid.IsCyclic)
+                            {
+                                // Reset cyclic flag and recheck
+                                neighbour.Grid.IsCyclic = false;
+                                // Propagate that change into neighbour tree
+                                neighbour.PropagateGridChange(connection);
+                            }
+                            // Switch branch flag
+                            hasNothingYet = false;
+                        }
+                        else
+                        {
+                            Log.Out("Create new grid -----");
+                            // Assign new grid to current connection
+                            // connection.Grid = new PipeGrid();
+                            // Propagate that change into neighbour tree
+                            neighbour.PropagateGridChange(connection, new PipeGrid(this));
+                        }
+                        // Reset neighbour on the other side of the link
+                        neighbour[FullRotation.Mirror(side)] = null;
+                    }
+                }
+                else
+                {
+                    Log.Warning("Known connection doesn't have grid!?");
+                }
+                // Remove from connections
+                Connections.RemoveAt(KdKey(position));
+                return true;
+            }
+            else
+            {
+                Log.Warning("Removing connection that isn't known!?");
+            }
+            return false;
+        }
+
 
         private bool AddConnection(PipeConnection connection)
         {
+            connection.AddConnection(this);
             return Connections.Add(KdKey(connection.WorldPos), connection);
         }
 
@@ -360,6 +427,7 @@ namespace PipeManager
         {
             var idx = Grids.IndexOf(grid);
             if (idx != -1) return false;
+            Log.Warning("Create a new grid");
             grid.ID = Grids.Count;
             Grids.Add(grid);
             return true;

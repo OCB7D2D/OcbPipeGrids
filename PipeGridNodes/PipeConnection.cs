@@ -75,6 +75,7 @@ namespace PipeManager
         // Overload to add more behavior on grid change
         protected virtual void UpdateGrid(PipeGrid grid)
         {
+            Log.Out("::::::: UpdateGrid {0}", grid);
             Grid?.RemoveConnection(this);
             grid?.AddConnection(this);
         }
@@ -131,12 +132,6 @@ namespace PipeManager
             return CanConnect(side, Rotation);
         }
 
-        public override string ToString()
-        {
-             return string.Format(
-                 "Connection (Grid {0})",
-                 Grid != null ? Grid.ID : -1);
-        }
         private struct Walker
         {
             public byte dist;
@@ -215,7 +210,7 @@ namespace PipeManager
 
         private uint LastWalker { get; set; }
 
-        private void PropagateGridChange(PipeConnection prv, PipeGrid grid = null)
+        public void PropagateGridChange(PipeConnection prv, PipeGrid grid = null)
         {
             if (grid == null) grid = prv?.Grid;
             PropagateThroughGrid(prv, (cur, lst) =>
@@ -228,6 +223,13 @@ namespace PipeManager
         {
             // Enqueue ourself as the starting point
             propagate.Enqueue(new Propagator(this, prv));
+
+            for (byte side = 0; side < 6; side++)
+            {
+                if (Neighbours[side] == null) continue;
+                Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
+            }
+
             // Process until no more tree nodes
             while (propagate.Count > 0)
             {
@@ -269,7 +271,7 @@ namespace PipeManager
         public void AddConnection(PipeGridManager manager)
         {
 
-            Log.Out("  add grid item");
+            Log.Out("+++++++++  add grid item");
 
             PipeConnection neighbour;
 
@@ -281,14 +283,20 @@ namespace PipeManager
                 if (!CanConnect(side)) continue;
                 // Try to fetch the node at the given side
                 var offset = FullRotation.Vector[side];
-                if (manager.TryGetNode(WorldPos + offset, out neighbour)) // TryGetConnection
+                if (manager.TryGetConnection(WorldPos + offset, out neighbour)) // TryGetConnection
                 {
                     // Check if other one can connect to use
                     byte mirrored = FullRotation.Mirror(side);
-                    if (!neighbour.CanConnect(mirrored)) continue;
+                    if (!neighbour.CanConnect(mirrored))
+                    {
+                        Log.Warning("Cannot Connect Damn");
+                        continue;
+                    }
                     // Update the node connectors
                     Neighbours[side] = neighbour;
                     neighbour[mirrored] = this;
+                    Log.Out("  update neighbours {0} {1} => {2}",
+                        side, mirrored, neighbour.CountLongestDistance());
                 }
             }
 
@@ -331,9 +339,20 @@ namespace PipeManager
             }
             else
             {
+                for (byte side = 0; side < 6; side++)
+                {
+                    if (Neighbours[side] == null) continue;
+                    Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
+                }
                 Log.Out("Joining grid");
+                // Grid = Neighbours[source].Grid;
                 PropagateGridChange(Neighbours[source]);
                 Log.Out("Joined grid");
+                for (byte side = 0; side < 6; side++)
+                {
+                    if (Neighbours[side] == null) continue;
+                    Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
+                }
             }
 
         }
@@ -343,6 +362,14 @@ namespace PipeManager
             return string.Format("Part has {0} pipes\nGrid {1}",
                 CountLongestDistance(), Grid);
         }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Connection (Grid {0})",
+                Grid != null ? Grid.ID : -1);
+        }
+    
     }
 
 }
