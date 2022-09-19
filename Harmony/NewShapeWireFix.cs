@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace PipeManager
+namespace NodeManager
 {
 	// Fix issue with powered blocks of e.g. ShapeNew
 	// They do not come with a BlockTransform for obvious reasons

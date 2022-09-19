@@ -1,19 +1,19 @@
 ﻿using System.Collections.Concurrent;
 
-namespace PipeManager
+namespace NodeManager
 {
-    public class PipeGridRunner
+    public class NodeManagerRunner
     {
 
-        private readonly PipeGridWorker Worker;
+        private readonly NodeManagerWorker Worker;
 
         private readonly System.Threading.Thread Thread;
 
-        public PipeGridRunner(
+        public NodeManagerRunner(
             ConcurrentQueue<IActionServer> input,
             ConcurrentQueue<IActionClient> output)
         {
-            Worker = new PipeGridWorker(input, output);
+            Worker = new NodeManagerWorker(input, output);
             Thread = new System.Threading.Thread(
                 new System.Threading.ThreadStart(
                     Worker.ThreadProc));

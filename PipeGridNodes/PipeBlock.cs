@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
     public abstract class PipeBlock<B> : PipeNode where B : class
     {

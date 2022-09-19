@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace PipeManager
+namespace NodeManager
 {
     class WaterExchange
     {
@@ -61,7 +61,7 @@ namespace PipeManager
 					query.NewItemType = newItem.type;
 					query.InventorySlot = _actionData.invData.slotIdx;
 					// _actionData.invData.slotIdx
-					PipeGridInterface.SendToServer(query);
+					NodeManagerInterface.SendToServer(query);
 
 					//int exchanged = filling
 					//	? well.FillWater(wellMasterPos, holding, factor)

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PipeManager
+namespace NodeManager
 {
-    class WorkerManager
+    public partial class NodeManager
+        : GlobalTicker, IPersistable
     {
     }
 }

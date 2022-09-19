@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public interface IRemoteQuery : IActionServer
     {

@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgWaterExchangeResponse : RemoteResponse<NetPkgWaterExchangeResponse>
     {
@@ -14,7 +14,7 @@
         public ItemValue NewItemValue => new ItemValue(NewItemType);
         public ItemValue OldItemValue => new ItemValue(OldItemType);
 
-        public override void ProcessOnClient(PipeGridClient client)
+        public override void ProcessOnClient(NodeManagerClient client)
         {
             World world = GameManager.Instance.World;
             BlockValue bv = world.GetBlock(Position);

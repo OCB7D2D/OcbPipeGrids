@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
 
     public class PipeConnection : PipeBlock<IBlockConnection>
@@ -40,7 +40,7 @@ namespace PipeManager
         }
 
         // Gather neighbours and register connection
-        protected override void OnManagerAttached(PipeGridManager manager)
+        protected override void OnManagerAttached(NodeManager manager)
         {
             // First get all our neighbours
             for (int side = 0; side < 6; side++)
@@ -268,7 +268,7 @@ namespace PipeManager
             propagate.Clear();
         }
 
-        public void AddConnection(PipeGridManager manager)
+        public void AddConnection(NodeManager manager)
         {
 
             manager.UpdateNeighbours(this, Neighbours);

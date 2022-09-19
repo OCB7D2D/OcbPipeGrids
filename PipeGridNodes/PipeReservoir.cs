@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
     public abstract class PipeReservoir : PipeConnection, IPoweredNode
     {
@@ -42,9 +42,9 @@ namespace PipeManager
         List<PipeReservoir> outtake = new List<PipeReservoir>();
         List<PipeReservoir> reservoirs = new List<PipeReservoir>();
 
-        public override void Tick(ulong delta, ConcurrentQueue<IActionClient> output)
+        public override void Tick(ulong delta)
         {
-            base.Tick(delta, output);
+            base.Tick(delta);
 
             if (!IsPowered) return;
             // Prepare variables

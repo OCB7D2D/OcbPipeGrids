@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 using System;
 using UnityEngine;
 
@@ -85,14 +85,14 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered
 		Log.Out("Create Well item");
 		var action = new ActionAddWell();
 		action.Setup(position, bv);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 	public override void RemoveGridItem(Vector3i position)
 	{
 		var action = new ActionRemoveWell();
 		action.Setup(position);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 
@@ -131,7 +131,7 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered
 		query.AddWater += FromWetSurface * weather.GetCurrentWetSurfaceValue();
 		query.AddWater += FromSnowfall * weather.GetCurrentSnowfallValue();
 		query.AddWater += FromRainfall * weather.GetCurrentRainfallValue();
-		PipeGridInterface.SendToServer(query);
+		NodeManagerInterface.SendToServer(query);
 		return true;
 	}
 

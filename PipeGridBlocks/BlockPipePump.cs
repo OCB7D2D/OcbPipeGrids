@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 
 class BlockPipePump : ImpBlockPipeReservoirPowered
 {
@@ -9,14 +9,14 @@ class BlockPipePump : ImpBlockPipeReservoirPowered
 	{
 		var action = new ActionAddPump();
 		action.Setup(position, bv);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 	public override void RemoveGridItem(Vector3i position)
 	{
 		var action = new ActionRemovePump();
 		action.Setup(position);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 }

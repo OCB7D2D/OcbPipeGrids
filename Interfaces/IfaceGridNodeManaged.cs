@@ -1,7 +1,7 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public interface IfaceGridNodeManaged
     {
-        PipeGridManager Manager { get; }
+        NodeManager Manager { get; }
     }
 }

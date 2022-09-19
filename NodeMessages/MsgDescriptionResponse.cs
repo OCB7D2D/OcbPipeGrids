@@ -1,11 +1,11 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgDescriptionResponse : RemoteResponse<NetPkgDescriptionResponse>
     {
 
         public string Description { get; set; }
 
-        public override void ProcessOnClient(PipeGridClient client)
+        public override void ProcessOnClient(NodeManagerClient client)
         {
             client.OnDescriptionResponse(this);
         }

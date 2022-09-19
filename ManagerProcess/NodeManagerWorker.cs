@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace PipeManager
+namespace NodeManager
 {
-    public class PipeGridWorker : IfaceGridNodeManaged
+    public class NodeManagerWorker : IfaceGridNodeManaged
     {
 
         private readonly ConcurrentQueue<IActionServer> Input;
         private readonly ConcurrentQueue<IActionClient> Output;
 
-        public PipeGridManager Manager { get; private set; }
+        public NodeManager Manager { get; private set; }
 
-        public PipeGridWorker(
+        public NodeManagerWorker(
             ConcurrentQueue<IActionServer> queue,
             ConcurrentQueue<IActionClient> output)
         {
             Input = queue; Output = output;
-            Manager = new PipeGridManager();
+            Manager = new NodeManager();
         }
 
         internal string GetCustomDesc(Vector3i position)
@@ -71,7 +70,7 @@ namespace PipeManager
                     msg.ProcessOnServer(this);
                 }
                 if (!Running) break;
-                Manager.DriveTick(Output);
+                Manager.DriveTick();
                 Thread.Sleep(25);
             }
             Manager.SaveData();

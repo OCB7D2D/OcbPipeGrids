@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
 
     public abstract class PipeNode : ITickable, IfaceGridNodeManaged
@@ -15,7 +15,7 @@ namespace PipeManager
 
         public int[] KdKey => new int[] { WorldPos.x, WorldPos.y, WorldPos.z };
 
-        public PipeGridManager Manager { get; protected set; }
+        public NodeManager Manager { get; protected set; }
 
         protected PipeNode(Vector3i position, BlockValue bv)
         {
@@ -37,14 +37,14 @@ namespace PipeManager
             bw.Write(WorldPos.z);
         }
 
-        public PipeNode AttachToManager(PipeGridManager manager)
+        public PipeNode AttachToManager(NodeManager manager)
         {
             Manager = manager;
             OnManagerAttached(manager);
             return this;
         }
 
-        public virtual void Tick(ulong delta, ConcurrentQueue<IActionClient> output)
+        public virtual void Tick(ulong delta)
         {
             // Log.Out("Tick Node");
         }
@@ -54,7 +54,7 @@ namespace PipeManager
 
         }
 
-        protected virtual void OnManagerAttached(PipeGridManager manager)
+        protected virtual void OnManagerAttached(NodeManager manager)
         {
             Log.Out("On Manager Attached");
             manager.AddPipeGridNode(this);

@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
 
     public class ActionRemoveConnection : BaseActionRemoveBlock<NetPkgActionRemoveConnection>
@@ -29,7 +29,7 @@
     public abstract class BaseActionRemoveBlock<N> : RemoteQuery<N>
         where N : NetPackage
     {
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnServer(NodeManagerWorker worker)
         {
             Log.Out("Process disconnect on server");
             worker.Manager.RemovePipeGridNode(Position);

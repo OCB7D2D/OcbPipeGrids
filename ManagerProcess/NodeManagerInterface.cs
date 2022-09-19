@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PipeManager
+namespace NodeManager
 {
-    public class PipeGridInterface : SingletonInstance<PipeGridInterface>
+    public class NodeManagerInterface : SingletonInstance<NodeManagerInterface>
     {
 
         static public bool HasClient => !GameManager.IsDedicatedServer;
@@ -20,13 +20,13 @@ namespace PipeManager
         public ConcurrentQueue<IActionClient> Output
             = new ConcurrentQueue<IActionClient>();
 
-        public PipeGridRunner Runner { get; } = null;
-        public PipeGridClient Client { get; } = null;
+        public NodeManagerRunner Runner { get; } = null;
+        public NodeManagerClient Client { get; } = null;
         
-        public PipeGridInterface()
+        public NodeManagerInterface()
         {
-            if (HasClient) Client = new PipeGridClient(Input, Output);
-            if (HasServer) Runner = new PipeGridRunner(Input, Output);
+            if (HasClient) Client = new NodeManagerClient(Input, Output);
+            if (HasServer) Runner = new NodeManagerRunner(Input, Output);
         }
 
         internal void Init()

@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
 
     // A message from the worker thread
@@ -9,7 +9,7 @@
         public int RecipientEntityId { get; set; } = -1;
 
         // Main function called when message is received on client
-        public abstract void ProcessOnClient(PipeGridClient client);
+        public abstract void ProcessOnClient(NodeManagerClient client);
 
     }
 

@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgWaterExchangeQuery : RemoteQuery<NetPkgWaterExchangeQuery>
     {
@@ -10,10 +10,10 @@
         public int OldItemType { get; set; }
         public int NewItemType { get; set; }
 
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnServer(NodeManagerWorker worker)
         {
             var response = new MsgWaterExchangeResponse();
-            PipeGridManager manager = worker.Manager;
+            NodeManager manager = worker.Manager;
             response.RecipientEntityId = SenderEntityId;
             Log.Out("++++ Ask for water {0} x {1} at {2}", HoldingCount, Factor, Position);
             response.Setup(Position); // Two steps

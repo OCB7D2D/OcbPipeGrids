@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public abstract class NetPkgWorkerAnswer<T> : NetPackage where T : IRemoteResponse, new()
     {
@@ -10,7 +10,7 @@
             // We should only see these on remote clients (no local manager)
             Log.Out("Process network package for worker answer from server to client");
             // Msg.RecipientEntityId = this.Sender.entityId;
-            PipeGridInterface.Instance.Output.Enqueue(Msg);
+            NodeManagerInterface.Instance.Output.Enqueue(Msg);
             Msg = default(T); // Consumed and pushed away
         }
 

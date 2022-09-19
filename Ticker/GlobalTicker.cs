@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ public class GlobalTicker // : SingletonInstance<GlobalTicker>
         return Scheduled.Remove(scheduled);
     }
 
-    public void DriveTick(ConcurrentQueue<IActionClient> output)
+    public void DriveTick()
     {
         int done = 0;
         // ToDo: should be marked volatile!?
@@ -56,7 +56,7 @@ public class GlobalTicker // : SingletonInstance<GlobalTicker>
             if (scheduled.TickTime > tick) break;
             Scheduled.Remove(scheduled);
             ulong delta = tick - scheduled.TickStart;
-            scheduled.Object.Tick(delta, output);
+            scheduled.Object.Tick(delta);
             ulong iv = scheduled.Object.NextTick;
             if (iv != 0) Schedule(iv, scheduled.Object);
             done += 1;

@@ -1,11 +1,11 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgConnectorResponse : RemoteResponse<NetPkgConnectorResponse>
     {
 
         public BlockConnector[] NB = new BlockConnector[6];
 
-        public override void ProcessOnClient(PipeGridClient client)
+        public override void ProcessOnClient(NodeManagerClient client)
         {
             client.OnConnectResponse(this);
         }

@@ -1,11 +1,11 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgWaterLevelResponse : RemoteResponse<NetPkgWaterLevelResponse>
     {
 
         public float WaterLevel { get; set; }
 
-        public override void ProcessOnClient(PipeGridClient client)
+        public override void ProcessOnClient(NodeManagerClient client)
         {
             World world = GameManager.Instance.World;
             BlockValue bv = world.GetBlock(Position);
@@ -17,7 +17,7 @@
                 action.Setup(Position, chunk.GetLight(
                     Position.x, Position.y, Position.z,
                     Chunk.LIGHT_TYPE.SUN));
-                PipeGridInterface.Instance.Input.Enqueue(action);
+                NodeManagerInterface.Instance.Input.Enqueue(action);
             }
         }
 

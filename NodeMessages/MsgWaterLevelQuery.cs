@@ -1,14 +1,14 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgWaterLevelQuery : RemoteQuery<NetPkgWaterLevelQuery>
     {
 
         public float AddWater = 0f;
 
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnServer(NodeManagerWorker worker)
         {
             var response = new MsgWaterLevelResponse();
-            PipeGridManager manager = worker.Manager;
+            NodeManager manager = worker.Manager;
             response.RecipientEntityId = SenderEntityId;
             response.Setup(Position); // Two steps
             if (manager.TryGetNode(Position, out PipeWell well))

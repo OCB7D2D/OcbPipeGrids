@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class ActionUpdateLightLevel : IActionServer
     {
@@ -12,7 +12,7 @@
             LightLevel = light;
         }
 
-        public void ProcessOnServer(PipeGridWorker worker)
+        public void ProcessOnServer(NodeManagerWorker worker)
         {
             if (worker.Manager.TryGetNode(Position, out ISunLight node))
                 node.CurrentSunLight = LightLevel;

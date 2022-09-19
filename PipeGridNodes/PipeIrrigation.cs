@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
     public class PipeIrrigation : PipePump, IPoweredNode
     {
@@ -27,7 +27,7 @@ namespace PipeManager
                 base.GetCustomDescription());
         }
 
-        protected override void OnManagerAttached(PipeGridManager manager)
+        protected override void OnManagerAttached(NodeManager manager)
         {
             base.OnManagerAttached(manager);
             Log.Out("Manager attached to irrigation");
@@ -39,9 +39,9 @@ namespace PipeManager
             Log.Out("Update irrigation grid");
         }
 
-        public override void Tick(ulong delta, ConcurrentQueue<IActionClient> output)
+        public override void Tick(ulong delta)
         {
-            base.Tick(delta, output);
+            base.Tick(delta);
             Log.Warning("Tick irrigation");
         }
 

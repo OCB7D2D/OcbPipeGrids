@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 
 class BlockPipeIrrigation : ImpBlockGridNodePowered
 {
@@ -7,14 +7,14 @@ class BlockPipeIrrigation : ImpBlockGridNodePowered
 	{
 		var action = new ActionAddIrrigation();
 		action.Setup(position, bv);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 	public override void RemoveGridItem(Vector3i position)
 	{
 		var action = new ActionRemoveIrrigation();
 		action.Setup(position);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 }

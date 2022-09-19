@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
 
     public class PipeGrid : IfaceGridNodeManaged
@@ -8,9 +8,9 @@
 
         public bool HasSource { get; protected set; }
 
-        public PipeGridManager Manager { get; protected set; }
+        public NodeManager Manager { get; protected set; }
 
-        public PipeGrid(PipeGridManager manager)
+        public PipeGrid(NodeManager manager)
         {
             Manager = manager;
         }

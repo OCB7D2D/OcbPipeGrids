@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
     public class PipePump : PipeReservoir, IPoweredNode
     {

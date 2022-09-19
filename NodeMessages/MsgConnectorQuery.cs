@@ -1,12 +1,12 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class MsgConnectorQuery : RemoteQuery<NetPkgConnectorQuery>
     {
 
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnServer(NodeManagerWorker worker)
         {
             var response = new MsgConnectorResponse();
-            PipeGridManager manager = worker.Manager;
+            NodeManager manager = worker.Manager;
             response.RecipientEntityId = SenderEntityId;
             response.Setup(Position); // Two steps
             manager.GetNeighbours(Position, ref response.NB);

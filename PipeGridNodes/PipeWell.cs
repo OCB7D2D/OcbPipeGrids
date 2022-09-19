@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace PipeManager
+namespace NodeManager
 {
     public class PipeWell : PipeBlock<BlockPipeWell>, ISunLight
     {
@@ -71,14 +71,16 @@ namespace PipeManager
         {
             Irrigators.Remove(irrigation);
         }
-        protected override void OnManagerAttached(PipeGridManager manager)
+        protected override void OnManagerAttached(NodeManager manager)
         {
             base.OnManagerAttached(manager);
+            // Manager?.RemoveWell(WorldPos);
+            // manager.AddWell(this);
         }
 
-        public override void Tick(ulong delta, ConcurrentQueue<IActionClient> output)
+        public override void Tick(ulong delta)
         {
-            base.Tick(delta, output);
+            base.Tick(delta);
 
             // Log.Out("Ticked the well");
             if (WaterAvailable >= MaxWaterLevel) return;

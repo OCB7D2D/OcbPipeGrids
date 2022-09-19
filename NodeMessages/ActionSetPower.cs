@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class ActionSetPower : IActionServer
     {
@@ -14,7 +14,7 @@
             IsPowered = powered;
         }
 
-        public void ProcessOnServer(PipeGridWorker worker)
+        public void ProcessOnServer(NodeManagerWorker worker)
         {
             worker.Manager.UpdatePower(Position, IsPowered);
             Log.Out("Server got new powered {0} => {1}",

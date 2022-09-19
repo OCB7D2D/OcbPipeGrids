@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public abstract class NetPkgWorkerQuery<T> : NetPackage where T : class, IRemoteQuery, new()
     {
@@ -10,7 +10,7 @@
             // We should only see these for remote clients
             Log.Out("Process network package to query worker for client {0}", Msg);
             Msg.SenderEntityId = this.Sender.entityId;
-            PipeGridInterface.Instance.Input.Enqueue(Msg);
+            NodeManagerInterface.Instance.Input.Enqueue(Msg);
             Msg = default(T); // Consumed and pushed away
             // var response = new MsgConnectorResponse();
             // worker.AnswerToClient(response, this);

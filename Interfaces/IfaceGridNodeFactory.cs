@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 using System.IO;
 
 public interface IfaceGridNodeFactory

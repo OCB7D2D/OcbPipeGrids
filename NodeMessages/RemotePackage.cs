@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public abstract class RemotePackage<T> where T : NetPackage
     {

@@ -120,6 +120,12 @@
     <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
     <Compile Include="PipeGridNodes\PipeReservoir.cs" />
     <Compile Include="PipeGridNodes\PipeWell.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerIrrigation.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerGrids.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerPowered.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerWells.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerPlantation.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerConnections.cs" />
     <Compile Include="Utils\IPersistable.cs" />
     <Compile Include="Interfaces\IActionClient.cs" />
     <Compile Include="Interfaces\IActionServer.cs" />
@@ -144,7 +150,7 @@
     <Compile Include="NetPackages\NetPkgWorkerQuery.cs" />
     <Compile Include="Messages\RemoteResponse.cs" />
     <Compile Include="PipeGridNodes\PipeNode.cs" />
-    <Compile Include="PipeGridProcess\PipeGridManager.cs" />
+    <Compile Include="PipeGridManager\PipeGridManagerBase.cs" />
     <Compile Include="PipeGridProcess\PipeGridRunner.cs" />
     <Compile Include="PipeGridProcess\PipeGridWorker.cs" />
     <Compile Include="Messages\RemoteQuery.cs" />

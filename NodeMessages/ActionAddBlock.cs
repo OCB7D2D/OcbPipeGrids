@@ -1,4 +1,4 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public class ActionAddConnection : BaseActionAddBlock<NetPkgActionAddConnection>
     {
@@ -37,7 +37,7 @@
 
         public abstract PipeNode CreatePipeNode();
 
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnServer(NodeManagerWorker worker)
             => CreatePipeNode().AttachToManager(worker.Manager);
 
         public void Setup(Vector3i position, BlockValue bv)

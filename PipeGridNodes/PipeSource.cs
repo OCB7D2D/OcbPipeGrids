@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 
-namespace PipeManager
+namespace NodeManager
 {
     public class PipeSource : PipePump, IPoweredNode
     {
@@ -24,7 +24,7 @@ namespace PipeManager
             return "PipeSource -> " + base.GetCustomDescription();
         }
 
-        public override void Tick(ulong delta, ConcurrentQueue<IActionClient> output)
+        public override void Tick(ulong delta)
         {
             Log.Out("Tick source {0}", IsPowered);
             if (IsPowered)
@@ -32,7 +32,7 @@ namespace PipeManager
                 // Add some water
                 FillState += 0.1f * delta;
                 // Call base pump tick
-                base.Tick(delta, output);
+                base.Tick(delta);
                 //base.Tick(world, delta);
                 // Only reduce to max amount after pumping
                 FillState = System.Math.Min(MaxFillState, FillState);

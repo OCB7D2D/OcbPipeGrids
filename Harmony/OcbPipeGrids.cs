@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using PipeManager;
+using NodeManager;
 
 public class OcbPipeGrids : IModApi
 {
@@ -20,19 +20,19 @@ public class OcbPipeGrids : IModApi
 
 		ReflectionHelpers.FindTypesImplementingBase(typeof(NetPackage), (System.Action<System.Type>)(_type => Log.Out("Package {0} vs {1}", _type.Name, _type)));
 
-		PipeGridManager.RegisterFactory(1, (br) => new PipeConnection(br));
-		PipeGridManager.RegisterFactory(2, (br) => new PipePump(br));
-		PipeGridManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
-		PipeGridManager.RegisterFactory(4, (br) => new PipeSource(br));
+        NodeManager.NodeManager.RegisterFactory(1, (br) => new PipeConnection(br));
+        NodeManager.NodeManager.RegisterFactory(2, (br) => new PipePump(br));
+        NodeManager.NodeManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
+        NodeManager.NodeManager.RegisterFactory(4, (br) => new PipeSource(br));
 
-		PipeGridManager.RegisterFactory(9, (br) => new PipeWell(br));
+        NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
 
 	}
 
 	private void GameUpdate()
     {
-		if (!PipeGridInterface.HasInstance) return;
-		PipeGridInterface.Instance.Update();
+		if (!NodeManagerInterface.HasInstance) return;
+		NodeManagerInterface.Instance.Update();
     }
 
 	// Hook into `VehicleManager.Init`
@@ -45,7 +45,7 @@ public class OcbPipeGrids : IModApi
 			// Create the instance and start it
 			// Will make sure to only create server
 			// and client parts only when necessary 
-			PipeGridInterface.Instance.Init();
+			NodeManagerInterface.Instance.Init();
 		}
 	}
 
@@ -58,9 +58,9 @@ public class OcbPipeGrids : IModApi
 	{
         static void Prefix()
         {
-			if (!PipeGridInterface.HasInstance) return;
+			if (!NodeManagerInterface.HasInstance) return;
 			if (ConnectionManager.Instance.IsServer)
-				PipeGridInterface.Instance.Cleanup();
+				NodeManagerInterface.Instance.Cleanup();
         }
     }
 
@@ -73,11 +73,11 @@ public class OcbPipeGrids : IModApi
 			bool newPowered)
 		{
 			Log.Warning("Set power1 now {0} => {1}", __instance.Position, newPowered);
-			if (!PipeGridInterface.HasInstance) return;
-			if (!PipeGridInterface.HasServer) return;
+			if (!NodeManagerInterface.HasInstance) return;
+			if (!NodeManagerInterface.HasServer) return;
 			var action = new ActionSetPower();
 			action.Setup(__instance.Position, newPowered);
-			PipeGridInterface.Instance.Input.Enqueue(action);
+			NodeManagerInterface.Instance.Input.Enqueue(action);
 		}
 	}
 	
@@ -90,7 +90,7 @@ public class OcbPipeGrids : IModApi
 	{
 		public static void Postfix(Vector3i _focusBlockPos, Transform ___transformFocusCubePrefab)
 		{
-			if (!PipeGridInterface.Instance.Client.HasPendingCanConnect(_focusBlockPos)) return;
+			if (!NodeManagerInterface.Instance.Client.HasPendingCanConnect(_focusBlockPos)) return;
 			foreach (Renderer child in ___transformFocusCubePrefab.GetComponentsInChildren<Renderer>())
 				child.material.SetColor("_Color", Color.magenta);
 		}

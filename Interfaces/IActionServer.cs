@@ -1,9 +1,9 @@
-﻿namespace PipeManager
+﻿namespace NodeManager
 {
     public interface IActionClient
     {
         int RecipientEntityId { get; }
-        void ProcessOnClient(PipeGridClient client);
+        void ProcessOnClient(NodeManagerClient client);
     }
 
 }

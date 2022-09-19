@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace PipeManager
+namespace NodeManager
 {
-    public class PipeGridClient
+    public class NodeManagerClient
     {
 
         ConcurrentQueue<IActionServer> Input;
@@ -14,7 +14,7 @@ namespace PipeManager
         string CustomDescription = String.Empty;
         ulong RenewCustomDesc = 0;
 
-        public PipeGridClient(
+        public NodeManagerClient(
             ConcurrentQueue<IActionServer> input,
             ConcurrentQueue<IActionClient> output)
         {
@@ -45,7 +45,7 @@ namespace PipeManager
             var query = new MsgDescriptionQuery();
             query.Setup(position);
             RequestedCustomDesc = position;
-            PipeGridInterface.SendToServer(query);
+            NodeManagerInterface.SendToServer(query);
             RenewCustomDesc = GameTimer.Instance.ticks + 15;
         }
 
@@ -87,7 +87,7 @@ namespace PipeManager
                 query.Setup(position); // Two steps
                 RequestedCanConnect = position;
                 Log.Out("Query CanConnect at {0}", query.Position);
-                PipeGridInterface.SendToServer(query);
+                NodeManagerInterface.SendToServer(query);
                 return false;
             }
             else

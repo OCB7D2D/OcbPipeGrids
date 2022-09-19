@@ -1,4 +1,4 @@
-﻿using PipeManager;
+﻿using NodeManager;
 
 public abstract class ImpBlockGridNodePowered : BlockPowered, IBlockConnection
 {
@@ -34,7 +34,7 @@ public abstract class ImpBlockGridNodePowered : BlockPowered, IBlockConnection
 		Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockAdded(world, chunk, pos, bv);
-		if (!PipeGridInterface.HasServer) return;
+		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
 
@@ -43,7 +43,7 @@ public abstract class ImpBlockGridNodePowered : BlockPowered, IBlockConnection
 		Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockRemoved(world, chunk, pos, bv);
-		if (!PipeGridInterface.HasServer) return;
+		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
 
@@ -59,13 +59,13 @@ public abstract class ImpBlockGridNodePowered : BlockPowered, IBlockConnection
 	{
 		if (bv.ischild) return false; // ToDo: add more fancy code for multidims?
 		return base.CanPlaceBlockAt(world, clrIdx, pos, bv, omitCollideCheck)
-			&& PipeGridInterface.Instance.Client.CanConnect(pos, BCC.Set(bv, this));
+			&& NodeManagerInterface.Instance.Client.CanConnect(pos, BCC.Set(bv, this));
 	}
 
 	public override string GetCustomDescription(
 		Vector3i pos, BlockValue bv)
 	{
-		return PipeGridInterface.Instance.Client
+		return NodeManagerInterface.Instance.Client
 			.GetCustomDescription(pos, bv);
 	}
 

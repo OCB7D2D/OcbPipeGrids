@@ -1,6 +1,6 @@
 ﻿// Basic connection block for pipe grids, e.g. simple pipes
 // All other block will probably want to inherit from this
-using PipeManager;
+using NodeManager;
 
 public class BlockPipeConnection : ImpBlockGridNodeUnpowered
 {
@@ -8,14 +8,14 @@ public class BlockPipeConnection : ImpBlockGridNodeUnpowered
 	{
 		var action = new ActionAddConnection();
 		action.Setup(position, bv);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 	public override void RemoveGridItem(Vector3i position)
     {
 		var action = new ActionRemoveConnection();
 		action.Setup(position);
-		PipeGridInterface.SendToServer(action);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 }
