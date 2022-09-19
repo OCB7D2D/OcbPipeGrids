@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
 
 namespace PipeManager
 {
     public class PipeGridClient
     {
 
+        ConcurrentQueue<IActionServer> Input;
+        ConcurrentQueue<IActionClient> Output;
+
         Vector3i RequestedCustomDesc = Vector3i.invalid;
         Vector3i AcquiredCustomDesc = Vector3i.invalid;
         string CustomDescription = String.Empty;
         ulong RenewCustomDesc = 0;
+
+        public PipeGridClient(
+            ConcurrentQueue<IActionServer> input,
+            ConcurrentQueue<IActionClient> output)
+        {
+            Input = input;
+            Output = output;
+        }
 
         internal string GetCustomDescription(Vector3i position, BlockValue bv)
         {

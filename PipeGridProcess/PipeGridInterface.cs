@@ -23,13 +23,10 @@ namespace PipeManager
         public PipeGridRunner Runner { get; } = null;
         public PipeGridClient Client { get; } = null;
         
-        // public IfacePipeGridAPI API { get; }
-
         public PipeGridInterface()
         {
-            if (HasClient) Client = new PipeGridClient();
+            if (HasClient) Client = new PipeGridClient(Input, Output);
             if (HasServer) Runner = new PipeGridRunner(Input, Output);
-            // API = Client;
         }
 
         internal void Init()
@@ -44,12 +41,6 @@ namespace PipeManager
             while (Output.TryDequeue(
                 out IActionClient response))
             {
-                // Now for who is that response
-                // For our local player
-                // Or for some remote client
-                // Log.Out("Got a repsonse on main thread");
-
-
                 if (response.RecipientEntityId == -1)
                 {
                     response.ProcessOnClient(Client);
@@ -57,7 +48,7 @@ namespace PipeManager
                 }
                 else
                 {
-                    Log.Out("Send response to client {0}",
+                    Log.Out("?????? Send response to client {0}",
                         response.RecipientEntityId);
                 }
                 // ConnectionManager.Instance.Clients.ForEntityId(nameInfoToPlayerId)
@@ -72,21 +63,6 @@ namespace PipeManager
             if (HasServer) Runner.Stop();
             // Client.Cleanup();
             instance = null;
-        }
-
-        internal void SetPower(Vector3i position, bool powered)
-        {
-            Log.Warning("Set power now {0} => {1}", position, powered);
-            if (HasServer)
-            {
-                var action = new ActionSetPower();
-                action.Setup(position, powered);
-                Instance.Input.Enqueue(action);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
         }
 
         public static void SendToServer(IRemoteQuery query)

@@ -1,82 +1,42 @@
-﻿namespace KdTree
+﻿namespace KdTree3
 {
-    public struct HyperRect<T>
+
+	public partial class KdTree<TMetric>
+		where TMetric : IMetric
 	{
-		private T[] minPoint;
-		public T[] MinPoint
+		public struct HyperRect
 		{
-			get
-			{
-				return minPoint;
-			}
-			set
-			{
-				minPoint = new T[value.Length];
-				value.CopyTo(minPoint, 0);
-			}
-		}
+			public Vector3i MinPoint;
+			public Vector3i MaxPoint;
 
-		private T[] maxPoint;
-		public T[] MaxPoint
-		{
-			get
+			public HyperRect(Vector3i minPoint, Vector3i maxPoint)
 			{
-				return maxPoint;
-			}
-			set
-			{
-				maxPoint = new T[value.Length];
-				value.CopyTo(maxPoint, 0);
-			}
-		}
-
-		public static HyperRect<T> Infinite(int dimensions, ITypeMath<T> math)
-		{
-            var rect = new HyperRect<T>
-            {
-                MinPoint = new T[dimensions],
-                MaxPoint = new T[dimensions]
-            };
-
-            for (var dimension = 0; dimension < dimensions; dimension++)
-			{
-				rect.MinPoint[dimension] = math.NegativeInfinity;
-				rect.MaxPoint[dimension] = math.PositiveInfinity;
+				MinPoint = minPoint;
+				MaxPoint = maxPoint;
 			}
 
-			return rect;
-		}
-
-		public T[] GetClosestPoint(T[] toPoint, ITypeMath<T> math)
-		{
-			T[] closest = new T[toPoint.Length];
-
-			for (var dimension = 0; dimension < toPoint.Length; dimension++)
+			static HyperRect()
 			{
-				if (math.Compare(minPoint[dimension], toPoint[dimension]) > 0)
+				Infinite = new HyperRect()
 				{
-					closest[dimension] = minPoint[dimension];
-				}
-				else if (math.Compare(maxPoint[dimension], toPoint[dimension]) < 0)
-				{
-					closest[dimension] = maxPoint[dimension];
-				}
-				else
-					// Point is within rectangle, at least on this dimension
-					closest[dimension] = toPoint[dimension];
+					MinPoint = new Vector3i(int.MinValue, int.MinValue, int.MinValue),
+					MaxPoint = new Vector3i(int.MaxValue, int.MaxValue, int.MaxValue)
+				};
 			}
 
-			return closest;
+			public static readonly HyperRect Infinite;
+
+			public void GetClosestPoint(Vector3i to, ref Vector3i result)
+			{
+				result.x = MinPoint.x > to.x ? MinPoint.x :
+					MaxPoint.x < to.x ? MaxPoint.x : to.x;
+				result.y = MinPoint.y > to.y ? MinPoint.y :
+					MaxPoint.y < to.y ? MaxPoint.y : to.y;
+				result.z = MinPoint.z > to.z ? MinPoint.z :
+					MaxPoint.z < to.z ? MaxPoint.z : to.z;
+			}
 		}
 
-		public HyperRect<T> Clone()
-		{
-            var rect = new HyperRect<T>
-            {
-                MinPoint = MinPoint,
-                MaxPoint = MaxPoint
-            };
-            return rect;
-		}
 	}
+
 }

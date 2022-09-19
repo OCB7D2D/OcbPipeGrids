@@ -1,6 +1,6 @@
 ﻿// Process running in a separate thread
 // Coded so it could also run on main thread
-using KdTree;
+using KdTree3;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,21 +52,22 @@ namespace PipeManager
         // Use a KD-Tree to optimize finding nearest items
         // ToDo: benchmark exact lookup vs using a hash table
         // Note: pretty sure spatial queries will be faster though
-        public readonly KdTree<int, PipeConnection> Connections = new KdTree<int,
-            PipeConnection>(3, new KdTree.Math.IntCubeMath(), AddDuplicateBehavior.Update);
+        // Note: might not be true for a small radial searches
+        //public readonly KdTree<int, PipeConnection> Connections = new KdTree<int,
+        //    PipeConnection>(3, new KdTree.Math.IntCubeMath(), AddDuplicateBehavior.Update);
 
-        public readonly KdTree<int, PipeWell> Wells = new KdTree<int,
-            PipeWell>(3, new KdTree.Math.IntCubeMath(), AddDuplicateBehavior.Update);
+        public readonly KdTree<MetricChebyshev>.Vector3i<PipeWell> Wells =
+            new KdTree<MetricChebyshev>.Vector3i<PipeWell>(AddDuplicateBehavior.Update);
 
-        public readonly KdTree<int, PipeIrrigation> Irrigators = new KdTree<int,
-            PipeIrrigation>(3, new KdTree.Math.IntCubeMath(), AddDuplicateBehavior.Update);
+        public readonly KdTree<MetricChebyshev>.Vector3i<PipeIrrigation> Irrigators =
+            new KdTree<MetricChebyshev>.Vector3i<PipeIrrigation>(AddDuplicateBehavior.Update);
 
         // Store all powered items in a dictionary to update state
         public readonly Dictionary<Vector3i, IPoweredNode> IsPowered
             = new Dictionary<Vector3i, IPoweredNode>();
 
-        internal bool TryGetConnection(Vector3i position, out PipeConnection connection)
-            => Connections.TryFindValueAt(KdKey(position), out connection);
+        //internal bool TryGetConnection(Vector3i position, out PipeConnection connection)
+        //    => Connections.TryFindValueAt(KdKey(position), out connection);
 
         internal bool TryGetNode(Vector3i position, out PipeNode node)
             => Nodes.TryGetValue(position, out node);
@@ -91,7 +92,7 @@ namespace PipeManager
             // Persister.SaveSynchronous();
             foreach (var kv in Nodes)
                 kv.Value.Cleanup();
-            Connections.Clear();
+            //Connections.Clear();
             Nodes.Clear();
             Wells.Clear();
             Grids.Clear();
@@ -111,6 +112,7 @@ namespace PipeManager
         }
 
         // Path to persist the data to (filename)
+        // ToDo: check if this is thread-safe enough!?
         public string GetStoragePath() => string.Format(
             "{0}/pipe-grids.dat", GameIO.GetSaveGameDir());
         public string GetBackupPath() => string.Format(
@@ -163,26 +165,20 @@ namespace PipeManager
 
         public virtual void Read(BinaryReader br)
         {
-            // Connections.Clear();
             var version = br.ReadByte();
             int nodes = br.ReadInt32();
-            Log.Out("Reading X noides {0}", nodes);
+            Log.Out("Reading X nodes {0}", nodes);
             for (int index = 0; index < nodes; ++index)
             {
                 uint type = br.ReadUInt32();
                 var node = InstantiateItem(type, br);
+                // Restore power state automatically
                 if (node is IPoweredNode powered)
                 {
                     IsPowered[node.WorldPos] = powered;
                     powered.IsPowered = br.ReadBoolean();
                 }
             }
-
-            // int wells = br.ReadInt32();
-            // for (int index = 0; index < wells; ++index)
-            // {
-            //     AddWell(new PipeGridWell(br));
-            // }
         }
 
         //#####################################################################
@@ -200,21 +196,21 @@ namespace PipeManager
 
         public void RemovePipeGridNode(Vector3i position)
         {
-            if (Nodes.ContainsKey(position))
-                Nodes.Remove(position);
             // Log.Out("1 Remove from pipe connection");
-            if (TryGetConnection(position, out PipeConnection node))
+            if (TryGetNode(position, out PipeConnection node))
             {
                 // Log.Out("2 Remove from pipe connection");
                 // node.AddConnection
                 RemoveConnection(position, node);
             }
-            if (Irrigators.ContainsKey(KdKey(position)))
+            if (Irrigators.ContainsKey(position))
                 RemoveIrrigation(position);
             if (IsPowered.ContainsKey(position))
                 RemovePowered(position);
-            if (Wells.ContainsKey(KdKey(position)))
+            if (Wells.ContainsKey(position))
                 RemoveWell(position);
+            if (Nodes.ContainsKey(position))
+                Nodes.Remove(position);
         }
 
         private bool RemovePowered(Vector3i position)
@@ -222,19 +218,16 @@ namespace PipeManager
             return IsPowered.Remove(position);
         }
 
-        private void RemoveConnection(Vector3i position, PipeConnection node)
+        private bool RemoveConnection(Vector3i position, PipeConnection node)
         {
             Log.Out("Removing COnnection from {0}", node.Grid);
             // node.Grid = null; // Invoke `UpdateGrid`
             // connection.AddConnection(this);
             // Connections.RemoveAt(KdKey(position));
-            RemovePiping(position);
-        }
-
-        public bool RemovePiping(Vector3i position)
-        {
-            if (Connections.TryFindValueAt(KdKey(position),
-                out PipeConnection connection))
+            if (TryGetNode(position, out PipeConnection connection))
+                // Log.Warning("Found the node from nodes array");
+            //if (Connections.TryFindValueAt(KdKey(position),
+            //    out PipeConnection connection))
             {
                 Log.Out("-- FOUND PIPING {0}", connection.Grid);
                 if (connection.Grid != null)
@@ -278,7 +271,7 @@ namespace PipeManager
                     Log.Warning("Known connection doesn't have grid!?");
                 }
                 // Remove from connections
-                Connections.RemoveAt(KdKey(position));
+                //Connections.RemoveAt(KdKey(position));
                 return true;
             }
             else
@@ -292,7 +285,7 @@ namespace PipeManager
         private bool AddConnection(PipeConnection connection)
         {
             connection.AddConnection(this);
-            return Connections.Add(KdKey(connection.WorldPos), connection);
+            return true; // Connections.Add(KdKey(connection.WorldPos), connection);
         }
 
         private void AddPowered(IPoweredNode powered)
@@ -304,34 +297,34 @@ namespace PipeManager
 
         private void AddIrrigation(PipeIrrigation irrigation)
         {
-            Irrigators.Add(KdKey(irrigation.WorldPos), irrigation);
+            Irrigators.Add(irrigation.WorldPos, irrigation);
             // Search for existing wells in reach
             var results = Wells.RadialSearch(
-                KdKey(irrigation.WorldPos), 20, NbWellCache);
+                irrigation.WorldPos, 20 /*, NbWellCache */);
             for (int i = 0; i < results.Length; i += 1)
-                results[i].Value.AddIrrigation(irrigation);
+                results[i].Item2.AddIrrigation(irrigation);
         }
 
         private void RemoveIrrigation(Vector3i position)
         {
-            Irrigators.RemoveAt(KdKey(position));
+            Irrigators.RemoveAt(position);
         }
 
-        private static readonly NearestNeighbourList<KdTreeNode<int, PipeWell>, int> NbWellCache
-            = new NearestNeighbourList<KdTreeNode<int, PipeWell>, int>(new KdTree.Math.IntegerMath());
-        private static readonly NearestNeighbourList<KdTreeNode<int, PipeIrrigation>, int> NbIrrigatorCache
-            = new NearestNeighbourList<KdTreeNode<int, PipeIrrigation>, int>(new KdTree.Math.IntegerMath());
+        private static readonly NearestNeighbourList<PipeWell> NbWellCache
+            = new NearestNeighbourList<PipeWell>();
+        private static readonly NearestNeighbourList<PipeIrrigation> NbIrrigatorCache
+            = new NearestNeighbourList<PipeIrrigation>();
 
         public PipeWell AddWell(PipeWell well)
         {
             Log.Warning("========= ADDWELL");
-            Wells.Add(KdKey(well.WorldPos), well);
+            Wells.Add(well.WorldPos, well);
             // Search for output to fill up the well
             var results = Irrigators.RadialSearch(
-                KdKey(well.WorldPos), 20, NbIrrigatorCache);
+                well.WorldPos, 20 /*, NbIrrigatorCache*/);
             for (int i = 0; i < results.Length; i += 1)
             {
-                well.AddIrrigation(results[i].Value);
+                well.AddIrrigation(results[i].Item2);
             }
             //foreach (var output in Find<PipeGridOutput>(
             //    well.WorldPos, OutputArea, OutputHeight))
@@ -374,17 +367,17 @@ namespace PipeManager
 
         public bool RemoveWell(Vector3i position)
         {
-            if (Wells.TryFindValueAt(KdKey(position),
+            if (Wells.TryFindValueAt(position,
                 out PipeWell well))
             {
                 // Search for output to fill up the well
                 var results = Irrigators.RadialSearch(
-                KdKey(position), 20, NbIrrigatorCache);
+                    position, 20 /*, NbIrrigatorCache */);
                 //for (int i = 0; i < results.Length; i += 1)
                 //{
                 //    well.RemoveIrrigation(results[i].Value);
                 //}
-                Wells.RemoveAt(KdKey(position));
+                Wells.RemoveAt(position);
                 return true;
             }
 
@@ -447,23 +440,74 @@ namespace PipeManager
         }
 
 
-        private static readonly NearestNeighbourList<KdTreeNode<int, PipeConnection>, int> NbCache
-            = new NearestNeighbourList<KdTreeNode<int, PipeConnection>, int>(new KdTree.Math.IntegerMath());
+        // private static readonly NearestNeighbourList<KdTreeNode<int, PipeConnection>, int> NbCache
+        //     = new NearestNeighbourList<KdTreeNode<int, PipeConnection>, int>(new KdTree.Math.IntegerMath());
 
-        public byte GetNeighbours(Vector3i position, ref BlockConnector[] NB)
+        public byte GetNeighbours(Vector3i position, ref BlockConnector[] Neighbours)
         {
             byte count = 0;
-            NbCache.Clear();
-            for (int i = 0; i < 6; i += 1) NB[i].Reset();
-            if (NB.Length != 6) throw new ArgumentException("NB size mismatch");
-            // ToDo: Can we optimize the math to have true radial and cubic searches?
-            foreach (var node in Connections.RadialSearch(KdKey(position), 1, NbCache))
+            //NbCache.Clear();
+            // Collect neighbours from existing blocks/connections
+            for (byte side = 0; side < 6; side++)
             {
-                Vector3i delta = node.Value.WorldPos - position;
-                if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z != 1) continue;
-                NB[FullRotation.VectorToSide(delta)].Set(node.Value);
-                count += 1;
+                Neighbours[side].Reset();
+                // Try to fetch the node at the given side
+                var offset = FullRotation.Vector[side];
+                if (TryGetNode(position + offset,
+                    out PipeConnection neighbour))
+                {
+                    Neighbours[side].Set(neighbour);
+                    count += 1;
+                }
             }
+            //for (int i = 0; i < 6; i += 1) NB[i].Reset();
+            //if (NB.Length != 6) throw new ArgumentException("NB size mismatch");
+            //// ToDo: Can we optimize the math to have true radial and cubic searches?
+            //foreach (var node in Connections.RadialSearch(KdKey(position), 1, NbCache))
+            //{
+            //    Vector3i delta = node.Value.WorldPos - position;
+            //    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z != 1) continue;
+            //    NB[FullRotation.VectorToSide(delta)].Set(node.Value);
+            //    count += 1;
+            //}
+            return count;
+        }
+
+        public byte UpdateNeighbours(PipeConnection pipe, PipeConnection[] Neighbours)
+        {
+            byte count = 0;
+            // Collect neighbours from existing blocks/connections
+            for (byte side = 0; side < 6; side++)
+            {
+                Neighbours[side] = null;
+                // Check if we can connect to side
+                if (!pipe.CanConnect(side)) continue;
+                // Try to fetch the node at the given side
+                var offset = FullRotation.Vector[side];
+                if (TryGetNode(pipe.WorldPos + offset,
+                    out PipeConnection neighbour))
+                {
+                    // Check if other one can connect to use
+                    byte mirrored = FullRotation.Mirror(side);
+                    if (!neighbour.CanConnect(mirrored)) continue;
+                    // Update the node connectors
+                    Neighbours[side] = neighbour;
+                    neighbour[mirrored] = pipe;
+                    count += 1;
+                }
+            }
+            
+            // NbCache.Clear();
+            // for (int i = 0; i < 6; i += 1) NB[i] = null;
+            // if (NB.Length != 6) throw new ArgumentException("NB size mismatch");
+            // // ToDo: Can we optimize the math to have true radial and cubic searches?
+            // foreach (var node in Connections.RadialSearch(KdKey(position), 1, NbCache))
+            // {
+            //     Vector3i delta = node.Value.WorldPos - position;
+            //     if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z != 1) continue;
+            //     NB[FullRotation.VectorToSide(delta)] = node.Value;
+            //     count += 1;
+            // }
             return count;
         }
 

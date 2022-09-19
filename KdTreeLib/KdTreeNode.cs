@@ -1,68 +1,63 @@
 ﻿using System;
 using System.Text;
 
-namespace KdTree
+namespace KdTree3
 {
-    [Serializable]
-	public class KdTreeNode<TKey, TValue>
+	public partial class KdTree<TMetric>
+		where TMetric : IMetric
 	{
-		public KdTreeNode()
+
+		public partial class Vector3i<TValue>
 		{
-		}
-
-		public KdTreeNode(TKey[] point, TValue value)
-		{
-			Point = point;
-			Value = value;
-		}
-
-		public TKey[] Point;
-		public TValue Value = default(TValue);
-
-		internal KdTreeNode<TKey, TValue> LeftChild = null;
-		internal KdTreeNode<TKey, TValue> RightChild = null;
-
-		internal KdTreeNode<TKey, TValue> this[int compare]
-		{
-			get
+			[Serializable]
+			public class Node
 			{
-				if (compare <= 0)
-					return LeftChild;
-				else
-					return RightChild;
-			}
-			set
-			{
-				if (compare <= 0)
-					LeftChild = value;
-				else
-					RightChild = value;
+				public Node(Vector3i point, TValue value)
+				{
+					Point = point;
+					Value = value;
+				}
+
+				public Vector3i Point;
+				public TValue Value = default;
+
+				internal Node LeftChild = null;
+				internal Node RightChild = null;
+
+				internal ref Node this[int compare]
+				{
+					get
+					{
+						if (compare <= 0)
+							return ref LeftChild;
+						else
+							return ref RightChild;
+					}
+				}
+
+				public bool IsLeaf
+				{
+					get
+					{
+						return (LeftChild == null) && (RightChild == null);
+					}
+				}
+
+				public override string ToString()
+				{
+					var sb = new StringBuilder();
+
+					sb.Append(Point.ToString() + "\t");
+
+					if (Value == null)
+						sb.Append("null");
+					else
+						sb.Append(Value.ToString());
+
+					return sb.ToString();
+				}
 			}
 		}
 
-		public bool IsLeaf
-		{
-			get
-			{
-				return (LeftChild == null) && (RightChild == null);
-			}
-		}
-
-		public override string ToString()
-		{
-			var sb = new StringBuilder();
-
-			for (var dimension = 0; dimension < Point.Length; dimension++)
-			{
-				sb.Append(Point[dimension].ToString() + "\t");
-			}
-
-			if (Value == null)
-				sb.Append("null");
-			else
-				sb.Append(Value.ToString());
-
-			return sb.ToString();
-		}
 	}
 }

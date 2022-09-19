@@ -271,36 +271,9 @@ namespace PipeManager
         public void AddConnection(PipeGridManager manager)
         {
 
-            Log.Out("+++++++++  add grid item");
+            manager.UpdateNeighbours(this, Neighbours);
 
-            PipeConnection neighbour;
-
-            // Collect neighbours from existing blocks/connections
-            for (byte side = 0; side < 6; side++)
-            {
-                Neighbours[side] = null;
-                // Check if we can connect to side
-                if (!CanConnect(side)) continue;
-                // Try to fetch the node at the given side
-                var offset = FullRotation.Vector[side];
-                if (manager.TryGetConnection(WorldPos + offset, out neighbour)) // TryGetConnection
-                {
-                    // Check if other one can connect to use
-                    byte mirrored = FullRotation.Mirror(side);
-                    if (!neighbour.CanConnect(mirrored))
-                    {
-                        Log.Warning("Cannot Connect Damn");
-                        continue;
-                    }
-                    // Update the node connectors
-                    Neighbours[side] = neighbour;
-                    neighbour[mirrored] = this;
-                    Log.Out("  update neighbours {0} {1} => {2}",
-                        side, mirrored, neighbour.CountLongestDistance());
-                }
-            }
-
-            int count = 0; int source = -1; int first = -1;
+            int grids = 0; int source = -1; int first = -1;
 
             for (int side = 0; side < 6; side++)
             {
@@ -309,19 +282,11 @@ namespace PipeManager
                 {
                     Log.Error("Neighbour without grid found");
                 }
-                //else if (connection[side].Grid.HasSource)
-                //{
-                //    if (source != -1)
-                //    {
-                //        Log.Error("Too many sources, can't join!!");
-                //    }
-                //    source = side;
-                //}
                 else if (first == -1)
                 {
                     first = side;
                 }
-                count++;
+                grids++;
             }
 
             if (source == -1)
@@ -331,7 +296,7 @@ namespace PipeManager
 
             // manager.AddPipeGridNode(this);
 
-            if (count == 0)
+            if (grids == 0)
             {
                 Log.Out("Creating Grid");
                 Grid = new PipeGrid(manager);

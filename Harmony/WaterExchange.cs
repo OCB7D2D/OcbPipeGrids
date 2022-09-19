@@ -32,7 +32,6 @@ namespace PipeManager
 						___hitLiquidPos + ___hitLiquidBlock.parent;
 
 					int factor = 1;
-					bool filling = false;
 
 					switch (___doBlockAction)
 					{

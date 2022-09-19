@@ -74,9 +74,10 @@ public class OcbPipeGrids : IModApi
 		{
 			Log.Warning("Set power1 now {0} => {1}", __instance.Position, newPowered);
 			if (!PipeGridInterface.HasInstance) return;
-			if (ConnectionManager.Instance.IsServer)
-				PipeGridInterface.Instance.SetPower(
-					__instance.Position, newPowered);
+			if (!PipeGridInterface.HasServer) return;
+			var action = new ActionSetPower();
+			action.Setup(__instance.Position, newPowered);
+			PipeGridInterface.Instance.Input.Enqueue(action);
 		}
 	}
 	
