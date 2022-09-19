@@ -5,7 +5,7 @@
 
         public float AddWater = 0f;
 
-        public override void ProcessOnServer(NodeManagerWorker worker)
+        public override void ProcessOnServer(PipeGridWorker worker)
         {
             var response = new MsgWaterLevelResponse();
             NodeManager manager = worker.Manager;

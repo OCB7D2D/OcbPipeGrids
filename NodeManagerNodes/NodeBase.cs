@@ -4,12 +4,12 @@ using System.IO;
 namespace NodeManager
 {
 
-    public abstract class PipeNode : ITickable, IfaceGridNodeManaged
+    public abstract class NodeBase : ITickable, IfaceGridNodeManaged
     {
 
         public abstract uint StorageID { get; }
 
-        public virtual ulong NextTick => 200;
+        public virtual ulong NextTick => 0;
 
         public Vector3i WorldPos { get; private set; }
 
@@ -17,12 +17,12 @@ namespace NodeManager
 
         public NodeManager Manager { get; protected set; }
 
-        protected PipeNode(Vector3i position, BlockValue bv)
+        protected NodeBase(Vector3i position, BlockValue bv)
         {
             WorldPos = position;
         }
 
-        public PipeNode(BinaryReader br)
+        public NodeBase(BinaryReader br)
         {
             WorldPos = new Vector3i(
                 br.ReadInt32(),
@@ -37,10 +37,10 @@ namespace NodeManager
             bw.Write(WorldPos.z);
         }
 
-        public PipeNode AttachToManager(NodeManager manager)
+        public NodeBase AttachToManager(NodeManager manager)
         {
-            Manager = manager;
             OnManagerAttached(manager);
+            Manager = manager;
             return this;
         }
 
@@ -56,8 +56,11 @@ namespace NodeManager
 
         protected virtual void OnManagerAttached(NodeManager manager)
         {
-            Log.Out("On Manager Attached");
-            manager.AddPipeGridNode(this);
+            if (Manager == manager) return;
+            Log.Out("On Manager Attached {0}", manager);
+            // Manager?.RemoveManagedNode(WorldPos);
+            if (manager == null) return;
+            manager.AddManagedNode(this);
             ulong tick = NextTick;
             if (tick == 0) return;
             manager.Schedule(tick, this);

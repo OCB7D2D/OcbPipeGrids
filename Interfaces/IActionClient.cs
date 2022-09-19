@@ -3,7 +3,7 @@
     public interface IActionServer
     {
         int SenderEntityId { get; set; }
-        void ProcessOnServer(NodeManagerWorker worker);
+        void ProcessOnServer(PipeGridWorker worker);
     }
 
 }

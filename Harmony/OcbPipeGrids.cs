@@ -25,7 +25,9 @@ public class OcbPipeGrids : IModApi
         NodeManager.NodeManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
         NodeManager.NodeManager.RegisterFactory(4, (br) => new PipeSource(br));
 
-        NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
+		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
+
+		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br));
 
 	}
 
@@ -34,6 +36,46 @@ public class OcbPipeGrids : IModApi
 		if (!NodeManagerInterface.HasInstance) return;
 		NodeManagerInterface.Instance.Update();
     }
+
+	// Hook into `VehicleManager.Init`
+	[HarmonyPatch(typeof(WorldBlockTicker))]
+	[HarmonyPatch("add")]
+	public class WorldBlockTickerAdd
+	{
+		static void Prefix(WorldBlockTickerEntry _wbte)
+		{
+			// Create the instance and start it
+			// Will make sure to only create server
+			// and client parts only when necessary 
+			Log.Warning("Added Ticker At {0}",
+				_wbte.scheduledTime);
+			// NodeManagerInterface.Instance.Init();
+		}
+	}
+
+	// Hook into `VehicleManager.Init`
+	[HarmonyPatch(typeof(WorldBlockTicker))]
+	[HarmonyPatch("execute")]
+	public class WorldBlockTickerExec
+	{
+		static void Prefix(World ___world, WorldBlockTickerEntry _wbte, GameRandom _rnd, ulong _ticksIfLoaded)
+		{
+			// Create the instance and start it
+			// Will make sure to only create server
+			// and client parts only when necessary 
+			Log.Warning("Execute Ticker At {0} => {1}",
+				_wbte.scheduledTime, _ticksIfLoaded);
+			BlockValue block = ___world.GetBlock(_wbte.clrIdx, _wbte.worldPos);
+			Log.Warning(" ==== {0} vs {1}", block.type, _wbte.blockID);	
+
+
+			// NodeManagerInterface.Instance.Init();
+		}
+	}
+
+	// Hook into `VehicleManager.Init`
+
+	
 
 	// Hook into `VehicleManager.Init`
 	[HarmonyPatch(typeof(VehicleManager))]

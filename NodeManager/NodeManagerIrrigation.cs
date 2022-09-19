@@ -14,7 +14,7 @@ namespace NodeManager
         // private static readonly NearestNeighbourList<PipeIrrigation> NbIrrigatorCache
         //     = new NearestNeighbourList<PipeIrrigation>();
 
-        private void AddIrrigation(PipeIrrigation irrigation)
+        internal void AddIrrigation(PipeIrrigation irrigation)
         {
             Irrigators.Add(irrigation.WorldPos, irrigation);
             // Search for existing wells in reach
@@ -24,7 +24,7 @@ namespace NodeManager
                 results[i].Item2.AddIrrigation(irrigation);
         }
 
-        private void RemoveIrrigation(Vector3i position)
+        internal void RemoveIrrigation(Vector3i position)
         {
             Irrigators.RemoveAt(position);
         }

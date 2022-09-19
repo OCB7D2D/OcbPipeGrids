@@ -77,8 +77,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\FixBlockScheduler.cs" />
     <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Harmony\WaterExchange.cs" />
+    <Compile Include="Interfaces\IBlockNode.cs" />
     <Compile Include="Interfaces\ISunLight.cs" />
     <Compile Include="Interfaces\IConnector.cs" />
     <Compile Include="Interfaces\IPoweredNode.cs" />
@@ -94,16 +96,18 @@
     <Compile Include="KdTreeLib\Metric\MetricManhatten.cs" />
     <Compile Include="KdTreeLib\NearestNeighbourList.cs" />
     <Compile Include="KdTreeLib\PriorityQueue.cs" />
-    <Compile Include="Messages\ActionSetPower.cs" />
-    <Compile Include="Messages\ActionRemoveBlock.cs" />
-    <Compile Include="Messages\ActionAddBlock.cs" />
-    <Compile Include="Messages\ActionUpdateLightLevel.cs" />
-    <Compile Include="Messages\MsgWaterExchangeQuery.cs" />
-    <Compile Include="Messages\MsgWaterExchangeResponse.cs" />
-    <Compile Include="Messages\MsgWaterLevelResponse.cs" />
-    <Compile Include="Messages\MsgWaterLevelQuery.cs" />
-    <Compile Include="Messages\MsgConnectorQuery.cs" />
-    <Compile Include="Messages\MsgDescriptionResponse.cs" />
+    <Compile Include="NodeManagerBlocks\BlockPowered.cs" />
+    <Compile Include="NodeManagerBlocks\BlockBase.cs" />
+    <Compile Include="NodeMessages\ActionSetPower.cs" />
+    <Compile Include="NodeMessages\ActionRemoveBlock.cs" />
+    <Compile Include="NodeMessages\ActionAddBlock.cs" />
+    <Compile Include="NodeMessages\ActionUpdateLightLevel.cs" />
+    <Compile Include="NodeMessages\MsgWaterExchangeQuery.cs" />
+    <Compile Include="NodeMessages\MsgWaterExchangeResponse.cs" />
+    <Compile Include="NodeMessages\MsgWaterLevelResponse.cs" />
+    <Compile Include="NodeMessages\MsgWaterLevelQuery.cs" />
+    <Compile Include="NodeMessages\MsgConnectorQuery.cs" />
+    <Compile Include="NodeMessages\MsgDescriptionResponse.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeConnection.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />
     <Compile Include="Interfaces\IfaceGridNodeManaged.cs" />
@@ -114,23 +118,29 @@
     <Compile Include="PipeGridBlocks\ImpBlockGridNodePowered.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirPowered.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirUnpowered.cs" />
-    <Compile Include="PipeGridNodes\PipeBlock.cs" />
+    <Compile Include="NodeManagerNodes\NodeBlock.cs" />
     <Compile Include="PipeGridNodes\PipeSource.cs" />
     <Compile Include="PipeGridNodes\PipePump.cs" />
     <Compile Include="PipeGridNodes\PipeIrrigation.cs" />
     <Compile Include="PipeGridNodes\PipeReservoir.cs" />
     <Compile Include="PipeGridNodes\PipeWell.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerIrrigation.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerGrids.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerPowered.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerWells.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerPlantation.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerConnections.cs" />
+    <Compile Include="NodeManager\NodeManagerIrrigation.cs" />
+    <Compile Include="NodeManager\NodeManagerGrids.cs" />
+    <Compile Include="NodeManager\NodeManagerPowered.cs" />
+    <Compile Include="NodeManager\NodeManagerWells.cs" />
+    <Compile Include="NodeManager\NodeManagerPlantation.cs" />
+    <Compile Include="NodeManager\NodeManagerConnections.cs" />
+    <Compile Include="PlantationBlocks\BlockPlantationGrowing.cs" />
+    <Compile Include="PlantationMessages\ActionAddBlock.cs" />
+    <Compile Include="PlantationMessages\ActionRemoveBlock.cs" />
+    <Compile Include="PlantationNetPackages\PlantationPackages.cs" />
+    <Compile Include="PlantationNodes\PlantationGrowing.cs" />
+    <Compile Include="Utils\HarmonyFieldProxy.cs" />
     <Compile Include="Utils\IPersistable.cs" />
     <Compile Include="Interfaces\IActionClient.cs" />
     <Compile Include="Interfaces\IActionServer.cs" />
-    <Compile Include="Messages\ActionStopManager.cs" />
-    <Compile Include="Messages\RemotePackage.cs" />
+    <Compile Include="NodeMessages\ActionStopManager.cs" />
+    <Compile Include="NodeMessages\RemotePackage.cs" />
     <Compile Include="PipeGridNodes\PipeConnection.cs" />
     <Compile Include="PipeGridNodes\PipeGrid.cs" />
     <Compile Include="Utils\FullRotation.cs" />
@@ -142,31 +152,31 @@
     <Compile Include="Harmony\OcbPipeGrids.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
     <Compile Include="Helpers\PipeBlockHelper.cs" />
-    <Compile Include="PipeGridProcess\PipeGridClient.cs" />
-    <Compile Include="PipeGridProcess\PipeGridInterface.cs" />
+    <Compile Include="ManagerProcess\NodeManagerClient.cs" />
+    <Compile Include="ManagerProcess\NodeManagerInterface.cs" />
     <Compile Include="Interfaces\IfaceGridNodeFactory.cs" />
-    <Compile Include="Messages\MsgConnectorResponse.cs" />
-    <Compile Include="NetPackages\NetPkgWorkerAnswer.cs" />
-    <Compile Include="NetPackages\NetPkgWorkerQuery.cs" />
-    <Compile Include="Messages\RemoteResponse.cs" />
-    <Compile Include="PipeGridNodes\PipeNode.cs" />
-    <Compile Include="PipeGridManager\PipeGridManagerBase.cs" />
-    <Compile Include="PipeGridProcess\PipeGridRunner.cs" />
-    <Compile Include="PipeGridProcess\PipeGridWorker.cs" />
-    <Compile Include="Messages\RemoteQuery.cs" />
-    <Compile Include="Messages\MsgDescriptionQuery.cs" />
-    <Compile Include="NetPackages\PipeGridPackages.cs" />
+    <Compile Include="NodeMessages\MsgConnectorResponse.cs" />
+    <Compile Include="NodeNetPackages\NetPkgWorkerAnswer.cs" />
+    <Compile Include="NodeNetPackages\NetPkgWorkerQuery.cs" />
+    <Compile Include="NodeMessages\RemoteResponse.cs" />
+    <Compile Include="NodeManagerNodes\NodeBase.cs" />
+    <Compile Include="NodeManager\NodeManagerBase.cs" />
+    <Compile Include="ManagerProcess\NodeManagerRunner.cs" />
+    <Compile Include="ManagerProcess\PipeGridWorker.cs" />
+    <Compile Include="NodeMessages\RemoteQuery.cs" />
+    <Compile Include="NodeMessages\MsgDescriptionQuery.cs" />
+    <Compile Include="NodeNetPackages\PipeGridPackages.cs" />
     <Compile Include="Ticker\GlobalTicker.cs" />
     <Compile Include="Ticker\ITickable.cs" />
     <Compile Include="Ticker\ScheduledTick.cs" />
     <Compile Include="PipeGridStructs\BlockConnector.cs" />
     <Compile Include="Utils\PersistedData.cs" />
     <Compile Include="Utils\SingletonInstance.cs" />
-    <Compile Include="Utils\WorkerManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\items.xml" />
     <Content Include="Config\blocks.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

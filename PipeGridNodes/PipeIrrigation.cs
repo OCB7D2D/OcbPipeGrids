@@ -29,8 +29,10 @@ namespace NodeManager
 
         protected override void OnManagerAttached(NodeManager manager)
         {
+            if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            Log.Out("Manager attached to irrigation");
+            Manager?.RemoveIrrigation(WorldPos);
+            manager?.AddIrrigation(this);
         }
 
         protected override void UpdateGrid(PipeGrid grid)

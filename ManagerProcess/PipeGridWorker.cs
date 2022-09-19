@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace NodeManager
 {
-    public class NodeManagerWorker : IfaceGridNodeManaged
+    public class PipeGridWorker : IfaceGridNodeManaged
     {
 
         private readonly ConcurrentQueue<IActionServer> Input;
@@ -11,7 +11,7 @@ namespace NodeManager
 
         public NodeManager Manager { get; private set; }
 
-        public NodeManagerWorker(
+        public PipeGridWorker(
             ConcurrentQueue<IActionServer> queue,
             ConcurrentQueue<IActionClient> output)
         {

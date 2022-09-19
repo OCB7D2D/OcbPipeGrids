@@ -18,15 +18,15 @@ namespace NodeManager
         // Class Factory for Pipe Node Specializations
         //#####################################################################
 
-        public static readonly Dictionary<uint, Func<BinaryReader, PipeNode>>
-            Factory = new Dictionary<uint, Func<BinaryReader, PipeNode>>();
+        public static readonly Dictionary<uint, Func<BinaryReader, NodeBase>>
+            Factory = new Dictionary<uint, Func<BinaryReader, NodeBase>>();
 
-        public static void RegisterFactory(uint id, Func<BinaryReader, PipeNode> creator)
+        public static void RegisterFactory(uint id, Func<BinaryReader, NodeBase> creator)
         {
             Factory.Add(id, creator);
         }
 
-        public PipeNode InstantiateItem(uint id, BinaryReader br)
+        public NodeBase InstantiateItem(uint id, BinaryReader br)
         {
             if (Factory.TryGetValue(id, out var ctor))
             {
@@ -41,8 +41,8 @@ namespace NodeManager
         //#####################################################################
         //#####################################################################
 
-        public readonly Dictionary<Vector3i, PipeNode> Nodes
-            = new Dictionary<Vector3i, PipeNode>();
+        public readonly Dictionary<Vector3i, NodeBase> Nodes
+            = new Dictionary<Vector3i, NodeBase>();
 
         // Use a KD-Tree to optimize finding nearest items
         // ToDo: benchmark exact lookup vs using a hash table
@@ -54,13 +54,13 @@ namespace NodeManager
         //internal bool TryGetConnection(Vector3i position, out PipeConnection connection)
         //    => Connections.TryFindValueAt(KdKey(position), out connection);
 
-        public bool TryGetNode(Vector3i position, out PipeNode node)
+        public bool TryGetNode(Vector3i position, out NodeBase node)
             => Nodes.TryGetValue(position, out node);
 
         public bool TryGetNode<T> (Vector3i position, out T node) where T : class
         {
             if (Nodes.TryGetValue(position,
-                out PipeNode instance))
+                out NodeBase instance))
             {
                 node = instance as T;
                 return true;
@@ -170,30 +170,32 @@ namespace NodeManager
         // Hooks for adding and removing pipe nodes
         //#####################################################################
 
-        internal void AddPipeGridNode(PipeNode node)
+        internal void AddManagedNode(NodeBase node)
         {
             Nodes.Add(node.WorldPos, node);
-            if (node is PipeConnection connection) AddConnection(connection);
-            if (node is PipeIrrigation irrigation) AddIrrigation(irrigation);
-            if (node is IPoweredNode powered) AddPowered(powered);
-            if (node is PipeWell well) AddWell(well);
+            // if (node is PipeConnection connection) AddConnection(connection);
+            // if (node is PipeIrrigation irrigation) AddIrrigation(irrigation);
+            if (node is IPoweredNode powered)
+                AddPowered(powered);
+            // if (node is PipeWell well) AddWell(well);
         }
 
-        public void RemovePipeGridNode(Vector3i position)
+        public void RemoveManagedNode(Vector3i position)
         {
             // Log.Out("1 Remove from pipe connection");
-            if (TryGetNode(position, out PipeConnection node))
+            if (TryGetNode(position, out var node))
             {
+                node.AttachToManager(null);
                 // Log.Out("2 Remove from pipe connection");
                 // node.AddConnection
-                RemoveConnection(position, node);
+                // RemoveConnection(position, node);
             }
-            if (Irrigators.ContainsKey(position))
-                RemoveIrrigation(position);
+            //if (Irrigators.ContainsKey(position))
+            //    RemoveIrrigation(position);
             if (IsPowered.ContainsKey(position))
                 RemovePowered(position);
-            if (Wells.ContainsKey(position))
-                RemoveWell(position);
+            //if (Wells.ContainsKey(position))
+            //    RemoveWell(position);
             if (Nodes.ContainsKey(position))
                 Nodes.Remove(position);
         }

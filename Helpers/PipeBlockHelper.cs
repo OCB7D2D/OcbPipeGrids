@@ -30,7 +30,7 @@ public static class PipeBlockHelper
 		return (ConnectMask & (byte)(1 << side)) != 0;
 	}
 
-    public static void OnBlockAdded(IBlockConnection block, Vector3i pos, BlockValue bv)
+    public static void OnBlockAdded(IBlockNode block, Vector3i pos, BlockValue bv)
     {
 		// Only process main block nodes
 		if (bv.ischild) return;
@@ -38,7 +38,7 @@ public static class PipeBlockHelper
 		block.CreateGridItem(pos, bv);
 	}
 
-    public static void OnBlockRemoved(IBlockConnection block, Vector3i pos, BlockValue bv)
+    public static void OnBlockRemoved(IBlockNode block, Vector3i pos, BlockValue bv)
     {
 		// Only process main block nodes
 		if (bv.ischild) return;

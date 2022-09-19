@@ -12,7 +12,7 @@
             LightLevel = light;
         }
 
-        public void ProcessOnServer(NodeManagerWorker worker)
+        public void ProcessOnServer(PipeGridWorker worker)
         {
             if (worker.Manager.TryGetNode(Position, out ISunLight node))
                 node.CurrentSunLight = LightLevel;

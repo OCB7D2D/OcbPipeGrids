@@ -10,7 +10,7 @@
         public int OldItemType { get; set; }
         public int NewItemType { get; set; }
 
-        public override void ProcessOnServer(NodeManagerWorker worker)
+        public override void ProcessOnServer(PipeGridWorker worker)
         {
             var response = new MsgWaterExchangeResponse();
             NodeManager manager = worker.Manager;

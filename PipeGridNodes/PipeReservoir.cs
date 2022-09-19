@@ -10,7 +10,7 @@ namespace NodeManager
 
         public float FillState { get; set; } = 0f;
 
-        public override ulong NextTick => 15;
+        public override ulong NextTick => 60;
 
         // public override bool BreakDistance => true;
 

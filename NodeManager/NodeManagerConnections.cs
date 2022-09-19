@@ -10,8 +10,11 @@ namespace NodeManager
         : GlobalTicker, IPersistable
     {
 
-        private bool RemoveConnection(Vector3i position, PipeConnection node)
+        public bool RemoveConnection(PipeConnection node)
         {
+
+            Vector3i position = node.WorldPos;
+
             Log.Out("Removing COnnection from {0}", node.Grid);
             // node.Grid = null; // Invoke `UpdateGrid`
             // connection.AddConnection(this);
@@ -74,7 +77,7 @@ namespace NodeManager
         }
 
 
-        private bool AddConnection(PipeConnection connection)
+        internal bool AddConnection(PipeConnection connection)
         {
             // connection.AddConnection(this);
 

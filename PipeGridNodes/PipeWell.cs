@@ -9,9 +9,9 @@ using UnityEngine;
 
 namespace NodeManager
 {
-    public class PipeWell : PipeBlock<BlockPipeWell>, ISunLight
+    public class PipeWell : NodeBlock<BlockPipeWell>, ISunLight
     {
-        public override ulong NextTick => 2;
+        public override ulong NextTick => 30;
 
         public override uint StorageID => 9;
 
@@ -71,11 +71,13 @@ namespace NodeManager
         {
             Irrigators.Remove(irrigation);
         }
+
         protected override void OnManagerAttached(NodeManager manager)
         {
+            if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            // Manager?.RemoveWell(WorldPos);
-            // manager.AddWell(this);
+            Manager?.RemoveWell(WorldPos);
+            manager?.AddWell(this);
         }
 
         public override void Tick(ulong delta)

@@ -1,5 +1,10 @@
 <configs>
 
+	<append xpath="/blocks/block[@name='plantedCorn1']">
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+
 	<append xpath="/blocks/block[starts-with(@name, 'metalPipe')]">
 		<property name="Class" value="PipeConnection, PipeGrids" />
 		<property name="DisplayInfo" value="Custom" />

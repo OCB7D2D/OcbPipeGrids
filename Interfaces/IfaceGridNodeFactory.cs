@@ -4,5 +4,5 @@ using System.IO;
 public interface IfaceGridNodeFactory
 {
     uint StorageID { get; }
-    PipeNode Create(BinaryReader br);
+    NodeBase Create(BinaryReader br);
 }

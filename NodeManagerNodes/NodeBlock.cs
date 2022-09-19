@@ -2,7 +2,7 @@
 
 namespace NodeManager
 {
-    public abstract class PipeBlock<B> : PipeNode where B : class
+    public abstract class NodeBlock<B> : NodeBase where B : class
     {
 
         public BlockValue BV = BlockValue.Air; // Air
@@ -13,14 +13,14 @@ namespace NodeManager
 
         public readonly B BLK;
 
-        protected PipeBlock(BinaryReader br)
+        protected NodeBlock(BinaryReader br)
             : base(br)
         {
             BV.rawData = br.ReadUInt32();
             GetBlock(out BLK);
         }
 
-        protected PipeBlock(Vector3i position, BlockValue bv)
+        protected NodeBlock(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
             BV.rawData = bv.rawData;

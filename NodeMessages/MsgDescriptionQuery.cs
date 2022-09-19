@@ -3,7 +3,7 @@
     public class MsgDescriptionQuery : RemoteQuery<NetPkgDescriptionQuery>
     {
 
-        public override void ProcessOnServer(NodeManagerWorker worker)
+        public override void ProcessOnServer(PipeGridWorker worker)
         {
             var response = new MsgDescriptionResponse();
             NodeManager manager = worker.Manager;

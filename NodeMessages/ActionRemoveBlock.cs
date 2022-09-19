@@ -29,10 +29,10 @@
     public abstract class BaseActionRemoveBlock<N> : RemoteQuery<N>
         where N : NetPackage
     {
-        public override void ProcessOnServer(NodeManagerWorker worker)
+        public override void ProcessOnServer(PipeGridWorker worker)
         {
             Log.Out("Process disconnect on server");
-            worker.Manager.RemovePipeGridNode(Position);
+            worker.Manager.RemoveManagedNode(Position);
         }
         public override int GetLength() => 42;
     }

@@ -1,18 +1,13 @@
 ﻿using NodeManager;
 
-public abstract class ImpBlockGridNodeUnpowered : Block, IBlockConnection
+public abstract class ImpBlockGridNodeUnpowered : BlockBase, IBlockConnection
 {
 	public virtual bool BreakDistance => false;
 	public virtual bool NeedsPower => false;
 	public virtual byte ConnectMask { get; set; } = 63;
 	public virtual int MaxConnections { get; set; } = 6;
-	Block IBlockConnection.Block => this;
 
     public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
-
-	public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
-
-	public abstract void RemoveGridItem(Vector3i blockPos);
 
 	public virtual bool CanConnect(byte side, byte rotation)
 		=> PipeBlockHelper.CanConnect(ConnectMask, side, rotation);
@@ -28,24 +23,6 @@ public abstract class ImpBlockGridNodeUnpowered : Block, IBlockConnection
 	// *******************************************************
 	// Shared implementation for all `IBlockPipeNode`
 	// *******************************************************
-
-	public override void OnBlockAdded(
-		WorldBase world, Chunk chunk,
-		Vector3i pos, BlockValue bv)
-	{
-		base.OnBlockAdded(world, chunk, pos, bv);
-		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockAdded(this, pos, bv);
-	}
-
-	public override void OnBlockRemoved(
-		WorldBase world, Chunk chunk,
-		Vector3i pos, BlockValue bv)
-	{
-		base.OnBlockRemoved(world, chunk, pos, bv);
-		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
-	}
 
 	// Reuse object to pass around as parameter to `CanConnect`
 	// Not sure much this brings; less allocations always good!?

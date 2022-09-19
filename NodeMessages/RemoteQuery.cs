@@ -7,7 +7,7 @@
     {
         public int SenderEntityId { get; set; } = -1;
         // Main function called when message is received on server
-        public abstract void ProcessOnServer(NodeManagerWorker worker);
+        public abstract void ProcessOnServer(PipeGridWorker worker);
         public override int GetLength() => 42;
 
     }

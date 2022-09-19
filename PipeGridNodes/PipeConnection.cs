@@ -5,7 +5,7 @@ using System.IO;
 namespace NodeManager
 {
 
-    public class PipeConnection : PipeBlock<IBlockConnection>
+    public class PipeConnection : NodeBlock<IBlockConnection>
     {
         public override uint StorageID => 1;
 
@@ -20,7 +20,7 @@ namespace NodeManager
         class Creator : IfaceGridNodeFactory
         {
             public uint StorageID => 1;
-            public PipeNode Create(BinaryReader br)
+            public NodeBase Create(BinaryReader br)
                 => new PipeConnection(br);
         }
 
@@ -42,18 +42,11 @@ namespace NodeManager
         // Gather neighbours and register connection
         protected override void OnManagerAttached(NodeManager manager)
         {
-            // First get all our neighbours
-            for (int side = 0; side < 6; side++)
-            {
-                if (manager.TryGetNode( // TryGetConnection
-                    WorldPos + FullRotation.Vector[side],
-                    out PipeConnection neighbour))
-                {
-                    Neighbours[side] = neighbour;
-                }
-            }
             // Now register us with manager
+            if (Manager == manager) return;
             base.OnManagerAttached(manager);
+            Manager?.RemoveConnection(this);
+            manager?.AddConnection(this);
         }
 
         private PipeGrid _grid;
@@ -227,7 +220,6 @@ namespace NodeManager
             for (byte side = 0; side < 6; side++)
             {
                 if (Neighbours[side] == null) continue;
-                Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
             }
 
             // Process until no more tree nodes
