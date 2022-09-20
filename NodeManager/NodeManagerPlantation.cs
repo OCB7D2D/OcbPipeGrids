@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NodeManager
 {
@@ -24,6 +20,17 @@ namespace NodeManager
         {
             Log.Warning("Add plant growing {0}", plant);
             PlantGrowing.Add(plant.WorldPos, plant);
+        }
+
+        public void UpdatePlantStats(ActionUpdatePlantStats stats)
+        {
+            if (PlantGrowing.TryGetValue(stats.Position,
+                out PlantationGrowing plant))
+            {
+                plant.CurrentSunLight = stats.SunLight;
+                plant.CurrentFertility = stats.Fertility;
+                plant.CurrentRain = stats.Rain;
+            }
         }
 
     }

@@ -76,7 +76,6 @@ namespace NodeManager
             return false;
         }
 
-
         internal bool AddConnection(PipeConnection connection)
         {
             // connection.AddConnection(this);

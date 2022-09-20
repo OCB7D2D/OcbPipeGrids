@@ -56,9 +56,12 @@ public class GlobalTicker // : SingletonInstance<GlobalTicker>
             if (scheduled.TickTime > tick) break;
             Scheduled.Remove(scheduled);
             ulong delta = tick - scheduled.TickStart;
-            scheduled.Object.Tick(delta);
-            ulong iv = scheduled.Object.NextTick;
-            if (iv != 0) Schedule(iv, scheduled.Object);
+            // Reschedule if Tick returns true
+            if (scheduled.Object.Tick(delta))
+            {
+                ulong iv = scheduled.Object.NextTick;
+                if (iv != 0) Schedule(iv, scheduled.Object);
+            }
             done += 1;
         }
     }

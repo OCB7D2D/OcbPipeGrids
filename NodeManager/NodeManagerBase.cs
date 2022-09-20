@@ -2,6 +2,7 @@
 // Coded so it could also run on main thread
 using KdTree3;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
@@ -91,9 +92,12 @@ namespace NodeManager
 
         private readonly PersistedData Persister;
 
-        public NodeManager()
+        public ConcurrentQueue<IActionClient> Output;
+
+        public NodeManager(ConcurrentQueue<IActionClient> output)
         {
             Persister = new PersistedData(this);
+            Output = output;
         }
 
         // Path to persist the data to (filename)

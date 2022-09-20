@@ -44,9 +44,9 @@ namespace NodeManager
             return this;
         }
 
-        public virtual void Tick(ulong delta)
+        public virtual bool Tick(ulong delta)
         {
-            // Log.Out("Tick Node");
+            return Manager != null;
         }
 
         public virtual void Cleanup()

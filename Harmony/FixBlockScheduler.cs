@@ -1,10 +1,6 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NodeManager
 {
@@ -13,6 +9,10 @@ namespace NodeManager
 	[HarmonyPatch("tickScheduled")]
 	public class tickScheduled
 	{
+
+		static readonly uint RecheckTicks = 30;
+		static readonly int MaxTickersPerTick = 100;
+
 		static bool Prefix(
 			WorldBlockTicker __instance, GameRandom _rnd,
 			object ___lockObject, World ___world,
@@ -21,16 +21,15 @@ namespace NodeManager
 			DictionarySave<long, HashSet<WorldBlockTickerEntry>> ___chunkToScheduledTicks,
 			ref bool __result)
 		{
-			int num;
+			int amount;
 			lock (___lockObject)
 			{
-				num = ___scheduledTicksSorted.Count;
-				if (num != ___scheduledTicksDict.Count)
-					throw new Exception("Err");
+				amount = ___scheduledTicksSorted.Count;
+				if (amount != ___scheduledTicksDict.Count)
+					throw new System.Exception("Invalid State");
 			}
-			if (num > 100)
-				num = 100;
-			for (int index = 0; index < num; ++index)
+			if (amount > MaxTickersPerTick) amount = MaxTickersPerTick;
+			for (int index = 0; index < amount; ++index)
 			{
 				WorldBlockTickerEntry key;
 				lock (___lockObject)
@@ -38,7 +37,7 @@ namespace NodeManager
 					key = (WorldBlockTickerEntry)___scheduledTicksSorted.GetKey(0);
 					if (key.scheduledTime <= GameTimer.Instance.ticks)
 					{
-						___scheduledTicksSorted.Remove((object)key);
+						___scheduledTicksSorted.Remove(key);
 						___scheduledTicksDict.Remove(key.GetHashCode());
 						___chunkToScheduledTicks[key.GetChunkKey()]?.Remove(key);
 					}
@@ -63,7 +62,10 @@ namespace NodeManager
 					int chunkZ = World.toChunkXZ(key.worldPos.z);
 					if (___world.GetChunkSync(chunkX, chunkZ) != null)
 						__instance.AddScheduledBlockUpdate(
-							key.clrIdx, key.worldPos, key.blockID, 10);
+							key.clrIdx, key.worldPos, key.blockID,
+							// Add some randomness to avoid all ticks
+							// to be fired at the same tick for chunk
+							RecheckTicks + (uint)_rnd.RandomRange(0, 15));
 				}
 			}
 			__result = ___scheduledTicksSorted.Count > 0;

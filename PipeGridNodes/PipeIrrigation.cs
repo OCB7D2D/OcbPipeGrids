@@ -41,10 +41,10 @@ namespace NodeManager
             Log.Out("Update irrigation grid");
         }
 
-        public override void Tick(ulong delta)
+        public override bool Tick(ulong delta)
         {
-            base.Tick(delta);
             Log.Warning("Tick irrigation");
+            return base.Tick(delta);
         }
 
     }

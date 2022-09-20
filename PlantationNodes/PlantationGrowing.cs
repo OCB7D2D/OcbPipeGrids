@@ -11,14 +11,20 @@ namespace NodeManager
 {
     public class PlantationGrowing : NodeBlock<BlockPlantationGrowing>, ISunLight
     {
+
+        static int IDs = 0;
+
+        public int ID = IDs++;
+
         public override ulong NextTick => 5;
 
         public override uint StorageID => 11;
 
         public byte CurrentSunLight { get; set; } = 0;
 
-        public byte CurrentFertilityLevel { get; set; } = 0;
+        public byte CurrentFertility { get; set; } = 0;
 
+        public float CurrentRain { get; set; } = 0;
 
         public float GrowProgress = 0;
 
@@ -49,7 +55,8 @@ namespace NodeManager
             WaterFactor = br.ReadSingle();
             GrowProgress = br.ReadSingle();
             CurrentSunLight = br.ReadByte();
-            CurrentFertilityLevel = br.ReadByte();
+            CurrentFertility = br.ReadByte();
+            // CurrentRain = br.ReadSingle();
             Log.Out("------- LOADDED PLANT {0}", WorldPos);
         }
 
@@ -61,27 +68,35 @@ namespace NodeManager
             bw.Write(WaterFactor);
             bw.Write(GrowProgress);
             bw.Write(CurrentSunLight);
-            bw.Write(CurrentFertilityLevel);
+            bw.Write(CurrentFertility);
+            bw.Write(CurrentRain);
         }
 
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0}\nWater: {1}, Light: {2}, Fert: {3}",
-                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertilityLevel);
+            return string.Format("Plant Growing {0}\nWater: {1}, Light: {2}\nFert: {3}, Rain: {4}",
+                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertility, CurrentRain);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
         {
+            Log.Out("Attach Man {0} {1} {2}", ID, Manager, manager);
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
             Manager?.RemovePlantGrowing(WorldPos);
             manager?.AddPlantGrowing(this);
         }
 
-        public override void Tick(ulong delta)
+        static readonly HarmonyFieldProxy<BlockValue>
+            FieldNextPlant = new HarmonyFieldProxy<BlockValue>(
+                typeof(BlockPlantGrowing), "nextPlant");
+
+        public override bool Tick(ulong delta)
         {
-            Log.Out("Tick plant");
-            base.Tick(delta);
+            Log.Out("1Tick plant {0}", ID);
+            if (!base.Tick(delta))
+                return false;
+            Log.Out("2Tick plant {0}", ID);
 
             bool NeedsWater = true;
 
@@ -94,6 +109,10 @@ namespace NodeManager
                 // GrowthFactor = 0.03f;
                 // HasWater = 0.0f;
                 float consumedWater = 0;
+
+                consumedWater += CurrentRain * delta / 100f;
+                CurrentRain -= delta / 100f;
+
                 // See if we can consume any water
                 // foreach (PipeWell well in Wells)
                 // {
@@ -125,6 +144,61 @@ namespace NodeManager
             // if (GrowProgress < 1f) RegisterScheduled();
             // else GrowToNext(world, PlantManager.Instance);
 
+            // Grow to next phase
+            if (GrowProgress > 1f)
+            {
+                Log.Warning("Grow into {0}", FieldNextPlant.Get(BLOCK).Block.GetBlockName());
+
+                BlockValue next = FieldNextPlant.Get(BLOCK);
+
+                next.rotation = Rotation;
+                var action = new ExecuteBlockChange();
+                action.Setup(WorldPos, next);
+                if (Manager == null)
+                {
+                    Log.Warning("Plant withouzt Manager");
+                    return false;
+                }
+                var manager = Manager; // Remember
+                Log.Out("Enqueue to manager {0}", Manager);
+                Manager.Output.Enqueue(action);
+                Manager.RemoveManagedNode(WorldPos);
+                // AttachToManager(null);
+
+                if (next.Block is BlockPlantGrowing)
+                {
+                    // Create the next plant right away, in order to
+                    // keep background processing running. Otherwise
+                    // loaded chunks would trigger remove/add events,
+                    // but unloaded blocks will not do that until they
+                    // are loaded by their chunks again. We still need
+                    // to be idempotent in regard to adding nodes, as
+                    // we will still get the added/removed events.
+                    Log.Warning("|| Plant moved to grow step");
+                    Log.Out("Create new Plant to grow");
+                    new PlantationGrowing(WorldPos, next)
+                    {
+                        WaterFactor = WaterFactor,
+                        CurrentRain = CurrentRain,
+                        CurrentSunLight = CurrentSunLight,
+                        CurrentFertility = CurrentFertility
+                    }
+                    .AttachToManager(manager);
+                }
+                // if (next.Block is BlockPlantHarvestable)
+                // {
+                // }
+                else
+                {
+                    Log.Warning("|| Plant moved to final step");
+                }
+
+
+
+                return false;
+            }
+            // else if next plant is harvestable
+            return true;
         }
 
 

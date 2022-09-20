@@ -21,13 +21,13 @@ namespace NodeManager
 
         public float AddWater = 0;
 
-        public float FromGround => BLK != null ? BLK.FromGround : 0.08f / 1000f;
-        public float FromFreeSky => BLK != null ? BLK.FromFreeSky : 0.25f / 1000f;
-        public float FromWetSurface => BLK != null ? BLK.FromWetSurface : 0.15f / 1000f;
-        public float FromSnowfall => BLK != null ? BLK.FromSnowfall : 0.4f / 1000f;
-        public float FromRainfall => BLK != null ? BLK.FromRainfall : 0.8f / 1000f;
-        public float FromIrrigation => BLK != null ? BLK.FromIrrigation : 5f / 1000f;
-        public float MaxWaterLevel => BLK != null ? BLK.MaxWaterLevel : 150f;
+        public float FromGround => BLOCK != null ? BLOCK.FromGround : 0.08f / 1000f;
+        public float FromFreeSky => BLOCK != null ? BLOCK.FromFreeSky : 0.25f / 1000f;
+        public float FromWetSurface => BLOCK != null ? BLOCK.FromWetSurface : 0.15f / 1000f;
+        public float FromSnowfall => BLOCK != null ? BLOCK.FromSnowfall : 0.4f / 1000f;
+        public float FromRainfall => BLOCK != null ? BLOCK.FromRainfall : 0.8f / 1000f;
+        public float FromIrrigation => BLOCK != null ? BLOCK.FromIrrigation : 5f / 1000f;
+        public float MaxWaterLevel => BLOCK != null ? BLOCK.MaxWaterLevel : 150f;
 
         // Keep a list of pumps to get water from?
         // Add pumps from different grids (sources)?
@@ -80,12 +80,12 @@ namespace NodeManager
             manager?.AddWell(this);
         }
 
-        public override void Tick(ulong delta)
+        public override bool Tick(ulong delta)
         {
             base.Tick(delta);
 
             // Log.Out("Ticked the well");
-            if (WaterAvailable >= MaxWaterLevel) return;
+            if (WaterAvailable >= MaxWaterLevel) return true;
 
             // Check if chunk is loaded to update light level
             // This determines if rain fall can reach the well
@@ -137,6 +137,7 @@ namespace NodeManager
             // Add water to well
             FillWater(fill);
 
+            return true;
         }
 
         public bool ConsumeWater(float amount)

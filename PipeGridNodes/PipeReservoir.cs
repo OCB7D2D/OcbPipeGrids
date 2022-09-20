@@ -42,11 +42,11 @@ namespace NodeManager
         List<PipeReservoir> outtake = new List<PipeReservoir>();
         List<PipeReservoir> reservoirs = new List<PipeReservoir>();
 
-        public override void Tick(ulong delta)
+        public override bool Tick(ulong delta)
         {
             base.Tick(delta);
 
-            if (!IsPowered) return;
+            if (!IsPowered) return true;
             // Prepare variables
             reservoirs.Clear();
             float levels = 0;
@@ -131,6 +131,8 @@ namespace NodeManager
             // Only reduce to max amount after pumping
             FillState = System.Math.Min(
                 MaxFillState, FillState);
+
+            return true;
         }
     }
 }

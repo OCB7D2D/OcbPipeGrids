@@ -9,9 +9,9 @@ namespace NodeManager
     {
         public override uint StorageID => 1;
 
-        public byte ConnectMask => BLK?.ConnectMask ?? 63;
-        public int MaxConnections => BLK?.MaxConnections ?? 6;
-        public bool BreakDistance => BLK?.BreakDistance ?? false;
+        public byte ConnectMask => BLOCK?.ConnectMask ?? 63;
+        public int MaxConnections => BLOCK?.MaxConnections ?? 6;
+        public bool BreakDistance => BLOCK?.BreakDistance ?? false;
 
         // public virtual byte ConnectMask { get; set; } = 63;
         // public virtual int MaxConnections { get; set; } = 6;

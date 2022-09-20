@@ -16,7 +16,7 @@ namespace NodeManager
             ConcurrentQueue<IActionClient> output)
         {
             Input = queue; Output = output;
-            Manager = new NodeManager();
+            Manager = new NodeManager(output);
         }
 
         internal string GetCustomDesc(Vector3i position)
@@ -67,10 +67,24 @@ namespace NodeManager
                 while (Input.TryDequeue(
                     out IActionServer msg))
                 {
-                    msg.ProcessOnServer(this);
+                    try
+                    {
+                        msg.ProcessOnServer(this);
+                    }
+                    catch (System.Exception err)
+                    {
+                        Log.Error("NodeManager processing had error: {0}", err);
+                    }
                 }
                 if (!Running) break;
-                Manager.DriveTick();
+                try
+                {
+                    Manager.DriveTick();
+                }
+                catch (System.Exception err)
+                {
+                    Log.Error("NodeManager tick had error: {0}", err);
+                }
                 Thread.Sleep(25);
             }
             Manager.SaveData();

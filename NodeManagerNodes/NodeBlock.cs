@@ -11,20 +11,20 @@ namespace NodeManager
 
         public byte Rotation => BV.rotation;
 
-        public readonly B BLK;
+        public readonly B BLOCK;
 
         protected NodeBlock(BinaryReader br)
             : base(br)
         {
             BV.rawData = br.ReadUInt32();
-            GetBlock(out BLK);
+            GetBlock(out BLOCK);
         }
 
         protected NodeBlock(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
             BV.rawData = bv.rawData;
-            GetBlock(out BLK);
+            GetBlock(out BLOCK);
         }
 
         public override void Write(BinaryWriter bw)

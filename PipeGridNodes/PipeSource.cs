@@ -24,7 +24,7 @@ namespace NodeManager
             return "PipeSource -> " + base.GetCustomDescription();
         }
 
-        public override void Tick(ulong delta)
+        public override bool Tick(ulong delta)
         {
             Log.Out("Tick source {0}", IsPowered);
             if (IsPowered)
@@ -38,6 +38,7 @@ namespace NodeManager
                 FillState = System.Math.Min(MaxFillState, FillState);
                 // ToDo: check if we still have water around us!?
             }
+            return true;
         }
 
     }

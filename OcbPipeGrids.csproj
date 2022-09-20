@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\FixBlockScheduler.cs" />
+    <Compile Include="Harmony\LateBlockChanges.cs" />
     <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Harmony\WaterExchange.cs" />
     <Compile Include="Interfaces\IBlockNode.cs" />
@@ -131,10 +132,13 @@
     <Compile Include="NodeManager\NodeManagerPlantation.cs" />
     <Compile Include="NodeManager\NodeManagerConnections.cs" />
     <Compile Include="PlantationBlocks\BlockPlantationGrowing.cs" />
+    <Compile Include="PlantationMessages\ExecuteBlockChange.cs" />
     <Compile Include="PlantationMessages\ActionAddBlock.cs" />
     <Compile Include="PlantationMessages\ActionRemoveBlock.cs" />
+    <Compile Include="PlantationMessages\ActionUpdatePlantStats.cs" />
     <Compile Include="PlantationNetPackages\PlantationPackages.cs" />
     <Compile Include="PlantationNodes\PlantationGrowing.cs" />
+    <Compile Include="Utils\BlockHelper.cs" />
     <Compile Include="Utils\HarmonyFieldProxy.cs" />
     <Compile Include="Utils\IPersistable.cs" />
     <Compile Include="Interfaces\IActionClient.cs" />
