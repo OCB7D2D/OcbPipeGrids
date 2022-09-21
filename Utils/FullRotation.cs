@@ -4,24 +4,45 @@ using UnityEngine;
 public static class FullRotation
 {
 
+    //    up, left, forward,
+    //    down, right, back,
+    //    invalid = byte.MaxValue
+
     public enum Face : byte
     {
         up, left, forward,
         down, right, back,
         invalid = byte.MaxValue
+
+        // up,
+        // down,
+        // forward,
+        // left,
+        // back,
+        // right,
+        // invalid = byte.MaxValue
     };
 
     public static Vector3i[] Vector = new Vector3i[6]
     {
+        // Vector3i.up, Vector3i.down, Vector3i.forward,
+        // Vector3i.left, Vector3i.back, Vector3i.right
         Vector3i.up, Vector3i.left, Vector3i.forward,
         Vector3i.down, Vector3i.right, Vector3i.back
     };
 
     public static byte Mirror(int face)
     {
-        if (face < 0) throw new ArgumentOutOfRangeException("face");
-        if (face > 5) throw new ArgumentOutOfRangeException("face");
-        return (byte)(face > 2 ? face - 3 : face + 3);
+        switch ((Face)face)
+        {
+            case Face.up: return (byte)Face.down;
+            case Face.down: return (byte)Face.up;
+            case Face.left: return (byte)Face.right;
+            case Face.right: return (byte)Face.left;
+            case Face.forward: return (byte)Face.back;
+            case Face.back: return (byte)Face.forward;
+            default: throw new ArgumentOutOfRangeException("face");
+        }
     }
 
     // Generic rotation function (for full axis rotations only)
