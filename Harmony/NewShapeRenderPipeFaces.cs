@@ -20,7 +20,7 @@ namespace NodeManager
 		{
 			if (__result == false) return;
 			__result = !ConnectionHelper.CanConnect(
-				_blockValue, (byte)_face, _adjBlockValue);
+				_blockValue, _face, _adjBlockValue);
 		}
 	}
 

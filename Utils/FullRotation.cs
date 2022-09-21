@@ -23,6 +23,21 @@ public static class FullRotation
         // invalid = byte.MaxValue
     };
 
+    // ToDo: re-use enum (need to adjust a lot of code)
+    public static Face BlockFaceToFace(BlockFace face)
+    {
+        switch(face)
+        {
+            case BlockFace.Top: return Face.up;
+            case BlockFace.Bottom: return Face.down;
+            case BlockFace.North: return Face.forward;
+            case BlockFace.West: return Face.right;
+            case BlockFace.South: return Face.down;
+            case BlockFace.East: return Face.left;
+        }
+        return (Face)0;
+    }
+
     public static Vector3i[] Vector = new Vector3i[6]
     {
         // Vector3i.up, Vector3i.down, Vector3i.forward,
@@ -87,7 +102,7 @@ public static class FullRotation
     {
         switch (face)
         {
-            case 0:
+            case (byte)Face.up:
                 switch (rotation)
                 {
                     case 0: return Vector3i.up;
@@ -116,7 +131,7 @@ public static class FullRotation
                     case 23: return Vector3i.right;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 1:
+            case (byte)Face.left:
                 switch (rotation)
                 {
                     case 0: return Vector3i.left;
@@ -145,7 +160,7 @@ public static class FullRotation
                     case 23: return Vector3i.back;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 2:
+            case (byte)Face.forward:
                 switch (rotation)
                 {
                     case 0: return Vector3i.forward;
@@ -174,7 +189,7 @@ public static class FullRotation
                     case 23: return Vector3i.up;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 3:
+            case (byte)Face.down:
                 switch (rotation)
                 {
                     case 0: return Vector3i.down;
@@ -203,7 +218,7 @@ public static class FullRotation
                     case 23: return Vector3i.left;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 4:
+            case (byte)Face.right:
                 switch (rotation)
                 {
                     case 0: return Vector3i.right;
@@ -232,7 +247,7 @@ public static class FullRotation
                     case 23: return Vector3i.forward;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 5:
+            case (byte)Face.back:
                 switch (rotation)
                 {
                     case 0: return Vector3i.back;
@@ -273,7 +288,7 @@ public static class FullRotation
             return face;
         switch (face)
         {
-            case 0:
+            case (byte)Face.up:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.up;
@@ -302,7 +317,7 @@ public static class FullRotation
                     case 23: return (byte)Face.right;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 1:
+            case (byte)Face.left:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.left;
@@ -331,7 +346,7 @@ public static class FullRotation
                     case 23: return (byte)Face.back;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 2:
+            case (byte)Face.forward:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.forward;
@@ -360,7 +375,7 @@ public static class FullRotation
                     case 23: return (byte)Face.up;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 3:
+            case (byte)Face.down:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.down;
@@ -389,7 +404,7 @@ public static class FullRotation
                     case 23: return (byte)Face.left;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 4:
+            case (byte)Face.right:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.right;
@@ -418,7 +433,7 @@ public static class FullRotation
                     case 23: return (byte)Face.forward;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 5:
+            case (byte)Face.back:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.back;
@@ -466,7 +481,7 @@ public static class FullRotation
             return face;
         switch (face)
         {
-            case 0:
+            case (byte)Face.up:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.up;
@@ -495,7 +510,7 @@ public static class FullRotation
                     case 23: return (byte)Face.forward;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 1:
+            case (byte)Face.left:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.left;
@@ -524,7 +539,7 @@ public static class FullRotation
                     case 23: return (byte)Face.down;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 2:
+            case (byte)Face.forward:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.forward;
@@ -553,7 +568,7 @@ public static class FullRotation
                     case 23: return (byte)Face.right;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 3:
+            case (byte)Face.down:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.down;
@@ -582,7 +597,7 @@ public static class FullRotation
                     case 23: return (byte)Face.back;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 4:
+            case (byte)Face.right:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.right;
@@ -611,7 +626,7 @@ public static class FullRotation
                     case 23: return (byte)Face.up;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
-            case 5:
+            case (byte)Face.back:
                 switch (rotation)
                 {
                     case 0: return (byte)Face.back;
