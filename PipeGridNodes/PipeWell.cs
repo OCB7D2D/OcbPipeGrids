@@ -26,13 +26,18 @@ namespace NodeManager
         public float FromWetSurface => BLOCK != null ? BLOCK.FromWetSurface : 0.15f / 1000f;
         public float FromSnowfall => BLOCK != null ? BLOCK.FromSnowfall : 0.4f / 1000f;
         public float FromRainfall => BLOCK != null ? BLOCK.FromRainfall : 0.8f / 1000f;
+
         public float FromIrrigation => BLOCK != null ? BLOCK.FromIrrigation : 5f / 1000f;
         public float MaxWaterLevel => BLOCK != null ? BLOCK.MaxWaterLevel : 150f;
 
         // Keep a list of pumps to get water from?
         // Add pumps from different grids (sources)?
-        readonly HashSet<PipeIrrigation> Irrigators
+        internal readonly HashSet<PipeIrrigation> Irrigators
             = new HashSet<PipeIrrigation>();
+
+        // Keep a list of plants that get water from us.
+        internal readonly HashSet<PlantationGrowing> Plants
+            = new HashSet<PlantationGrowing>();
 
         public PipeWell(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -58,25 +63,15 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}",
-                WaterAvailable, CurrentSunLight, Irrigators.Count, AddWater);
-        }
-
-        internal void AddIrrigation(PipeIrrigation irrigation)
-        {
-            Irrigators.Add(irrigation);
-        }
-
-        internal void RemoveIrrigation(PipeIrrigation irrigation)
-        {
-            Irrigators.Remove(irrigation);
+            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Plants: {5}",
+                WaterAvailable, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Plants.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
         {
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            Manager?.RemoveWell(WorldPos);
+            Manager?.RemoveWell(this);
             manager?.AddWell(this);
         }
 

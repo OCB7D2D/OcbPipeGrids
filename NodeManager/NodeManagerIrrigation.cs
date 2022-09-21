@@ -19,14 +19,20 @@ namespace NodeManager
             Irrigators.Add(irrigation.WorldPos, irrigation);
             // Search for existing wells in reach
             var results = Wells.RadialSearch(
-                irrigation.WorldPos, 20 /*, NbWellCache */);
+                irrigation.WorldPos, IrrigatorToWellReach);
             for (int i = 0; i < results.Length; i += 1)
-                results[i].Item2.AddIrrigation(irrigation);
+            {
+                results[i].Item2.Irrigators.Add(irrigation);
+                irrigation.Wells.Add(results[i].Item2);
+            }
         }
 
-        internal void RemoveIrrigation(Vector3i position)
+        internal void RemoveIrrigation(PipeIrrigation irrigation)
         {
-            Irrigators.RemoveAt(position);
+            foreach (var well in irrigation.Wells)
+                well.Irrigators.Remove(irrigation);
+            irrigation.Wells.Clear();
+            Irrigators.RemoveAt(irrigation.WorldPos);
         }
 
     }

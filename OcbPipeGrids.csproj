@@ -178,6 +178,7 @@
     <Compile Include="Utils\SingletonInstance.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\blocks.pipe.xml" />
     <Content Include="Config\items.xml" />
     <Content Include="Config\blocks.xml" />
   </ItemGroup>

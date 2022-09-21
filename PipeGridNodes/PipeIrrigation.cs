@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace NodeManager
@@ -21,6 +23,10 @@ namespace NodeManager
             Log.Out("Loading Irrigation");
         }
 
+        // Keep a list of plants that get water from us.
+        internal readonly HashSet<PipeWell> Wells
+            = new HashSet<PipeWell>();
+
         public override string GetCustomDescription()
         {
             return string.Format("Irrigation {0}",
@@ -31,7 +37,7 @@ namespace NodeManager
         {
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            Manager?.RemoveIrrigation(WorldPos);
+            Manager?.RemoveIrrigation(this);
             manager?.AddIrrigation(this);
         }
 

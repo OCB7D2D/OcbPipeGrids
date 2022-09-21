@@ -1,10 +1,11 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace NodeManager
 {
 
-    public abstract class NodeBase : ITickable, IfaceGridNodeManaged
+    public abstract class NodeBase : ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
     {
 
         public abstract uint StorageID { get; }
@@ -68,6 +69,15 @@ namespace NodeManager
 
         public abstract string GetCustomDescription();
 
+        public bool Equals(NodeBase x, NodeBase y)
+        {
+            return x.WorldPos == y.WorldPos;
+        }
+
+        public int GetHashCode(NodeBase obj)
+        {
+            return obj.WorldPos.GetHashCode();
+        }
     }
 
 }

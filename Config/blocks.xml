@@ -1,5 +1,7 @@
-<configs>
+<configs patcher-version="1">
 
+	<include path="blocks.pipe.xml"/>
+	
 	<append xpath="/blocks/block[@name='plantedCorn1']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
 		<property name="DisplayInfo" value="Custom" />
@@ -7,35 +9,6 @@
 	<append xpath="/blocks/block[@name='plantedCorn2']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
 		<property name="DisplayInfo" value="Custom" />
-	</append>
-
-	<append xpath="/blocks/block[starts-with(@name, 'metalPipe')]">
-		<property name="Class" value="PipeConnection, PipeGrids" />
-		<property name="DisplayInfo" value="Custom" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeStraight']">
-		<property name="PipeConnectors" value="forward,back" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeCorner']">
-		<property name="PipeConnectors" value="forward,right" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeJoint']">
-		<property name="PipeConnectors" value="forward,left,back" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeFlange']">
-		<property name="PipeConnectors" value="back" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeValve']">
-		<property name="PipeConnectors" value="down" />
-	</append>
-
-	<append xpath="/blocks/block[@name='metalPipeCap']">
-		<property name="PipeConnectors" value="down" />
 	</append>
 
 	<append xpath="/blocks">

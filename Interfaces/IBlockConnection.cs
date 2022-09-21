@@ -2,6 +2,8 @@
 {
     bool BreakDistance { get; }
 
+    bool MultiBlockPipe { get; set; }
+
     bool NeedsPower { get; }
 
     int MaxConnections { get; set; }
