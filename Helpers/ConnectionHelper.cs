@@ -7,7 +7,7 @@
 
         public static bool CanConnect(byte mask, byte rotation, byte side)
         {
-            side = FullRotation.InvSide(side, rotation);
+            side = FullRotation.InvFace(side, rotation);
             return (mask & (byte)(1 << (byte)side)) != 0;
         }
 

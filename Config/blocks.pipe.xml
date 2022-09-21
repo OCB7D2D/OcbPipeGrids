@@ -63,15 +63,8 @@
 		<property name="PipeConnectors" value="down" />
 	</append>
 
-	<!--
-	
-
-	-->
-
 	<!-- Small pipes wall variants -->
 
-	<!--
-	
 	<append xpath="/blocks/block[@name='pipeSmallWallJoint']">
 		<property name="Class" value="PipeConnection, PipeGrids" />
 		<property name="PipeConnectors" value="forward,left,back" />
@@ -86,7 +79,7 @@
 
 	<append xpath="/blocks/block[@name='pipeSmallWallCorner']">
 		<property name="Class" value="PipeConnection, PipeGrids" />
-		<property name="PipeConnectors" value="forward,right" />
+		<property name="PipeConnectors" value="forward:1,right:1" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 
@@ -101,8 +94,6 @@
 		<property name="PipeConnectors" value="down" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
-
-	-->
 
 	<!-- 
 		  pipeSmallJoint,

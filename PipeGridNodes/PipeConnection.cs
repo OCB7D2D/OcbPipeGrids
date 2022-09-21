@@ -10,6 +10,7 @@ namespace NodeManager
         public override uint StorageID => 1;
 
         public byte ConnectMask => BLOCK?.ConnectMask ?? 63;
+        public uint SideMask => BLOCK?.SideMask ?? 0;
         public int MaxConnections => BLOCK?.MaxConnections ?? 6;
         public bool BreakDistance => BLOCK?.BreakDistance ?? false;
 
@@ -115,7 +116,7 @@ namespace NodeManager
 
         public bool CanConnect(byte side, byte rotation)
         {
-            side = FullRotation.InvSide(side, rotation);
+            side = FullRotation.InvFace(side, rotation);
             return (ConnectMask & (byte)(1 << (byte)side)) != 0;
         }
 

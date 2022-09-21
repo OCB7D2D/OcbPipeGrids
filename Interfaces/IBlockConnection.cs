@@ -12,6 +12,8 @@
 
     byte ConnectMask { get; set; }
 
+    uint SideMask { get; set; }
+
     byte ConnectFlags { get; }
 
 }

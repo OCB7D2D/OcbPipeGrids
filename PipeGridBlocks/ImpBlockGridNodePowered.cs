@@ -5,6 +5,8 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 	public virtual bool BreakDistance => false;
 	public virtual bool NeedsPower => false;
 	public virtual byte ConnectMask { get; set; } = 63;
+	public virtual uint SideMask { get; set; } = 0;
+	public virtual byte PypeType { get; set; } = 0;
 	public virtual bool MultiBlockPipe { get; set; } = false;
 	public virtual int MaxConnections { get; set; } = 6;
 

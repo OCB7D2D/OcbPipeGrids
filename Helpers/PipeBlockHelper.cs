@@ -1,4 +1,5 @@
-﻿using XMLData.Parsers;
+﻿using System;
+using XMLData.Parsers;
 
 public static class PipeBlockHelper
 {
@@ -23,16 +24,44 @@ public static class PipeBlockHelper
 				.Split(new[] { ',', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
 			foreach (string connector in connectors)
 			{
-				block.ConnectMask |= (byte)(1 << (byte)EnumParser
-					.Parse<FullRotation.Side>(connector.Trim()));
+				var parts = connector.Split(new char[] { ':' }, 2);
+				if (parts.Length == 0) continue; // Play safe
+				if (parts.Length == 2)
+                {
+					// First gather generic face mask
+                    byte face = (byte)EnumParser.Parse<
+						FullRotation.Face>(parts[0].Trim());
+					block.ConnectMask |= (byte)(1 << face);
+					// Then gather specific side masks
+					uint side = uint.Parse(parts[1]);
+					if (side < 1 || side > 4) throw new
+						Exception("Invalid Side (1-4)");
+					block.SideMask = SetSideMask(face,
+						side - 1, block.SideMask);
+				}
+				else
+                {
+					block.ConnectMask |= (byte)(1 << (byte)EnumParser
+						.Parse<FullRotation.Face>(connector.Trim()));
+				}
 			}
 		}
 	}
 
-	public static bool CanConnect(byte ConnectMask, byte side, byte rotation)
+    private static uint SetSideMask(byte face, uint side, uint mask)
+    {
+		return mask | (side << (4 * face));
+    }
+
+	private static bool CheckSideMask(byte face, uint side, uint mask)
+    {
+		return false;
+    }
+
+    public static bool CanConnect(byte ConnectMask, byte face, byte rotation)
 	{
-		side = FullRotation.InvSide(side, rotation);
-		return (ConnectMask & (byte)(1 << side)) != 0;
+		face = FullRotation.InvFace(face, rotation);
+		return (ConnectMask & (byte)(1 << face)) != 0;
 	}
 
     public static void OnBlockAdded(IBlockNode block,

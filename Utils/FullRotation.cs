@@ -4,7 +4,7 @@ using UnityEngine;
 public static class FullRotation
 {
 
-    public enum Side
+    public enum Face
     {
         up, left, forward,
         down, right, back,
@@ -17,11 +17,11 @@ public static class FullRotation
         Vector3i.down, Vector3i.right, Vector3i.back
     };
 
-    public static byte Mirror(int side)
+    public static byte Mirror(int face)
     {
-        if (side < 0) throw new ArgumentOutOfRangeException("side");
-        if (side > 5) throw new ArgumentOutOfRangeException("side");
-        return (byte)(side > 2 ? side - 3 : side + 3);
+        if (face < 0) throw new ArgumentOutOfRangeException("face");
+        if (face > 5) throw new ArgumentOutOfRangeException("face");
+        return (byte)(face > 2 ? face - 3 : face + 3);
     }
 
     // Generic rotation function (for full axis rotations only)
@@ -62,9 +62,9 @@ public static class FullRotation
 
     // Highly specialized version (can't be much faster?)
     // Function has been unit tested to make sure it is correct!
-    public static Vector3i GetVector(int side, int rotation)
+    public static Vector3i GetVector(int face, int rotation)
     {
-        switch (side)
+        switch (face)
         {
             case 0:
                 switch (rotation)
@@ -241,379 +241,379 @@ public static class FullRotation
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
         }
-        throw new ArgumentOutOfRangeException("side");
+        throw new ArgumentOutOfRangeException("face");
     }
 
     // Highly specialized version (can't be much faster?)
     // Function has been unit tested to make sure it is correct!
-    public static byte GetSide(byte side, byte rotation)
+    public static byte GetFace(byte face, byte rotation)
     {
         if (rotation == 0)
-            return side;
-        switch (side)
+            return face;
+        switch (face)
         {
             case 0:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.up;
-                    case 1: return (byte)Side.up;
-                    case 2: return (byte)Side.up;
-                    case 3: return (byte)Side.up;
-                    case 4: return (byte)Side.down;
-                    case 5: return (byte)Side.down;
-                    case 6: return (byte)Side.down;
-                    case 7: return (byte)Side.down;
-                    case 8: return (byte)Side.forward;
-                    case 9: return (byte)Side.forward;
-                    case 10: return (byte)Side.forward;
-                    case 11: return (byte)Side.forward;
-                    case 12: return (byte)Side.left;
-                    case 13: return (byte)Side.left;
-                    case 14: return (byte)Side.left;
-                    case 15: return (byte)Side.left;
-                    case 16: return (byte)Side.back;
-                    case 17: return (byte)Side.back;
-                    case 18: return (byte)Side.back;
-                    case 19: return (byte)Side.back;
-                    case 20: return (byte)Side.right;
-                    case 21: return (byte)Side.right;
-                    case 22: return (byte)Side.right;
-                    case 23: return (byte)Side.right;
+                    case 0: return (byte)Face.up;
+                    case 1: return (byte)Face.up;
+                    case 2: return (byte)Face.up;
+                    case 3: return (byte)Face.up;
+                    case 4: return (byte)Face.down;
+                    case 5: return (byte)Face.down;
+                    case 6: return (byte)Face.down;
+                    case 7: return (byte)Face.down;
+                    case 8: return (byte)Face.forward;
+                    case 9: return (byte)Face.forward;
+                    case 10: return (byte)Face.forward;
+                    case 11: return (byte)Face.forward;
+                    case 12: return (byte)Face.left;
+                    case 13: return (byte)Face.left;
+                    case 14: return (byte)Face.left;
+                    case 15: return (byte)Face.left;
+                    case 16: return (byte)Face.back;
+                    case 17: return (byte)Face.back;
+                    case 18: return (byte)Face.back;
+                    case 19: return (byte)Face.back;
+                    case 20: return (byte)Face.right;
+                    case 21: return (byte)Face.right;
+                    case 22: return (byte)Face.right;
+                    case 23: return (byte)Face.right;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 1:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.left;
-                    case 1: return (byte)Side.forward;
-                    case 2: return (byte)Side.right;
-                    case 3: return (byte)Side.back;
-                    case 4: return (byte)Side.right;
-                    case 5: return (byte)Side.forward;
-                    case 6: return (byte)Side.left;
-                    case 7: return (byte)Side.back;
-                    case 8: return (byte)Side.right;
-                    case 9: return (byte)Side.up;
-                    case 10: return (byte)Side.left;
-                    case 11: return (byte)Side.down;
-                    case 12: return (byte)Side.down;
-                    case 13: return (byte)Side.forward;
-                    case 14: return (byte)Side.up;
-                    case 15: return (byte)Side.back;
-                    case 16: return (byte)Side.left;
-                    case 17: return (byte)Side.up;
-                    case 18: return (byte)Side.right;
-                    case 19: return (byte)Side.down;
-                    case 20: return (byte)Side.up;
-                    case 21: return (byte)Side.forward;
-                    case 22: return (byte)Side.down;
-                    case 23: return (byte)Side.back;
+                    case 0: return (byte)Face.left;
+                    case 1: return (byte)Face.forward;
+                    case 2: return (byte)Face.right;
+                    case 3: return (byte)Face.back;
+                    case 4: return (byte)Face.right;
+                    case 5: return (byte)Face.forward;
+                    case 6: return (byte)Face.left;
+                    case 7: return (byte)Face.back;
+                    case 8: return (byte)Face.right;
+                    case 9: return (byte)Face.up;
+                    case 10: return (byte)Face.left;
+                    case 11: return (byte)Face.down;
+                    case 12: return (byte)Face.down;
+                    case 13: return (byte)Face.forward;
+                    case 14: return (byte)Face.up;
+                    case 15: return (byte)Face.back;
+                    case 16: return (byte)Face.left;
+                    case 17: return (byte)Face.up;
+                    case 18: return (byte)Face.right;
+                    case 19: return (byte)Face.down;
+                    case 20: return (byte)Face.up;
+                    case 21: return (byte)Face.forward;
+                    case 22: return (byte)Face.down;
+                    case 23: return (byte)Face.back;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 2:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.forward;
-                    case 1: return (byte)Side.right;
-                    case 2: return (byte)Side.back;
-                    case 3: return (byte)Side.left;
-                    case 4: return (byte)Side.forward;
-                    case 5: return (byte)Side.left;
-                    case 6: return (byte)Side.back;
-                    case 7: return (byte)Side.right;
-                    case 8: return (byte)Side.up;
-                    case 9: return (byte)Side.left;
-                    case 10: return (byte)Side.down;
-                    case 11: return (byte)Side.right;
-                    case 12: return (byte)Side.forward;
-                    case 13: return (byte)Side.up;
-                    case 14: return (byte)Side.back;
-                    case 15: return (byte)Side.down;
-                    case 16: return (byte)Side.up;
-                    case 17: return (byte)Side.right;
-                    case 18: return (byte)Side.down;
-                    case 19: return (byte)Side.left;
-                    case 20: return (byte)Side.forward;
-                    case 21: return (byte)Side.down;
-                    case 22: return (byte)Side.back;
-                    case 23: return (byte)Side.up;
+                    case 0: return (byte)Face.forward;
+                    case 1: return (byte)Face.right;
+                    case 2: return (byte)Face.back;
+                    case 3: return (byte)Face.left;
+                    case 4: return (byte)Face.forward;
+                    case 5: return (byte)Face.left;
+                    case 6: return (byte)Face.back;
+                    case 7: return (byte)Face.right;
+                    case 8: return (byte)Face.up;
+                    case 9: return (byte)Face.left;
+                    case 10: return (byte)Face.down;
+                    case 11: return (byte)Face.right;
+                    case 12: return (byte)Face.forward;
+                    case 13: return (byte)Face.up;
+                    case 14: return (byte)Face.back;
+                    case 15: return (byte)Face.down;
+                    case 16: return (byte)Face.up;
+                    case 17: return (byte)Face.right;
+                    case 18: return (byte)Face.down;
+                    case 19: return (byte)Face.left;
+                    case 20: return (byte)Face.forward;
+                    case 21: return (byte)Face.down;
+                    case 22: return (byte)Face.back;
+                    case 23: return (byte)Face.up;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 3:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.down;
-                    case 1: return (byte)Side.down;
-                    case 2: return (byte)Side.down;
-                    case 3: return (byte)Side.down;
-                    case 4: return (byte)Side.up;
-                    case 5: return (byte)Side.up;
-                    case 6: return (byte)Side.up;
-                    case 7: return (byte)Side.up;
-                    case 8: return (byte)Side.back;
-                    case 9: return (byte)Side.back;
-                    case 10: return (byte)Side.back;
-                    case 11: return (byte)Side.back;
-                    case 12: return (byte)Side.right;
-                    case 13: return (byte)Side.right;
-                    case 14: return (byte)Side.right;
-                    case 15: return (byte)Side.right;
-                    case 16: return (byte)Side.forward;
-                    case 17: return (byte)Side.forward;
-                    case 18: return (byte)Side.forward;
-                    case 19: return (byte)Side.forward;
-                    case 20: return (byte)Side.left;
-                    case 21: return (byte)Side.left;
-                    case 22: return (byte)Side.left;
-                    case 23: return (byte)Side.left;
+                    case 0: return (byte)Face.down;
+                    case 1: return (byte)Face.down;
+                    case 2: return (byte)Face.down;
+                    case 3: return (byte)Face.down;
+                    case 4: return (byte)Face.up;
+                    case 5: return (byte)Face.up;
+                    case 6: return (byte)Face.up;
+                    case 7: return (byte)Face.up;
+                    case 8: return (byte)Face.back;
+                    case 9: return (byte)Face.back;
+                    case 10: return (byte)Face.back;
+                    case 11: return (byte)Face.back;
+                    case 12: return (byte)Face.right;
+                    case 13: return (byte)Face.right;
+                    case 14: return (byte)Face.right;
+                    case 15: return (byte)Face.right;
+                    case 16: return (byte)Face.forward;
+                    case 17: return (byte)Face.forward;
+                    case 18: return (byte)Face.forward;
+                    case 19: return (byte)Face.forward;
+                    case 20: return (byte)Face.left;
+                    case 21: return (byte)Face.left;
+                    case 22: return (byte)Face.left;
+                    case 23: return (byte)Face.left;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 4:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.right;
-                    case 1: return (byte)Side.back;
-                    case 2: return (byte)Side.left;
-                    case 3: return (byte)Side.forward;
-                    case 4: return (byte)Side.left;
-                    case 5: return (byte)Side.back;
-                    case 6: return (byte)Side.right;
-                    case 7: return (byte)Side.forward;
-                    case 8: return (byte)Side.left;
-                    case 9: return (byte)Side.down;
-                    case 10: return (byte)Side.right;
-                    case 11: return (byte)Side.up;
-                    case 12: return (byte)Side.up;
-                    case 13: return (byte)Side.back;
-                    case 14: return (byte)Side.down;
-                    case 15: return (byte)Side.forward;
-                    case 16: return (byte)Side.right;
-                    case 17: return (byte)Side.down;
-                    case 18: return (byte)Side.left;
-                    case 19: return (byte)Side.up;
-                    case 20: return (byte)Side.down;
-                    case 21: return (byte)Side.back;
-                    case 22: return (byte)Side.up;
-                    case 23: return (byte)Side.forward;
+                    case 0: return (byte)Face.right;
+                    case 1: return (byte)Face.back;
+                    case 2: return (byte)Face.left;
+                    case 3: return (byte)Face.forward;
+                    case 4: return (byte)Face.left;
+                    case 5: return (byte)Face.back;
+                    case 6: return (byte)Face.right;
+                    case 7: return (byte)Face.forward;
+                    case 8: return (byte)Face.left;
+                    case 9: return (byte)Face.down;
+                    case 10: return (byte)Face.right;
+                    case 11: return (byte)Face.up;
+                    case 12: return (byte)Face.up;
+                    case 13: return (byte)Face.back;
+                    case 14: return (byte)Face.down;
+                    case 15: return (byte)Face.forward;
+                    case 16: return (byte)Face.right;
+                    case 17: return (byte)Face.down;
+                    case 18: return (byte)Face.left;
+                    case 19: return (byte)Face.up;
+                    case 20: return (byte)Face.down;
+                    case 21: return (byte)Face.back;
+                    case 22: return (byte)Face.up;
+                    case 23: return (byte)Face.forward;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 5:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.back;
-                    case 1: return (byte)Side.left;
-                    case 2: return (byte)Side.forward;
-                    case 3: return (byte)Side.right;
-                    case 4: return (byte)Side.back;
-                    case 5: return (byte)Side.right;
-                    case 6: return (byte)Side.forward;
-                    case 7: return (byte)Side.left;
-                    case 8: return (byte)Side.down;
-                    case 9: return (byte)Side.right;
-                    case 10: return (byte)Side.up;
-                    case 11: return (byte)Side.left;
-                    case 12: return (byte)Side.back;
-                    case 13: return (byte)Side.down;
-                    case 14: return (byte)Side.forward;
-                    case 15: return (byte)Side.up;
-                    case 16: return (byte)Side.down;
-                    case 17: return (byte)Side.left;
-                    case 18: return (byte)Side.up;
-                    case 19: return (byte)Side.right;
-                    case 20: return (byte)Side.back;
-                    case 21: return (byte)Side.up;
-                    case 22: return (byte)Side.forward;
-                    case 23: return (byte)Side.down;
+                    case 0: return (byte)Face.back;
+                    case 1: return (byte)Face.left;
+                    case 2: return (byte)Face.forward;
+                    case 3: return (byte)Face.right;
+                    case 4: return (byte)Face.back;
+                    case 5: return (byte)Face.right;
+                    case 6: return (byte)Face.forward;
+                    case 7: return (byte)Face.left;
+                    case 8: return (byte)Face.down;
+                    case 9: return (byte)Face.right;
+                    case 10: return (byte)Face.up;
+                    case 11: return (byte)Face.left;
+                    case 12: return (byte)Face.back;
+                    case 13: return (byte)Face.down;
+                    case 14: return (byte)Face.forward;
+                    case 15: return (byte)Face.up;
+                    case 16: return (byte)Face.down;
+                    case 17: return (byte)Face.left;
+                    case 18: return (byte)Face.up;
+                    case 19: return (byte)Face.right;
+                    case 20: return (byte)Face.back;
+                    case 21: return (byte)Face.up;
+                    case 22: return (byte)Face.forward;
+                    case 23: return (byte)Face.down;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
         }
-        throw new ArgumentOutOfRangeException("side");
+        throw new ArgumentOutOfRangeException("face");
     }
 
     // Highly specialized version (can't be much faster?)
     // Function has been unit tested to make sure it is correct!
-    public static byte InvSide(byte side, byte rotation)
+    public static byte InvFace(byte face, byte rotation)
     {
         if (rotation == 0)
-            return side;
-        switch (side)
+            return face;
+        switch (face)
         {
             case 0:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.up;
-                    case 1: return (byte)Side.up;
-                    case 2: return (byte)Side.up;
-                    case 3: return (byte)Side.up;
-                    case 4: return (byte)Side.down;
-                    case 5: return (byte)Side.down;
-                    case 6: return (byte)Side.down;
-                    case 7: return (byte)Side.down;
-                    case 8: return (byte)Side.forward;
-                    case 9: return (byte)Side.left;
-                    case 10: return (byte)Side.back;
-                    case 11: return (byte)Side.right;
-                    case 12: return (byte)Side.right;
-                    case 13: return (byte)Side.forward;
-                    case 14: return (byte)Side.left;
-                    case 15: return (byte)Side.back;
-                    case 16: return (byte)Side.forward;
-                    case 17: return (byte)Side.left;
-                    case 18: return (byte)Side.back;
-                    case 19: return (byte)Side.right;
-                    case 20: return (byte)Side.left;
-                    case 21: return (byte)Side.back;
-                    case 22: return (byte)Side.right;
-                    case 23: return (byte)Side.forward;
+                    case 0: return (byte)Face.up;
+                    case 1: return (byte)Face.up;
+                    case 2: return (byte)Face.up;
+                    case 3: return (byte)Face.up;
+                    case 4: return (byte)Face.down;
+                    case 5: return (byte)Face.down;
+                    case 6: return (byte)Face.down;
+                    case 7: return (byte)Face.down;
+                    case 8: return (byte)Face.forward;
+                    case 9: return (byte)Face.left;
+                    case 10: return (byte)Face.back;
+                    case 11: return (byte)Face.right;
+                    case 12: return (byte)Face.right;
+                    case 13: return (byte)Face.forward;
+                    case 14: return (byte)Face.left;
+                    case 15: return (byte)Face.back;
+                    case 16: return (byte)Face.forward;
+                    case 17: return (byte)Face.left;
+                    case 18: return (byte)Face.back;
+                    case 19: return (byte)Face.right;
+                    case 20: return (byte)Face.left;
+                    case 21: return (byte)Face.back;
+                    case 22: return (byte)Face.right;
+                    case 23: return (byte)Face.forward;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 1:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.left;
-                    case 1: return (byte)Side.back;
-                    case 2: return (byte)Side.right;
-                    case 3: return (byte)Side.forward;
-                    case 4: return (byte)Side.right;
-                    case 5: return (byte)Side.forward;
-                    case 6: return (byte)Side.left;
-                    case 7: return (byte)Side.back;
-                    case 8: return (byte)Side.right;
-                    case 9: return (byte)Side.forward;
-                    case 10: return (byte)Side.left;
-                    case 11: return (byte)Side.back;
-                    case 12: return (byte)Side.up;
-                    case 13: return (byte)Side.up;
-                    case 14: return (byte)Side.up;
-                    case 15: return (byte)Side.up;
-                    case 16: return (byte)Side.left;
-                    case 17: return (byte)Side.back;
-                    case 18: return (byte)Side.right;
-                    case 19: return (byte)Side.forward;
-                    case 20: return (byte)Side.down;
-                    case 21: return (byte)Side.down;
-                    case 22: return (byte)Side.down;
-                    case 23: return (byte)Side.down;
+                    case 0: return (byte)Face.left;
+                    case 1: return (byte)Face.back;
+                    case 2: return (byte)Face.right;
+                    case 3: return (byte)Face.forward;
+                    case 4: return (byte)Face.right;
+                    case 5: return (byte)Face.forward;
+                    case 6: return (byte)Face.left;
+                    case 7: return (byte)Face.back;
+                    case 8: return (byte)Face.right;
+                    case 9: return (byte)Face.forward;
+                    case 10: return (byte)Face.left;
+                    case 11: return (byte)Face.back;
+                    case 12: return (byte)Face.up;
+                    case 13: return (byte)Face.up;
+                    case 14: return (byte)Face.up;
+                    case 15: return (byte)Face.up;
+                    case 16: return (byte)Face.left;
+                    case 17: return (byte)Face.back;
+                    case 18: return (byte)Face.right;
+                    case 19: return (byte)Face.forward;
+                    case 20: return (byte)Face.down;
+                    case 21: return (byte)Face.down;
+                    case 22: return (byte)Face.down;
+                    case 23: return (byte)Face.down;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 2:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.forward;
-                    case 1: return (byte)Side.left;
-                    case 2: return (byte)Side.back;
-                    case 3: return (byte)Side.right;
-                    case 4: return (byte)Side.forward;
-                    case 5: return (byte)Side.left;
-                    case 6: return (byte)Side.back;
-                    case 7: return (byte)Side.right;
-                    case 8: return (byte)Side.up;
-                    case 9: return (byte)Side.up;
-                    case 10: return (byte)Side.up;
-                    case 11: return (byte)Side.up;
-                    case 12: return (byte)Side.forward;
-                    case 13: return (byte)Side.left;
-                    case 14: return (byte)Side.back;
-                    case 15: return (byte)Side.right;
-                    case 16: return (byte)Side.down;
-                    case 17: return (byte)Side.down;
-                    case 18: return (byte)Side.down;
-                    case 19: return (byte)Side.down;
-                    case 20: return (byte)Side.forward;
-                    case 21: return (byte)Side.left;
-                    case 22: return (byte)Side.back;
-                    case 23: return (byte)Side.right;
+                    case 0: return (byte)Face.forward;
+                    case 1: return (byte)Face.left;
+                    case 2: return (byte)Face.back;
+                    case 3: return (byte)Face.right;
+                    case 4: return (byte)Face.forward;
+                    case 5: return (byte)Face.left;
+                    case 6: return (byte)Face.back;
+                    case 7: return (byte)Face.right;
+                    case 8: return (byte)Face.up;
+                    case 9: return (byte)Face.up;
+                    case 10: return (byte)Face.up;
+                    case 11: return (byte)Face.up;
+                    case 12: return (byte)Face.forward;
+                    case 13: return (byte)Face.left;
+                    case 14: return (byte)Face.back;
+                    case 15: return (byte)Face.right;
+                    case 16: return (byte)Face.down;
+                    case 17: return (byte)Face.down;
+                    case 18: return (byte)Face.down;
+                    case 19: return (byte)Face.down;
+                    case 20: return (byte)Face.forward;
+                    case 21: return (byte)Face.left;
+                    case 22: return (byte)Face.back;
+                    case 23: return (byte)Face.right;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 3:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.down;
-                    case 1: return (byte)Side.down;
-                    case 2: return (byte)Side.down;
-                    case 3: return (byte)Side.down;
-                    case 4: return (byte)Side.up;
-                    case 5: return (byte)Side.up;
-                    case 6: return (byte)Side.up;
-                    case 7: return (byte)Side.up;
-                    case 8: return (byte)Side.back;
-                    case 9: return (byte)Side.right;
-                    case 10: return (byte)Side.forward;
-                    case 11: return (byte)Side.left;
-                    case 12: return (byte)Side.left;
-                    case 13: return (byte)Side.back;
-                    case 14: return (byte)Side.right;
-                    case 15: return (byte)Side.forward;
-                    case 16: return (byte)Side.back;
-                    case 17: return (byte)Side.right;
-                    case 18: return (byte)Side.forward;
-                    case 19: return (byte)Side.left;
-                    case 20: return (byte)Side.right;
-                    case 21: return (byte)Side.forward;
-                    case 22: return (byte)Side.left;
-                    case 23: return (byte)Side.back;
+                    case 0: return (byte)Face.down;
+                    case 1: return (byte)Face.down;
+                    case 2: return (byte)Face.down;
+                    case 3: return (byte)Face.down;
+                    case 4: return (byte)Face.up;
+                    case 5: return (byte)Face.up;
+                    case 6: return (byte)Face.up;
+                    case 7: return (byte)Face.up;
+                    case 8: return (byte)Face.back;
+                    case 9: return (byte)Face.right;
+                    case 10: return (byte)Face.forward;
+                    case 11: return (byte)Face.left;
+                    case 12: return (byte)Face.left;
+                    case 13: return (byte)Face.back;
+                    case 14: return (byte)Face.right;
+                    case 15: return (byte)Face.forward;
+                    case 16: return (byte)Face.back;
+                    case 17: return (byte)Face.right;
+                    case 18: return (byte)Face.forward;
+                    case 19: return (byte)Face.left;
+                    case 20: return (byte)Face.right;
+                    case 21: return (byte)Face.forward;
+                    case 22: return (byte)Face.left;
+                    case 23: return (byte)Face.back;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 4:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.right;
-                    case 1: return (byte)Side.forward;
-                    case 2: return (byte)Side.left;
-                    case 3: return (byte)Side.back;
-                    case 4: return (byte)Side.left;
-                    case 5: return (byte)Side.back;
-                    case 6: return (byte)Side.right;
-                    case 7: return (byte)Side.forward;
-                    case 8: return (byte)Side.left;
-                    case 9: return (byte)Side.back;
-                    case 10: return (byte)Side.right;
-                    case 11: return (byte)Side.forward;
-                    case 12: return (byte)Side.down;
-                    case 13: return (byte)Side.down;
-                    case 14: return (byte)Side.down;
-                    case 15: return (byte)Side.down;
-                    case 16: return (byte)Side.right;
-                    case 17: return (byte)Side.forward;
-                    case 18: return (byte)Side.left;
-                    case 19: return (byte)Side.back;
-                    case 20: return (byte)Side.up;
-                    case 21: return (byte)Side.up;
-                    case 22: return (byte)Side.up;
-                    case 23: return (byte)Side.up;
+                    case 0: return (byte)Face.right;
+                    case 1: return (byte)Face.forward;
+                    case 2: return (byte)Face.left;
+                    case 3: return (byte)Face.back;
+                    case 4: return (byte)Face.left;
+                    case 5: return (byte)Face.back;
+                    case 6: return (byte)Face.right;
+                    case 7: return (byte)Face.forward;
+                    case 8: return (byte)Face.left;
+                    case 9: return (byte)Face.back;
+                    case 10: return (byte)Face.right;
+                    case 11: return (byte)Face.forward;
+                    case 12: return (byte)Face.down;
+                    case 13: return (byte)Face.down;
+                    case 14: return (byte)Face.down;
+                    case 15: return (byte)Face.down;
+                    case 16: return (byte)Face.right;
+                    case 17: return (byte)Face.forward;
+                    case 18: return (byte)Face.left;
+                    case 19: return (byte)Face.back;
+                    case 20: return (byte)Face.up;
+                    case 21: return (byte)Face.up;
+                    case 22: return (byte)Face.up;
+                    case 23: return (byte)Face.up;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
             case 5:
                 switch (rotation)
                 {
-                    case 0: return (byte)Side.back;
-                    case 1: return (byte)Side.right;
-                    case 2: return (byte)Side.forward;
-                    case 3: return (byte)Side.left;
-                    case 4: return (byte)Side.back;
-                    case 5: return (byte)Side.right;
-                    case 6: return (byte)Side.forward;
-                    case 7: return (byte)Side.left;
-                    case 8: return (byte)Side.down;
-                    case 9: return (byte)Side.down;
-                    case 10: return (byte)Side.down;
-                    case 11: return (byte)Side.down;
-                    case 12: return (byte)Side.back;
-                    case 13: return (byte)Side.right;
-                    case 14: return (byte)Side.forward;
-                    case 15: return (byte)Side.left;
-                    case 16: return (byte)Side.up;
-                    case 17: return (byte)Side.up;
-                    case 18: return (byte)Side.up;
-                    case 19: return (byte)Side.up;
-                    case 20: return (byte)Side.back;
-                    case 21: return (byte)Side.right;
-                    case 22: return (byte)Side.forward;
-                    case 23: return (byte)Side.left;
+                    case 0: return (byte)Face.back;
+                    case 1: return (byte)Face.right;
+                    case 2: return (byte)Face.forward;
+                    case 3: return (byte)Face.left;
+                    case 4: return (byte)Face.back;
+                    case 5: return (byte)Face.right;
+                    case 6: return (byte)Face.forward;
+                    case 7: return (byte)Face.left;
+                    case 8: return (byte)Face.down;
+                    case 9: return (byte)Face.down;
+                    case 10: return (byte)Face.down;
+                    case 11: return (byte)Face.down;
+                    case 12: return (byte)Face.back;
+                    case 13: return (byte)Face.right;
+                    case 14: return (byte)Face.forward;
+                    case 15: return (byte)Face.left;
+                    case 16: return (byte)Face.up;
+                    case 17: return (byte)Face.up;
+                    case 18: return (byte)Face.up;
+                    case 19: return (byte)Face.up;
+                    case 20: return (byte)Face.back;
+                    case 21: return (byte)Face.right;
+                    case 22: return (byte)Face.forward;
+                    case 23: return (byte)Face.left;
                     default: throw new ArgumentOutOfRangeException("rotation");
                 }
         }
-        throw new ArgumentOutOfRangeException("side");
+        throw new ArgumentOutOfRangeException("face");
     }
 
     // Useful helper function (debugging only)
@@ -629,27 +629,27 @@ public static class FullRotation
     }
 
     // Useful helper function (debugging only)
-    public static byte VectorToSide(Vector3 vector)
+    public static byte VectorToFace(Vector3 vector)
     {
-        if (vector == Vector3i.up) return (byte)Side.up;
-        if (vector == Vector3i.down) return (byte)Side.down;
-        if (vector == Vector3i.left) return (byte)Side.left;
-        if (vector == Vector3i.right) return (byte)Side.right;
-        if (vector == Vector3i.forward) return (byte)Side.forward;
-        if (vector == Vector3i.back) return (byte)Side.back;
-        return (byte)Side.invalid;
+        if (vector == Vector3i.up) return (byte)Face.up;
+        if (vector == Vector3i.down) return (byte)Face.down;
+        if (vector == Vector3i.left) return (byte)Face.left;
+        if (vector == Vector3i.right) return (byte)Face.right;
+        if (vector == Vector3i.forward) return (byte)Face.forward;
+        if (vector == Vector3i.back) return (byte)Face.back;
+        return (byte)Face.invalid;
     }
 
     // Useful helper function (debugging only)
-    public static string SideToString(int side)
+    public static string FaceToString(int face)
     {
-        if (side == (byte)Side.up) return "up";
-        if (side == (byte)Side.down) return "down";
-        if (side == (byte)Side.left) return "left";
-        if (side == (byte)Side.right) return "right";
-        if (side == (byte)Side.forward) return "forward";
-        if (side == (byte)Side.back) return "back";
-        return side.ToString();
+        if (face == (byte)Face.up) return "up";
+        if (face == (byte)Face.down) return "down";
+        if (face == (byte)Face.left) return "left";
+        if (face == (byte)Face.right) return "right";
+        if (face == (byte)Face.forward) return "forward";
+        if (face == (byte)Face.back) return "back";
+        return face.ToString();
     }
 
 }
