@@ -10,17 +10,18 @@ public static class FullRotation
 
     public enum Face : byte
     {
-        up, left, forward,
-        down, right, back,
-        invalid = byte.MaxValue
-
-        // up,
-        // down,
-        // forward,
-        // left,
-        // back,
-        // right,
+        // up, left, forward,
+        // down, right, back,
         // invalid = byte.MaxValue
+
+        up,
+        down,
+        forward,
+        left,
+        back,
+        right,
+
+        invalid = byte.MaxValue
     };
 
     // ToDo: re-use enum (need to adjust a lot of code)
@@ -31,19 +32,19 @@ public static class FullRotation
             case BlockFace.Top: return Face.up;
             case BlockFace.Bottom: return Face.down;
             case BlockFace.North: return Face.forward;
-            case BlockFace.West: return Face.right;
-            case BlockFace.South: return Face.down;
-            case BlockFace.East: return Face.left;
+            case BlockFace.East: return Face.right;
+            case BlockFace.South: return Face.back;
+            case BlockFace.West: return Face.left;
         }
         return (Face)0;
     }
 
     public static Vector3i[] Vector = new Vector3i[6]
     {
-        // Vector3i.up, Vector3i.down, Vector3i.forward,
-        // Vector3i.left, Vector3i.back, Vector3i.right
-        Vector3i.up, Vector3i.left, Vector3i.forward,
-        Vector3i.down, Vector3i.right, Vector3i.back
+        Vector3i.up, Vector3i.down, Vector3i.forward,
+        Vector3i.left, Vector3i.back, Vector3i.right
+        //Vector3i.up, Vector3i.left, Vector3i.forward,
+        //Vector3i.down, Vector3i.right, Vector3i.back
     };
 
     public static byte Mirror(int face)
