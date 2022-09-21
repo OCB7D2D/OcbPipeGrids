@@ -19,15 +19,8 @@ namespace NodeManager
 			ref bool __result)
 		{
 			if (__result == false) return;
-			if (_blockValue.Block is BlockPipeConnection ours)
-			{
-				if (_adjBlockValue.Block is BlockPipeConnection other)
-				{
-					__result PipeBlockHelper.CanConnect(_blockValue, _face, _adjBlockValue);
-				//	Log.Out("Check Pipe Connection");
-					// __result = false;
-				}
-			}
+			__result = !ConnectionHelper.CanConnect(
+				_blockValue, (byte)_face, _adjBlockValue);
 		}
 	}
 

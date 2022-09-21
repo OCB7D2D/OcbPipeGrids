@@ -15,27 +15,30 @@ namespace NodeManager
 
         public static bool CanConnect(BlockConnector neighbour, byte face)
             => CanConnect(neighbour.ConnectMask, neighbour.Rotation, face);
-
-        public static bool CanConnect(BlockValue BV, byte face, BlockValue TO)
-        {
-            return false;
-        }
-
         private static bool AreFacesAligned(BlockConnector ours,
             byte face, BlockConnector other, byte mirror)
         {
-            face = FullRotation.InvFace(face, ours.Rotation);
-            // byte mirror = FullRotation.Mirror(face);
-            mirror = FullRotation.InvFace(mirror, other.Rotation);
+            return AreFacesAligned(
+                face, ours.Rotation, ours.SideMask,
+                mirror, other.Rotation, other.SideMask);
+        }
 
-            uint mask1 = ((ours.SideMask & (15U << (4 * face))) >> (4 * face)) & 15;
-            uint mask2 = ((other.SideMask & (15U << (4 * mirror))) >> (4 * mirror)) & 15;
+        private static bool AreFacesAligned(
+            byte face, byte ourRotation, uint ourSideMask,
+            byte mirror, byte otherRotation, uint otherSideMask)
+        {
+            face = FullRotation.InvFace(face, ourRotation);
+            // byte mirror = FullRotation.Mirror(face);
+            mirror = FullRotation.InvFace(mirror, otherRotation);
+
+            uint mask1 = ((ourSideMask & (15U << (4 * face))) >> (4 * face)) & 15;
+            uint mask2 = ((otherSideMask & (15U << (4 * mirror))) >> (4 * mirror)) & 15;
 
             if (mask1 == 0 || mask2 == 0)
                 return mask1 == mask2;
 
             Log.Out("= Checking {0} vs {1} at {2} and {3}",
-                mask1, mask2, ours.Rotation, other.Rotation);
+                mask1, mask2, ourRotation, otherRotation);
 
             if (mask1 == 1) mask1 = 1;
             else if (mask1 == 2) mask1 = 2;
@@ -51,8 +54,8 @@ namespace NodeManager
 
             Log.Out("1 Checking {0} vs {1}", mask1, mask2);
 
-            mask1 = FullRotation.GetFace((byte)mask1, ours.Rotation);
-            mask2 = FullRotation.GetFace((byte)mask2, other.Rotation);
+            mask1 = FullRotation.GetFace((byte)mask1, ourRotation);
+            mask2 = FullRotation.GetFace((byte)mask2, otherRotation);
             mask2 = FullRotation.Mirror((byte)mask2);
 
             Log.Out("2 Checking {0} vs {1}", mask1, mask2);
@@ -60,6 +63,26 @@ namespace NodeManager
         }
 
         private static readonly int[] GridCache = new int[6];
+
+        public static bool CanConnect(BlockValue BV, byte face, BlockValue TO)
+        {
+            if (BV.Block is IBlockConnection ours)
+            {
+                if (TO.Block is IBlockConnection other)
+                {
+                    
+                    // if (NB[face].ConnectMask == 255) continue;
+                    bool a = CanConnect(ours.ConnectMask, BV.rotation, face);
+                    byte mirror = FullRotation.Mirror(face);
+                    bool b = CanConnect(other.ConnectMask, TO.rotation, mirror);
+                    return a && b;
+                    return a && b && AreFacesAligned(
+                        face, BV.rotation, ours.SideMask,
+                        mirror, TO.rotation, other.SideMask);
+                }
+            }
+            return false;
+        }
 
         public static bool CanAddConnector(BlockConnector block, BlockConnector[] NB)
         {
