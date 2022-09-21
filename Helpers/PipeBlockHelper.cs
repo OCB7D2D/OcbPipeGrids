@@ -38,6 +38,7 @@ public static class PipeBlockHelper
 						Exception("Invalid Side (1-4)");
 					block.SideMask = SetSideMask(face,
 						side - 1, block.SideMask);
+					Log.Warning("====> SideMask {0}", block.SideMask);
 				}
 				else
                 {
@@ -48,17 +49,13 @@ public static class PipeBlockHelper
 		}
 	}
 
-    private static uint SetSideMask(byte face, uint side, uint mask)
-    {
-		return mask | (side << (4 * face));
-    }
+	private static uint SetSideMask(byte face, uint side, uint mask)
+		=> mask | (1U << (int)(4 * face + side));
 
 	private static bool CheckSideMask(byte face, uint side, uint mask)
-    {
-		return false;
-    }
-
-    public static bool CanConnect(byte ConnectMask, byte face, byte rotation)
+		=> (mask & (1U << (int)(4 * face + side))) != 0;
+	
+	public static bool CanConnect(byte ConnectMask, byte face, byte rotation)
 	{
 		face = FullRotation.InvFace(face, rotation);
 		return (ConnectMask & (byte)(1 << face)) != 0;

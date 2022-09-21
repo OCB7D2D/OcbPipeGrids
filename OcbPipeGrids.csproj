@@ -80,6 +80,7 @@
     <Compile Include="Harmony\FixBlockScheduler.cs" />
     <Compile Include="Harmony\LateBlockChanges.cs" />
     <Compile Include="Harmony\NewShapeWireFix.cs" />
+    <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />
     <Compile Include="Harmony\WaterExchange.cs" />
     <Compile Include="Interfaces\IBlockNode.cs" />
     <Compile Include="Interfaces\ISunLight.cs" />

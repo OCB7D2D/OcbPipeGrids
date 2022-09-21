@@ -4,7 +4,7 @@ using UnityEngine;
 public static class FullRotation
 {
 
-    public enum Face
+    public enum Face : byte
     {
         up, left, forward,
         down, right, back,
@@ -428,6 +428,13 @@ public static class FullRotation
                 }
         }
         throw new ArgumentOutOfRangeException("face");
+    }
+
+    public static byte InvSide(byte side, byte rotation)
+    {
+        side += 1; // First Face is Up (skip that)
+        if (side > 2) side += 1; // And skip down face
+        return InvFace(side, rotation);
     }
 
     // Highly specialized version (can't be much faster?)

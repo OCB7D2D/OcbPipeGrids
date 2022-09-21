@@ -73,7 +73,7 @@
 
 	<append xpath="/blocks/block[@name='pipeSmallWall1x1']">
 		<property name="Class" value="PipeConnection, PipeGrids" />
-		<property name="PipeConnectors" value="forward,back" />
+		<property name="PipeConnectors" value="forward:1,back:3" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 
@@ -93,6 +93,28 @@
 		<property name="Class" value="PipeConnection, PipeGrids" />
 		<property name="PipeConnectors" value="down" />
 		<property name="DisplayInfo" value="Custom" />
+	</append>
+
+	<append xpath="/blocks">
+		<block name="pipeSmallWallCornerEdge">
+			<property name="Extends" value="pipeSmall1x1" param1="Model,Shape,Mesh"/>
+			<property name="Shape" value="New"/>
+			<property name="Model" value="#@modfolder:Resources/WallPipeCornerSmall.unity3d?WallPipeCornerSmall"/>
+			<property name="HandleFace" value="Bottom"/>
+			<property name="EconomicValue" value="60"/>
+			<property name="Class" value="PipeConnection, PipeGrids" />
+			<property name="PipeConnectors" value="forward:3,up:1" />
+			<property name="DisplayInfo" value="Custom" />
+
+			<property name="Path" value="solid"/>
+			<property name="Texture" value="597"/>
+			<!--
+			<property name="LootList" value="storageCrate"/>
+			<property name="LPHardnessScale" value="8"/>
+			-->
+			
+			<!-- disassemble value -->
+		</block>
 	</append>
 
 	<!-- 

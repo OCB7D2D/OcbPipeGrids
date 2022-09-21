@@ -102,6 +102,8 @@
 			<property name="PipeMaxConnection" value="2" />
 			<property name="PipeConnectors" value="forward,back" />
 
+			<property name="Path" value="solid"/>
+			<property name="Texture" value="597"/>
 			<property name="LootList" value="storageCrate"/>
 			<property name="LPHardnessScale" value="8"/>
 		</block>
