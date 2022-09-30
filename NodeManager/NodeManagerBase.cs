@@ -92,12 +92,12 @@ namespace NodeManager
 
         private readonly PersistedData Persister;
 
-        public ConcurrentQueue<IActionClient> Output;
+        public ConcurrentQueue<IActionClient> ToMainThread;
 
         public NodeManager(ConcurrentQueue<IActionClient> output)
         {
             Persister = new PersistedData(this);
-            Output = output;
+            ToMainThread = output;
         }
 
         // Path to persist the data to (filename)

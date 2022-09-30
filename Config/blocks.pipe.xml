@@ -100,7 +100,7 @@
 			<property name="Extends" value="pipeSmall1x1" param1="Model,Shape,Mesh"/>
 			<property name="Shape" value="New"/>
 			<property name="Model" value="#@modfolder:Resources/WallPipeCornerSmall.unity3d?WallPipeCornerSmall"/>
-			<property name="HandleFace" value="Bottom"/>
+			<property name="HandleFace" value="North"/>
 			<property name="EconomicValue" value="60"/>
 			<property name="Class" value="PipeConnection, PipeGrids" />
 			<property name="PipeConnectors" value="forward:3,up:1" />

@@ -5,7 +5,7 @@
 
         public string Description { get; set; }
 
-        public override void ProcessOnClient(NodeManagerClient client)
+        public override void ProcessOnMainThread(NodeManagerMother client)
         {
             client.OnDescriptionResponse(this);
         }

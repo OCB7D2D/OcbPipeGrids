@@ -1,0 +1,509 @@
+﻿using SPCore.Classes;
+using SPCore.Classes.SPClasses;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TileEntityPoweredProductor : TileEntityPowered, ITileEntityProducer
+{
+    private ItemStack[] inputItems;
+    private ItemStack[] outputItems;
+    private ItemStack[] toolsItems;
+    private string inputList;
+    private string outputList;
+    private string toolsList;
+    public bool IsCrafting = false;
+    private IEnumerator coroutine;
+
+    public XUiC_ProductorLootContainer InputWindow { get; set; }
+    public XUiC_ProductorLootContainer OutputWindow { get; set; }
+    public XUiC_ProductorLootContainer ToolsWindow { get; set; }
+    public XUiC_ProductorRecipesList RecipesListWindow { get; set; }
+    public bool WindowIsOpen { get; set; }
+
+    
+
+    public string[] AllowedToolsItems
+    {
+        get
+        {
+            if (chunk == null) return
+            DynamicProperties BlockProperties = blockValue.Block.Properties;
+            return BlockProperties.Values["AllowedToolsItems"].Split(',');
+        }
+    }
+
+    public bool RandomRecipe
+    {
+        get
+        {
+            if (chunk != null)
+            {
+                DynamicProperties BlockProperties = chunk.GetBlock(World.toBlock(ToWorldPos())).Block.Properties;
+-                if (BlockProperties.Values.ContainsKey("RandomRecipe"))
+-                {
+-                    return StringParsers.ParseBool(BlockProperties.Values["RandomRecipe"]);
+-                }
++                return BlockProperties.GetBool("RandomRecipe");
+            }
+            return false;
+        }
+    }
+
+    public TileEntityPoweredProductor(Chunk _chunk) : base(_chunk)
+    {
+    }
+
+    public override void UpdateTick(World world)
+    {
+        base.UpdateTick(world);
+        if (IsPowered && !IsCrafting && (!GameManager.Instance.World.IsRemote() || GameManager.IsDedicatedServer))
+        {
+            ProduceItems();
+        }
+    }
+
+    public void SetWindows(XUiC_ProductorLootContainer inputWindow, XUiC_ProductorLootContainer outputWindow, XUiC_ProductorLootContainer toolsWindow, XUiC_ProductorRecipesList recipesListWindow)
+    {
+        InputWindow = inputWindow;
+        OutputWindow = outputWindow;
+        ToolsWindow = toolsWindow;
+        RecipesListWindow = recipesListWindow;
+    }
+
+    public string InputList
+    {
+        get => inputList;
+        set
+        {
+            inputList = value;
+            inputItems = ItemStack.CreateArray(LootContainer.GetLootContainer(inputList).size.x * LootContainer.GetLootContainer(inputList).size.y);
+        }
+    }
+
+    public string OutputList
+    {
+        get => outputList;
+        set
+        {
+            outputList = value;
+            outputItems = ItemStack.CreateArray(LootContainer.GetLootContainer(outputList).size.x * LootContainer.GetLootContainer(outputList).size.y);
+        }
+    }
+
+    public string ToolsList
+    {
+        get => toolsList;
+        set
+        {
+            toolsList = value;
+            toolsItems = ItemStack.CreateArray(LootContainer.GetLootContainer(toolsList).size.x * LootContainer.GetLootContainer(toolsList).size.y);
+        }
+    }
+
+    public List<ProducerRecipe> ProducerRecipes
+    {
+        get
+        {
+            if (chunk != null)
+            {
+                BlockPoweredProductor blockProductor = (BlockPoweredProductor)chunk.GetBlock(World.toBlock(ToWorldPos())).Block;
+                return blockProductor.ProducerRecipes;
+            }
+            return null;
+        }
+    }
+
+    private TileEntityPoweredProductor(TileEntityPoweredProductor _other) : base(null)
+    {
+        inputItems = ItemStack.Clone(_other.inputItems);
+        outputItems = ItemStack.Clone(_other.outputItems);
+        toolsItems = ItemStack.Clone(_other.toolsItems);
+        WindowIsOpen = _other.WindowIsOpen;
+    }
+
+    public override TileEntity Clone() => new TileEntityPoweredProductor(this);
+
+    public ItemStack[] InputItems
+    {
+        get
+        {
+            if (inputItems == null)
+                inputItems = ItemStack.CreateArray(LootContainer.GetLootContainer(inputList).size.x * LootContainer.GetLootContainer(inputList).size.y);
+            return inputItems;
+        }
+        set => inputItems = value;
+    }
+
+    public ItemStack[] OutputItems
+    {
+        get
+        {
+            if (outputItems == null)
+                outputItems = ItemStack.CreateArray(LootContainer.GetLootContainer(outputList).size.x * LootContainer.GetLootContainer(outputList).size.y);
+            return outputItems;
+        }
+        set => outputItems = value;
+    }
+
+    public ItemStack[] ToolsItems
+    {
+        get
+        {
+            if (toolsItems == null)
+                toolsItems = ItemStack.CreateArray(LootContainer.GetLootContainer(toolsList).size.x * LootContainer.GetLootContainer(toolsList).size.y);
+            return toolsItems;
+        }
+        set => toolsItems = value;
+    }
+
+    public bool ContainerHaveAllTools(string[] tools)
+    {
+        foreach (var tool in tools)
+        {
+            if (!ContainerHaveTool(tool)) return false;
+        }
+        return true;
+    }
+
+    public bool ContainerHaveTool(string itemName)
+    {
+        if (itemName == null) return true;
+        foreach (ItemStack item in ToolsItems)
+        {
+            if (!item.IsEmpty() && item.itemValue.ItemClass.Name.EqualsCaseInsensitive(itemName))
+            {
+                if (item.itemValue.HasQuality && item.itemValue.UseTimes >= item.itemValue.MaxUseTimes) return false;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool ContainerHaveIngredients(string[] ingredients, int[] counts)
+    {
+        for (int index = 0; index < ingredients.Length; index++)
+        {
+            var itemName = ingredients[index];
+            var count = counts[index];
+            var itemValue = ItemClass.GetItem(itemName);
+            if (!ContainerHasItem(itemValue, count)) return false;
+        }
+        return true;
+    }
+
+    public bool ContainerHasItem(ItemValue _item, int count)
+    {
+        int count1 = 0;
+        for (int index = 0; index < InputItems.Length; ++index)
+        {
+            if (InputItems[index].itemValue.type == _item.type)
+            {
+                count1 += InputItems[index].count;
+            }
+        }
+        if (count1 >= count) return true;
+        return false;
+    }
+
+    private void tileEntityChanged()
+    {
+        for (int i = 0; i < listeners.Count; i++)
+        {
+            listeners[i].OnTileEntityChanged(this, 0);
+        }
+        SetModified();
+    }
+
+    public void UpdateSlot(int _idx, ItemStack _item, ItemStack[] destination, bool isTileEntity = true)
+    {
+        destination[_idx] = _item.Clone();
+        if (isTileEntity) tileEntityChanged();
+    }
+
+    public bool TryStackItem(int startIndex, ItemStack _itemStack, ItemStack[] destination, bool isTileEntity = true)
+    {
+        int count1 = _itemStack.count;
+        for (int index = startIndex; index < destination.Length; ++index)
+        {
+            int count2 = _itemStack.count;
+            if (_itemStack.itemValue.type == destination[index].itemValue.type && destination[index].CanStackPartly(ref count2))
+            {
+                destination[index].count += count2;
+                _itemStack.count -= count2;
+                if (isTileEntity) SetModified();
+                if (_itemStack.count == 0)
+                {
+                    tileEntityChanged();
+                    return true;
+                }
+            }
+        }
+        if (_itemStack.count != count1)
+        {
+            if (isTileEntity) tileEntityChanged();
+        }
+        return false;
+    }
+
+    public bool AddItem(ItemStack _item, ItemStack[] destination, bool isTileEntity = true)
+    {
+        for (int _idx = 0; _idx < destination.Length; ++_idx)
+        {
+            if (destination[_idx].IsEmpty())
+            {
+                UpdateSlot(_idx, _item, destination, isTileEntity);
+                if (isTileEntity) SetModified();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool DeleteItems(string[] ingredients, int[] counts)
+    {
+        for (int _idx = 0; _idx < ingredients.Length; ++_idx)
+        {
+            string ingredient = ingredients[_idx];
+            int count = counts[_idx];
+            var itemStack = new ItemStack(ItemClass.GetItem(ingredient, true), count);
+            DeleteItem(itemStack);
+        }
+        return false;
+    }
+
+    public void DegradeTools(ProducerRecipe recipe)
+    {
+        for (int i = 0; i < ToolsItems.Length; i++)
+        {
+            var toolItemStack = ToolsItems[i];
+            foreach (var tool in recipe.ToolRequired)
+            {
+                if (toolItemStack.itemValue.HasQuality && toolItemStack.itemValue.ItemClass.Name == tool && toolItemStack.itemValue.UseTimes < toolItemStack.itemValue.MaxUseTimes)
+                {
+                    //Log.Warning("Degradation de l'outil");
+                    ToolsItems[i].itemValue.UseTimes += recipe.ToolDegradation;
+                    SetModified();
+                    return;
+                }
+            }
+        }
+    }
+
+    public void DeleteItem(ItemStack _item)
+    {
+        int count = _item.count;
+        for (int _idx = 0; _idx < InputItems.Length; ++_idx)
+        {
+            var itemStack = InputItems[_idx];
+            if (!itemStack.IsEmpty() && _item.itemValue.type == itemStack.itemValue.type)
+            {
+                if (itemStack.count > count)
+                {
+                    UpdateSlot(_idx, new ItemStack(itemStack.itemValue, itemStack.count - count), InputItems);
+                    return;
+                }
+                else if (itemStack.count <= count)
+                {
+                    count -= itemStack.count;
+                    UpdateSlot(_idx, new ItemStack().Clone(), InputItems);
+                }
+                SetModified();
+            }
+        }
+    }
+
+    public bool CanProduceItem(ProducerRecipe recipe)
+    {
+        if (recipe.BlockNeeded != null && recipe.BlockNeededCount > 0 && recipe.BlockSearchRange > 0)
+        {
+            var blockNeededType = ItemClass.GetItem(recipe.BlockNeeded).type;
+            var world = GameManager.Instance.World;
+            int count = 0;
+            Vector3i pos = new Vector3i(ToWorldPos());
+            for (int _y = pos.y - recipe.BlockSearchRange; _y <= pos.y; ++_y)
+            {
+                for (int _x = pos.x - recipe.BlockSearchRange / 2; _x <= pos.x + recipe.BlockSearchRange / 2; ++_x)
+                {
+                    for (int _z = pos.z - recipe.BlockSearchRange / 2; _z <= pos.z + recipe.BlockSearchRange / 2; ++_z)
+                    {
+                        if (world.GetBlock(_x, _y, _z).type == blockNeededType)
+                        {
+                            count++;
+                            if (count >= recipe.BlockSearchRange) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public bool CanAddItems(ProducerRecipe recipe)
+    {
+        ItemStack[] itemStacks = ItemStack.CreateArray(OutputItems.Length);
+        for (int i = 0; i < itemStacks.Length; i++)
+        {
+            itemStacks[i] = OutputItems[i].Clone();
+        }
+
+        for (int i = 0; i < recipe.Items.Length; i++)
+        {
+            var item = new ItemStack(ItemClass.GetItem(recipe.Items[i]), recipe.ItemsCount[i]);
+            if (!TryStackItem(0, item, itemStacks, false))
+            {
+                if (!AddItem(item, itemStacks, false))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public bool CanCraftRecipe(ProducerRecipe producerRecipe)
+    {
+        return (ContainerHaveAllTools(producerRecipe.ToolRequired) || producerRecipe.ToolRequired == null) && ContainerHaveIngredients(producerRecipe.Ingredients, producerRecipe.IngredientsCount) && CanProduceItem(producerRecipe);
+    }
+
+    public ProducerRecipe GetRandomRecipe()
+    {
+        List<ProducerRecipe> recipes = new List<ProducerRecipe>();
+        foreach (var recipe in ProducerRecipes)
+        {
+            if (CanCraftRecipe(recipe)) recipes.Add(recipe);
+        }
+        if (recipes.Count > 0) return recipes.RandomObject();
+        return null;
+    }
+
+    public ProducerRecipe PickRecipe()
+    {
+        if (RandomRecipe) return GetRandomRecipe();
+        else
+        {
+            for (int i = ProducerRecipes.Count - 1; i >= 0; i--)
+            {
+                var recipe = ProducerRecipes[i];
+                if (CanCraftRecipe(recipe)) return recipe;
+            }
+            return null;
+        }
+    }
+
+    public void ProduceItems()
+    {
+        var recipe = PickRecipe();
+        if (recipe == null) return;
+        if ((ContainerHaveAllTools(recipe.ToolRequired) || recipe.ToolRequired == null) && ContainerHaveIngredients(recipe.Ingredients, recipe.IngredientsCount) && CanAddItems(recipe) && CanProduceItem(recipe))
+        {
+            IsCrafting = true;
+            coroutine = CraftItemWithDelay(recipe);
+            GameManager.Instance.StartCoroutine(coroutine);
+            Log.Warning($"Lancement d'un craft, temps estimé : {recipe.CraftTime} secondes");
+        }
+    }
+
+    private IEnumerator CraftItemWithDelay(ProducerRecipe recipe)
+    {
+        yield return new WaitForSeconds(recipe.CraftTime);
+        if (CanCraftRecipe(recipe) && this != null)
+        {
+            int random;
+            for (int i = 0; i < recipe.Items.Length; i++)
+            {
+                random = Random.Range(1, 101);
+                if (random < recipe.Probability[i] * 100)
+                {
+                    int count = recipe.ItemsCount[i];
+                    string itemName = recipe.Items[i];
+                    //Log.Warning($"Traitement de {itemName}/{count}");
+                    if (!TryStackItem(0, new ItemStack(ItemClass.GetItem(itemName), count), OutputItems))
+                    {
+                        //Log.Warning($"Echec du TryStack de l'item {itemName}/{count}");
+                        if (AddItem(new ItemStack(ItemClass.GetItem(itemName), count), OutputItems))
+                        {
+                            //Log.Warning($"Ajout de l'item {itemName}/{count}");
+                        }
+                        //Log.Warning($"Echec du AddItem de l'item {itemName}/{count}");
+                    }
+                }
+            }
+            DeleteItems(recipe.Ingredients, recipe.IngredientsCount);
+            if (recipe.ToolRequired != null && recipe.ToolDegradation > 0) DegradeTools(recipe);
+            if (ToolsWindow != null && InputWindow != null && OutputWindow != null)
+            {
+                ToolsWindow.SetToolsSlots(this, ToolsItems);
+                InputWindow.SetInputSlots(this, InputItems);
+                OutputWindow.SetOutputSlots(this, OutputItems);
+            }
+        }
+        IsCrafting = false;
+        Log.Warning($"Craft terminé");
+        GameManager.Instance.StopCoroutine(coroutine);
+    }
+
+    public override TileEntityType GetTileEntityType() => TileEntityMapping.Types[TileEntityMapping.PoweredProductor];
+
+    public override void OnReadComplete()
+    {
+        base.OnReadComplete();
+        IsCrafting = false;
+        WindowIsOpen = false;
+    }
+
+    public override void OnUnload(World world)
+    {
+        base.OnUnload(world);
+        if (coroutine != null) GameManager.Instance?.StopCoroutine(coroutine);
+    }
+
+    public override void read(PooledBinaryReader _br, StreamModeRead _eStreamMode)
+    {
+        base.read(_br, _eStreamMode);
+        int inputSize = _br.ReadInt32();
+        //Log.Warning($"inputSize : {inputSize}");
+        inputItems = ItemStack.CreateArray(inputSize);
+        for (int i = 0; i < inputSize; i++)
+        {
+            inputItems[i].Read(_br);
+        }
+        int outputSize = _br.ReadInt32();
+        //Log.Warning($"outputSize : {outputSize}");
+        outputItems = ItemStack.CreateArray(outputSize);
+        for (int i = 0; i < outputSize; i++)
+        {
+            outputItems[i].Read(_br);
+        }
+        int toolsSize = _br.ReadInt32();
+        //Log.Warning($"toolsSize : {toolsSize}");
+        toolsItems = ItemStack.CreateArray(toolsSize);
+        for (int i = 0; i < toolsSize; i++)
+        {
+            toolsItems[i].Read(_br);
+        }
+        WindowIsOpen = _br.ReadBoolean();
+        inputList = _br.ReadString();
+        outputList = _br.ReadString();
+        toolsList = _br.ReadString();
+        IsCrafting = _br.ReadBoolean();
+    }
+
+    public override void write(PooledBinaryWriter _bw, StreamModeWrite _eStreamMode)
+    {
+        base.write(_bw, _eStreamMode);
+        _bw.Write(InputItems.Length);
+        foreach (ItemStack item in InputItems)
+            item.Clone().Write(_bw);
+        _bw.Write(OutputItems.Length);
+        foreach (ItemStack item in OutputItems)
+            item.Clone().Write(_bw);
+        _bw.Write(ToolsItems.Length);
+        foreach (ItemStack item in ToolsItems)
+            item.Clone().Write(_bw);
+        _bw.Write(WindowIsOpen);
+        _bw.Write(inputList);
+        _bw.Write(outputList);
+        _bw.Write(toolsList);
+        _bw.Write(IsCrafting);
+    }
+}

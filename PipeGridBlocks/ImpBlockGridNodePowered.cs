@@ -39,13 +39,13 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 	{
 		if (bv.ischild) return false; // ToDo: add more fancy code for multidims?
 		return base.CanPlaceBlockAt(world, clrIdx, pos, bv, omitCollideCheck)
-			&& NodeManagerInterface.Instance.Client.CanConnect(pos, BCC.Set(bv, this));
+			&& NodeManagerInterface.Instance.Mother.CanConnect(pos, BCC.Set(bv, this));
 	}
 
 	public override string GetCustomDescription(
 		Vector3i pos, BlockValue bv)
 	{
-		return NodeManagerInterface.Instance.Client
+		return NodeManagerInterface.Instance.Mother
 			.GetCustomDescription(pos, bv);
 	}
 

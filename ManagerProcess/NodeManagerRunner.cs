@@ -10,7 +10,7 @@ namespace NodeManager
         private readonly System.Threading.Thread Thread;
 
         public NodeManagerRunner(
-            ConcurrentQueue<IActionServer> input,
+            ConcurrentQueue<IActionWorker> input,
             ConcurrentQueue<IActionClient> output)
         {
             Worker = new PipeGridWorker(input, output);

@@ -6,13 +6,13 @@ namespace NodeManager
     public class PipeGridWorker : IfaceGridNodeManaged
     {
 
-        private readonly ConcurrentQueue<IActionServer> Input;
+        private readonly ConcurrentQueue<IActionWorker> Input;
         private readonly ConcurrentQueue<IActionClient> Output;
 
         public NodeManager Manager { get; private set; }
 
         public PipeGridWorker(
-            ConcurrentQueue<IActionServer> queue,
+            ConcurrentQueue<IActionWorker> queue,
             ConcurrentQueue<IActionClient> output)
         {
             Input = queue; Output = output;
@@ -42,7 +42,7 @@ namespace NodeManager
 
         }
 
-        public void SendToServer(IActionServer action)
+        public void SendToServer(IActionWorker action)
         {
             Input.Enqueue(action);
         }
@@ -65,11 +65,11 @@ namespace NodeManager
             {
                 // ToDo: Implement proper clock
                 while (Input.TryDequeue(
-                    out IActionServer msg))
+                    out IActionWorker msg))
                 {
                     try
                     {
-                        msg.ProcessOnServer(this);
+                        msg.ProcessOnWorker(this);
                     }
                     catch (System.Exception err)
                     {

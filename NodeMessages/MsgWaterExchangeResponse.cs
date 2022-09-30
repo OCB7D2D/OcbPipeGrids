@@ -14,7 +14,7 @@
         public ItemValue NewItemValue => new ItemValue(NewItemType);
         public ItemValue OldItemValue => new ItemValue(OldItemType);
 
-        public override void ProcessOnClient(NodeManagerClient client)
+        public override void ProcessOnMainThread(NodeManagerMother client)
         {
             World world = GameManager.Instance.World;
             BlockValue bv = world.GetBlock(Position);

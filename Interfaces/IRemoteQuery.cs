@@ -1,6 +1,6 @@
 ﻿namespace NodeManager
 {
-    public interface IRemoteQuery : IActionServer
+    public interface IRemoteQuery : IActionWorker
     {
         void Read(PooledBinaryReader br);
         void Write(PooledBinaryWriter bw);

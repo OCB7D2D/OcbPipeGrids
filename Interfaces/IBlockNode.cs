@@ -33,3 +33,7 @@
         Vector3i pos, EntityAlive focused);
 
 }
+
+public interface ILootBlock : IBlockNode
+{
+}

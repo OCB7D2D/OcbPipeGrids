@@ -9,7 +9,7 @@
         public int RecipientEntityId { get; set; } = -1;
 
         // Main function called when message is received on client
-        public abstract void ProcessOnClient(NodeManagerClient client);
+        public abstract void ProcessOnMainThread(NodeManagerMother client);
 
     }
 

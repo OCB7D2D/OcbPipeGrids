@@ -17,7 +17,7 @@ namespace NodeManager
         {
             var idx = Grids.IndexOf(grid);
             if (idx != -1) return false;
-            Log.Warning("Create a new grid");
+            // Log.Warning("Create a new grid");
             grid.ID = Grids.Count;
             Grids.Add(grid);
             return true;
@@ -26,13 +26,13 @@ namespace NodeManager
         public bool RemoveGrid(PipeGrid grid)
         {
             var idx = Grids.IndexOf(grid);
-            Console.WriteLine("Removing at {0}", idx);
+            //Console.WriteLine("Removing at {0}", idx);
             if (idx == -1) return false;
             Grids.RemoveAt(idx);
             while (idx < Grids.Count)
                 Grids[idx++].ID--;
-            foreach (var i in Grids)
-                Console.WriteLine("Grid {0}", i);
+            //foreach (var i in Grids)
+            //    Console.WriteLine("Grid {0}", i);
             return true;
         }
 

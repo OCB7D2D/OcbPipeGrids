@@ -3,23 +3,22 @@ using System.Collections.Concurrent;
 
 namespace NodeManager
 {
-    public class NodeManagerClient
+    public class NodeManagerMother
     {
-
-        ConcurrentQueue<IActionServer> Input;
-        ConcurrentQueue<IActionClient> Output;
+        public readonly ConcurrentQueue<IActionWorker> ToWorker;
+        public readonly ConcurrentQueue<IActionClient> ToMother;
 
         Vector3i RequestedCustomDesc = Vector3i.invalid;
         Vector3i AcquiredCustomDesc = Vector3i.invalid;
         string CustomDescription = String.Empty;
         ulong RenewCustomDesc = 0;
 
-        public NodeManagerClient(
-            ConcurrentQueue<IActionServer> input,
+        public NodeManagerMother(
+            ConcurrentQueue<IActionWorker> input,
             ConcurrentQueue<IActionClient> output)
         {
-            Input = input;
-            Output = output;
+            ToWorker = input;
+            ToMother = output;
         }
 
         internal string GetCustomDescription(Vector3i position, BlockValue bv)

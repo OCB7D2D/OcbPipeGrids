@@ -5,7 +5,7 @@
 
         public BlockConnector[] NB = new BlockConnector[6];
 
-        public override void ProcessOnClient(NodeManagerClient client)
+        public override void ProcessOnMainThread(NodeManagerMother client)
         {
             client.OnConnectResponse(this);
         }

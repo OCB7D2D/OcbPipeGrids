@@ -32,4 +32,20 @@
 		<property name="Focused_blockname_6" value="ocbWaterPipeWell"/>
 	</append>
 
+	<append xpath="/items">
+		<item name="resourceCompost">
+			<property name="HoldType" value="45"/>
+			<property name="Tags" value="junk"/>
+			<property name="UnlockedBy" value="perkLivingOffTheLand"/>
+			<property name="Meshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
+			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+			<property name="CustomIcon" value="resourceFertilizer"/>
+			<property name="Material" value="MresourceFertilizer"/>
+			<property name="Stacknumber" value="500"/>
+			<property name="Weight" value="0"/>
+			<property name="Group" value="Resources"/>
+			<property name="EconomicValue" value="30"/>
+		</item>
+	</append>
+
 </configs>

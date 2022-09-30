@@ -5,7 +5,7 @@
 
         public float WaterLevel { get; set; }
 
-        public override void ProcessOnClient(NodeManagerClient client)
+        public override void ProcessOnMainThread(NodeManagerMother client)
         {
             World world = GameManager.Instance.World;
             BlockValue bv = world.GetBlock(Position);
@@ -17,7 +17,7 @@
                 action.Setup(Position, chunk.GetLight(
                     Position.x, Position.y, Position.z,
                     Chunk.LIGHT_TYPE.SUN));
-                NodeManagerInterface.Instance.Input.Enqueue(action);
+                NodeManagerInterface.Instance.ToWorker.Enqueue(action);
             }
         }
 

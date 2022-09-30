@@ -55,8 +55,7 @@ namespace NodeManager
             GrowProgress = br.ReadSingle();
             CurrentSunLight = br.ReadByte();
             CurrentFertility = br.ReadByte();
-            // CurrentRain = br.ReadSingle();
-            Log.Out("------- LOADDED PLANT {0}", WorldPos);
+            CurrentRain = br.ReadSingle();
         }
 
         public override void Write(BinaryWriter bw)
@@ -79,7 +78,8 @@ namespace NodeManager
 
         protected override void OnManagerAttached(NodeManager manager)
         {
-            Log.Out("Attach Man {0} {1} {2}", ID, Manager, manager);
+            Log.Out("Attach Man {0} {1} {2}",
+                ID, Manager, manager);
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
             Manager?.RemovePlantGrowing(this);
@@ -160,7 +160,7 @@ namespace NodeManager
                 }
                 var manager = Manager; // Remember
                 Log.Out("Enqueue to manager {0}", Manager);
-                Manager.Output.Enqueue(action);
+                Manager.ToMainThread.Enqueue(action);
                 Manager.RemoveManagedNode(WorldPos);
                 // AttachToManager(null);
 

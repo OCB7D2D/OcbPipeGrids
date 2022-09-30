@@ -4,11 +4,13 @@ using System.IO;
 
 namespace NodeManager
 {
-    public abstract class PipeReservoir : PipeConnection, IPoweredNode
+    public class PipeReservoir : PipeConnection, IPoweredNode
     {
         public float MaxFillState => 150f;
 
         public float FillState { get; set; } = 0f;
+
+        public ushort FluidType { get; protected set; } = 0;
 
         public override ulong NextTick => 60;
 
@@ -24,18 +26,33 @@ namespace NodeManager
         : base(br)
         {
             FillState = br.ReadSingle();
+            FluidType = br.ReadUInt16();
+        }
+
+        public virtual void SetFluidType(ushort type)
+        {
+            if (FluidType != type)
+            {
+                if (FillState > 0)
+                {
+                    Log.Warning("Reseting Fluid");
+                    FillState = 0f;
+                }
+                FluidType = type;
+            }
         }
 
         public override void Write(BinaryWriter bw)
         {
             base.Write(bw);
             bw.Write(FillState);
+            bw.Write(FluidType);
         }
 
         public override string GetCustomDescription()
         {
-            return string.Format("Reservoir {0}/{1}",
-                FillState, MaxFillState);
+            return string.Format("Reservoir {0}/{1} ({2})",
+                FillState, MaxFillState, FluidType);
         }
 
         List<PipeReservoir> intake = new List<PipeReservoir>();
@@ -47,9 +64,13 @@ namespace NodeManager
             base.Tick(delta);
 
             if (!IsPowered) return true;
+            // First need to be filled a little
+            // Happens at source or when filled
+            if (FillState == 0) return true;
             // Prepare variables
             reservoirs.Clear();
             float levels = 0;
+
 
             // Propagate through the pipe network
             PropagateThroughGrid(null, (cur, prev) =>
@@ -57,11 +78,15 @@ namespace NodeManager
                 // Check if connection is a reservoir
                 if (cur is PipeReservoir reservoir)
                 {
-                    if (reservoir.IsPowered)
+                    if (FluidType == reservoir.FluidType ||
+                        reservoir.FillState == 0)
                     {
-                        // Sum up all water levels
-                        levels += reservoir.FillState;
-                        reservoirs.Add(reservoir);
+                        if (reservoir.IsPowered)
+                        {
+                            // Sum up all water levels
+                            levels += reservoir.FillState;
+                            reservoirs.Add(reservoir);
+                        }
                     }
                     // Abort search at leafs
                     return cur != this;
@@ -125,6 +150,8 @@ namespace NodeManager
                 into.FillState += needed * out_factor;
                 into.FillState = System.Math.Min(
                     into.MaxFillState, into.FillState);
+                if (into.FluidType != FluidType)
+                    into.SetFluidType(FluidType);
                 // Log.Out(" adding by {0}", needed * out_factor);
             }
 

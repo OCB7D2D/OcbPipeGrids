@@ -1,6 +1,6 @@
 ﻿namespace NodeManager
 {
-    public class ActionSetPower : IActionServer
+    public class ActionSetPower : IActionWorker
     {
 
         public int SenderEntityId { get => -1; set => throw new System.Exception("Can send stop signal from clients!"); }
@@ -14,7 +14,7 @@
             IsPowered = powered;
         }
 
-        public void ProcessOnServer(PipeGridWorker worker)
+        public void ProcessOnWorker(PipeGridWorker worker)
         {
             worker.Manager.UpdatePower(Position, IsPowered);
             Log.Out("Server got new powered {0} => {1}",

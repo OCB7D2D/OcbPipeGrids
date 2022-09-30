@@ -2,7 +2,7 @@
 
 namespace NodeManager
 {
-    public abstract class NodeBlock<B> : NodeBase where B : class
+    public abstract class NodeBlock<B> : NodeBase where B : class, IBlockNode
     {
 
         public BlockValue BV = BlockValue.Air; // Air

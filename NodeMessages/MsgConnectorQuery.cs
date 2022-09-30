@@ -3,7 +3,7 @@
     public class MsgConnectorQuery : RemoteQuery<NetPkgConnectorQuery>
     {
 
-        public override void ProcessOnServer(PipeGridWorker worker)
+        public override void ProcessOnWorker(PipeGridWorker worker)
         {
             var response = new MsgConnectorResponse();
             NodeManager manager = worker.Manager;

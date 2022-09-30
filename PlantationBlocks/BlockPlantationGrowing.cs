@@ -46,7 +46,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 
 		var action = new ActionUpdatePlantStats();
 		action.Setup(world, clrIdx, pos);
-		NodeManagerInterface.Instance.Input.Enqueue(action);
+		NodeManagerInterface.Instance.ToWorker.Enqueue(action);
 
 		if (bv.isair || bv.ischild) return true;
 		world.GetWBT().AddScheduledBlockUpdate(
@@ -107,7 +107,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 	public override string GetCustomDescription(
 	Vector3i pos, BlockValue bv)
 	{
-		return NodeManagerInterface.Instance.Client
+		return NodeManagerInterface.Instance.Mother
 			.GetCustomDescription(pos, bv);
 	}
 

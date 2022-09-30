@@ -15,35 +15,35 @@ namespace NodeManager
 
         // static public IfacePipeGridAPI Interface => Instance.API;
 
-        public ConcurrentQueue<IActionServer> Input
-            = new ConcurrentQueue<IActionServer>();
-        public ConcurrentQueue<IActionClient> Output
+        public ConcurrentQueue<IActionWorker> ToWorker
+            = new ConcurrentQueue<IActionWorker>();
+        public ConcurrentQueue<IActionClient> ToMother
             = new ConcurrentQueue<IActionClient>();
 
-        public NodeManagerRunner Runner { get; } = null;
-        public NodeManagerClient Client { get; } = null;
+        public NodeManagerRunner Worker { get; } = null;
+        public NodeManagerMother Mother { get; } = null;
         
         public NodeManagerInterface()
         {
-            if (HasClient) Client = new NodeManagerClient(Input, Output);
-            if (HasServer) Runner = new NodeManagerRunner(Input, Output);
+            if (HasClient) Mother = new NodeManagerMother(ToWorker, ToMother);
+            if (HasServer) Worker = new NodeManagerRunner(ToWorker, ToMother);
         }
 
         internal void Init()
         {
-            if (HasServer) Runner.Start();
+            if (HasServer) Worker.Start();
         }
 
 
         internal void Update()
         {
 
-            while (Output.TryDequeue(
+            while (ToMother.TryDequeue(
                 out IActionClient response))
             {
                 if (response.RecipientEntityId == -1)
                 {
-                    response.ProcessOnClient(Client);
+                    response.ProcessOnMainThread(Mother);
 
                 }
                 else
@@ -60,7 +60,7 @@ namespace NodeManager
 
         internal void Cleanup()
         {
-            if (HasServer) Runner.Stop();
+            if (HasServer) Worker.Stop();
             // Client.Cleanup();
             instance = null;
         }
@@ -69,7 +69,7 @@ namespace NodeManager
         {
             if (HasServer)
             {
-                Instance.Input.Enqueue(query);
+                Instance.ToWorker.Enqueue(query);
             }
             else
             {

@@ -19,7 +19,7 @@
 
         }
 
-        public void ProcessOnClient(NodeManagerClient client)
+        public void ProcessOnMainThread(NodeManagerMother client)
         {
             LateBlockChanges.AddPendingBlockChange(
                 new BlockChangeInfo(Position, BV, sbyte.MaxValue));

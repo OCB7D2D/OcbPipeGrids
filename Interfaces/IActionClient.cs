@@ -1,9 +1,9 @@
 ﻿namespace NodeManager
 {
-    public interface IActionServer
+    public interface IActionWorker
     {
         int SenderEntityId { get; set; }
-        void ProcessOnServer(PipeGridWorker worker);
+        void ProcessOnWorker(PipeGridWorker worker);
     }
 
 }

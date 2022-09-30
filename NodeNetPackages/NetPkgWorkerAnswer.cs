@@ -10,7 +10,7 @@
             // We should only see these on remote clients (no local manager)
             Log.Out("Process network package for worker answer from server to client");
             // Msg.RecipientEntityId = this.Sender.entityId;
-            NodeManagerInterface.Instance.Output.Enqueue(Msg);
+            NodeManagerInterface.Instance.ToMother.Enqueue(Msg);
             Msg = default(T); // Consumed and pushed away
         }
 

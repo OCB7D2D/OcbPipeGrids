@@ -19,7 +19,11 @@
     public class NetPkgActionRemoveSource : NetPkgWorkerQuery<ActionRemoveSource> { }
     public class NetPkgActionAddPump : NetPkgWorkerQuery<ActionAddPump> { }
     public class NetPkgActionRemovePump : NetPkgWorkerQuery<ActionRemovePump> { }
+    public class NetPkgActionAddReservoir : NetPkgWorkerQuery<ActionAddReservoir> { }
+    public class NetPkgActionRemoveReservoir : NetPkgWorkerQuery<ActionRemoveReservoir> { }
     public class NetPkgActionAddWell : NetPkgWorkerQuery<ActionAddWell> { }
     public class NetPkgActionRemoveWell : NetPkgWorkerQuery<ActionRemoveWell> { }
+    public class NetPkgActionAddFluidConverter : NetPkgWorkerQuery<ActionAddFluidConverter> { }
+    public class NetPkgActionRemoveFluidConverter : NetPkgWorkerQuery<ActionRemoveFluidConverter> { }
 
 }

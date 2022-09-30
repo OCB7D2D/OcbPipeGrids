@@ -10,13 +10,18 @@ namespace NodeManager
         public override ulong NextTick => 10;
 
         public PipeSource(Vector3i position, BlockValue bv)
-            : base(position, bv) { }
+            : base(position, bv)
+        {
+            Log.Out("Created Pump");
+            SetFluidType(1);
+        }
 
         public PipeSource(
             BinaryReader br)
         : base(br)
         {
             Log.Out("Loading Pump");
+            SetFluidType(1);
         }
 
         public override string GetCustomDescription()

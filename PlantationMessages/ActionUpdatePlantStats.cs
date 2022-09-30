@@ -1,6 +1,6 @@
 ﻿namespace NodeManager
 {
-    public class ActionUpdatePlantStats : IActionServer
+    public class ActionUpdatePlantStats : IActionWorker
     {
 
         public int SenderEntityId { get => -1; set => throw new
@@ -30,7 +30,7 @@
             Clouds = weather.GetCurrentCloudThicknessPercent();
         }
 
-        public void ProcessOnServer(PipeGridWorker worker)
+        public void ProcessOnWorker(PipeGridWorker worker)
             => worker.Manager.UpdatePlantStats(this);
 
     }

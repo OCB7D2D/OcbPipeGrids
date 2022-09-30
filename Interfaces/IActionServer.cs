@@ -3,7 +3,7 @@
     public interface IActionClient
     {
         int RecipientEntityId { get; }
-        void ProcessOnClient(NodeManagerClient client);
+        void ProcessOnMainThread(NodeManagerMother client);
     }
 
 }

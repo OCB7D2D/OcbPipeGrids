@@ -28,6 +28,7 @@ public class OcbPipeGrids : IModApi
 		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
 
 		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br));
+		NodeManager.NodeManager.RegisterFactory(12, (br) => new PlantationComposter(br));
 
 	}
 
@@ -36,7 +37,7 @@ public class OcbPipeGrids : IModApi
 		if (!NodeManagerInterface.HasInstance) return;
 		NodeManagerInterface.Instance.Update();
     }
-
+/*
 	// Hook into `VehicleManager.Init`
 	[HarmonyPatch(typeof(WorldBlockTicker))]
 	[HarmonyPatch("add")]
@@ -47,8 +48,8 @@ public class OcbPipeGrids : IModApi
 			// Create the instance and start it
 			// Will make sure to only create server
 			// and client parts only when necessary 
-			Log.Warning("Added Ticker At {0}",
-				_wbte.scheduledTime);
+			// Log.Warning("Added Ticker At {0}",
+			// 	_wbte.scheduledTime);
 			// NodeManagerInterface.Instance.Init();
 		}
 	}
@@ -72,7 +73,7 @@ public class OcbPipeGrids : IModApi
 			// NodeManagerInterface.Instance.Init();
 		}
 	}
-
+*/
 	// Hook into `VehicleManager.Init`
 
 	
@@ -119,7 +120,7 @@ public class OcbPipeGrids : IModApi
 			if (!NodeManagerInterface.HasServer) return;
 			var action = new ActionSetPower();
 			action.Setup(__instance.Position, newPowered);
-			NodeManagerInterface.Instance.Input.Enqueue(action);
+			NodeManagerInterface.Instance.ToWorker.Enqueue(action);
 		}
 	}
 	
@@ -132,7 +133,8 @@ public class OcbPipeGrids : IModApi
 	{
 		public static void Postfix(Vector3i _focusBlockPos, Transform ___transformFocusCubePrefab)
 		{
-			if (!NodeManagerInterface.Instance.Client.HasPendingCanConnect(_focusBlockPos)) return;
+			if (!NodeManagerInterface.Instance.Mother.HasPendingCanConnect(_focusBlockPos)) return;
+			// Log.Out("Update displaced");
 			foreach (Renderer child in ___transformFocusCubePrefab.GetComponentsInChildren<Renderer>())
 				child.material.SetColor("_Color", Color.magenta);
 		}
