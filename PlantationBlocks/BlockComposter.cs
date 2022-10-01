@@ -1,5 +1,6 @@
 ﻿using NodeManager;
 using System.Collections.Generic;
+using UnityEngine;
 
 public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityChangedListener
 {
@@ -80,7 +81,7 @@ public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityCh
 	}
 }
 
-public class BlockComposter : ImpBlockChest, ILootBlock
+public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 {
 
 	//########################################################
@@ -98,10 +99,94 @@ public class BlockComposter : ImpBlockChest, ILootBlock
 
 	Block IBlockNode.Block => this;
 
-	public BlockComposter()
+	public int BlockReach { get; protected set; }
+
+	public override void Init()
     {
-		this.IsNotifyOnLoadUnload = true;
+        base.Init();
+		// Parse optional block XML setting properties
+		if (Properties.Contains("BlockReach")) BlockReach =
+			int.Parse(Properties.GetString("BlockReach"));
 	}
+
+	public BlockComposter()
+	{
+		this.IsNotifyOnLoadUnload = true;
+		// Prepends `cmds` from parent to our `cmds`
+		// Will update `cmd_offset` to parents length
+		// Our commands will be moved to that position
+		// In order to use base `GetBlockActivationCommands`
+		BlockHelper.ExtendActivationCommands(this,
+			typeof(ImpBlockChest),
+			ref cmds, ref cmd_offset);
+	}
+
+	//########################################################
+	// Add functionality for bound helper
+	//########################################################
+
+	private BlockActivationCommand[] cmds = new BlockActivationCommand[1] {
+		new BlockActivationCommand("show_bounds", "frames", true),
+	};
+
+	// Offset after parent command are added
+	private readonly int cmd_offset = 0;
+
+	// We added our own command after any parent commands on constructor
+	// Unfortunately we need to copy state from old to new array (why?)
+	public override BlockActivationCommand[] GetBlockActivationCommands(
+		WorldBase world, BlockValue bv, int clrIdx,
+		Vector3i pos, EntityAlive entityFocusing)
+	{
+		// Get state for parent commands
+		var old = base.GetBlockActivationCommands(world,
+			bv, clrIdx, pos, entityFocusing);
+		// Copy state from old to new array
+		for (int i = 0; i < old.Length; i += 1)
+			cmds[i].enabled = old[i].enabled;
+		// Enable any new commands (add tests etc)
+		// Not needed here as it's always enabled
+		// for (int i = cmd_offset; i < cmds.Length; i += 1)
+		// 	cmds[i].enabled = true;
+		return cmds;
+	}
+
+	// Dispatch lower commands to parent
+	// Handle all other commands here
+	public override bool OnBlockActivated(int cmd,
+		WorldBase world, int cIdx, Vector3i pos,
+		BlockValue bv, EntityAlive player)
+	{
+		// Execute for base commands
+		if (cmd < cmd_offset) return base.
+			OnBlockActivated(cmd, world,
+				cIdx, pos, bv, player);
+		// Make it zero based again
+		cmd -= cmd_offset;
+		// We only have one command
+		if (cmd != 0) return false;
+		// Toggle bit flag
+		bv.meta2 ^= 1;
+		// Update block in world
+		world.SetBlockRPC(pos, bv);
+		// All is good
+		return true;
+	}
+
+	private Color BoundHelperColor = new Color32(160, 82, 45, 255);
+
+	public override void OnBlockValueChanged(WorldBase world, Chunk chunk,
+		int clrIdx, Vector3i pos, BlockValue bv_old, BlockValue bv_new)
+	{
+		base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
+		BlockHelper.UpdateBoundHelper(pos, bv_new,
+			this, BoundHelperColor, BlockReach);
+	}
+
+	//########################################################
+	// Implementation for node manager
+	//########################################################
+
 
 	public override void CreateGridItem(Vector3i position, BlockValue bv)
 	{
@@ -130,6 +215,8 @@ public class BlockComposter : ImpBlockChest, ILootBlock
 		Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockAdded(world, chunk, pos, bv);
+		BlockHelper.UpdateBoundHelper(pos, bv,
+			this, BoundHelperColor, BlockReach);
 		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
@@ -139,8 +226,9 @@ public class BlockComposter : ImpBlockChest, ILootBlock
 		Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockRemoved(world, chunk, pos, bv);
-		if (!NodeManagerInterface.HasServer) return;
 		if (bv.isair || bv.ischild) return;
+		LandClaimBoundsHelper.RemoveBoundsHelper(pos);
+		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
 
@@ -167,7 +255,9 @@ public class BlockComposter : ImpBlockChest, ILootBlock
 
 	public override void OnBlockUnloaded(WorldBase world, int clrIdx, Vector3i pos, BlockValue bv)
     {
-        
+		LandClaimBoundsHelper.RemoveBoundsHelper(pos);
+		base.OnBlockUnloaded(world, clrIdx, pos, bv);
+		if (world.IsRemote()) return; // Only execute on server
 		if (world.GetTileEntity(clrIdx, pos) is
 			TileEntityLootContainer container)
         {
@@ -176,13 +266,13 @@ public class BlockComposter : ImpBlockChest, ILootBlock
 			NodeManagerInterface.Instance
 				.ToWorker.Enqueue(action);
         }
-		base.OnBlockUnloaded(world, clrIdx, pos, bv);
-
-    }
+	}
 
 	public override void OnBlockLoaded(WorldBase world, int clrIdx, Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockLoaded(world, clrIdx, pos, bv);
+		BlockHelper.UpdateBoundHelper(pos, bv,
+			this, BoundHelperColor, BlockReach);
 		// Apply pending changes and check if valid!
 		if (world.GetTileEntity(clrIdx, pos) is
 			TileEntityLootContainer container)

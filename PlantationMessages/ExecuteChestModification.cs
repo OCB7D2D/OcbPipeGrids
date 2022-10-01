@@ -94,17 +94,17 @@ namespace NodeManager
             }
         }
 
-        static readonly SortedSet<ushort>
-            Removals = new SortedSet<ushort>();
-
         public static void ApplyChangesToChest(
             Dictionary<ushort, short> changes,
             TileEntityLootContainer container)
         {
-            foreach (var kv in changes)
+            // Make a list of the keys and iterate over that
+            // We can't directly iterate over the keys enumerator
+            // Because that throws `Collection was Modified` error
+            foreach (ushort key in new List<ushort>(changes.Keys))
             {
-                ItemValue iv = new ItemValue(kv.Key);
-                ItemStack change = new ItemStack(iv, kv.Value);
+                ItemValue iv = new ItemValue(key);
+                ItemStack change = new ItemStack(iv, changes[key]);
                 Log.Out("Commit change {0} {1}", iv.type, change.count);
                 if (change.count < 0)
                 {
@@ -142,15 +142,9 @@ namespace NodeManager
                     AddItemToChest(container, change);
                 }
                 // container.UpdateSlot(i, has[i]);
-                if (change.count == 0) Removals.Add(kv.Key);
-                else changes[kv.Key] = (short)change.count;
+                if (change.count == 0) changes.Remove(key);
+                else changes[key] = (short)change.count;
             }
-            Log.Out("Can commit right away");
-            // Remove marked key after loop
-            foreach (var key in Removals)
-                changes.Remove(key);
-            // Clear list for later
-            Removals.Clear();
         }
     }
 }

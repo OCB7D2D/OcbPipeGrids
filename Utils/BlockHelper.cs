@@ -1,7 +1,9 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace NodeManager
 {
@@ -80,5 +82,56 @@ namespace NodeManager
             }
         }
 
+        //########################################################
+        // Helpers for block activation commands
+        //########################################################
+
+        public static void ExtendActivationCommands(
+            Block current, System.Type ptype,
+            ref BlockActivationCommand[] cmds,
+            ref int offset, string name = "cmds")
+        {
+            var field = AccessTools.Field(ptype, name);
+            if (field.GetValue(current) is
+                BlockActivationCommand[] parent)
+            {
+                int size = cmds.Length; offset = parent.Length;
+                System.Array.Resize(ref cmds, size + offset);
+                // Move existing to the back
+                for (int i = 0; i < size; i += 1)
+                    cmds[offset + i] = cmds[i];
+                // Insert new on the front
+                for (int i = 0; i < offset; i += 1)
+                    cmds[i] = parent[i];
+            }
+        }
+
+        internal static void UpdateBoundHelper(Vector3i pos,
+            BlockValue bv, Block block, Color color, int reach)
+        {
+            if (bv.ischild || bv.isair) return;
+            var helper = LandClaimBoundsHelper.GetBoundsHelper(pos);
+            foreach (Renderer componentsInChild in helper.GetComponentsInChildren<Renderer>())
+                componentsInChild.material.SetColor("_Color", color);
+            Vector3 dim = block.multiBlockPos.dim.ToVector3();
+            // float reach_x = (block.multiBlockPos.dim.x);
+            // float reach_y = (block.multiBlockPos.dim.y);
+            // float reach_z = (block.multiBlockPos.dim.z);
+            helper.localScale = (dim + Vector3.one * reach * 2) * 2.54f;
+
+            Vector3 halfs = new Vector3(
+                dim.x % 2 == 0 ? 0.0f : 0.5f,
+                dim.y % 2 == 0 ? 0.0f : 0.5f,
+                dim.z % 2 == 0 ? 0.0f : 0.5f);
+
+
+            Vector3 offset = new Vector3(
+                dim.x % 2 == 0 ? 0.0f : 0.5f,
+                dim.y / 2f, // Always at bottom
+                dim.z % 2 == 0 ? 0.0f : 0.5f);
+
+            helper.localPosition = pos - Origin.position + offset;
+            helper.gameObject.SetActive((bv.meta2 & 1) != 0);
+        }
     }
 }

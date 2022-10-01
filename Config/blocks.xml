@@ -204,12 +204,16 @@
 			<property name="FilterTags" value="floot"/>
 			<property name="DisplayType" value="blockHardened"/>
 
+			<property name="ActivationDistance" value="12" />
+			<property name="CanPickup" value="true" />
+
 			<property name="FromGround" value="0.08" />
 			<property name="FromFreeSky" value="0.25" />
 			<property name="FromWetSurface" value="0.15" />
 			<property name="FromSnowfall" value="0.4" />
 			<property name="FromRainfall" value="0.8" />
 			<property name="FromIrrigation" value="5" />
+			<property name="BlockReach" value="2" />
 
 			<property class="RepairItems">
 				<property name="resourceForgedSteel" value="40"/>

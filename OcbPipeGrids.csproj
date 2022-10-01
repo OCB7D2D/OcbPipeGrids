@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\FixBlockScheduler.cs" />
+    <Compile Include="Harmony\Interfaces.cs" />
     <Compile Include="Harmony\LateBlockChanges.cs" />
     <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />

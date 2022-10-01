@@ -131,12 +131,20 @@ public class OcbPipeGrids : IModApi
 	[HarmonyPatch("update0")]
 	public class RenderDisplacedCube_Update
 	{
-		public static void Postfix(Vector3i _focusBlockPos, Transform ___transformFocusCubePrefab)
+		public static void Postfix(RenderDisplacedCube __instance,
+			BlockValue _holdingBlockValue, Vector3i _focusBlockPos,
+			Transform ___transformFocusCubePrefab)
 		{
-			if (!NodeManagerInterface.Instance.Mother.HasPendingCanConnect(_focusBlockPos)) return;
-			// Log.Out("Update displaced");
-			foreach (Renderer child in ___transformFocusCubePrefab.GetComponentsInChildren<Renderer>())
-				child.material.SetColor("_Color", Color.magenta);
+			if (NodeManagerInterface.Instance.Mother.HasPendingCanConnect(_focusBlockPos))
+            {
+				foreach (Renderer child in ___transformFocusCubePrefab.GetComponentsInChildren<Renderer>())
+					child.material.SetColor("_Color", Color.magenta);
+			}
+			if (_holdingBlockValue.Block is IBoundHelper helper)
+            {
+				___transformFocusCubePrefab.localScale +=
+					Vector3.one * helper.BlockReach * 5.08f;
+            }
 		}
 	}
 
