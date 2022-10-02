@@ -1,6 +1,6 @@
 ﻿using NodeManager;
 
-public abstract class ImpBlockGridNodeUnpowered : BlockBase, IBlockConnection
+public abstract class ImpBlockGridNodeUnpowered : BlockRemote, IBlockConnection
 {
 	public virtual bool BreakDistance => false;
 	public virtual bool NeedsPower => false;
@@ -9,7 +9,7 @@ public abstract class ImpBlockGridNodeUnpowered : BlockBase, IBlockConnection
 	public virtual bool MultiBlockPipe { get; set; } = false;
 	public virtual int MaxConnections { get; set; } = 6;
 
-    public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
+	public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
 
 	public virtual bool CanConnect(byte side, byte rotation)
 		=> PipeBlockHelper.CanConnect(ConnectMask, side, rotation);
@@ -39,22 +39,6 @@ public abstract class ImpBlockGridNodeUnpowered : BlockBase, IBlockConnection
 		if (bv.ischild) return false; // ToDo: add more fancy code for multidims?
 		return base.CanPlaceBlockAt(world, clrIdx, pos, bv, omitCollideCheck)
 			&& NodeManagerInterface.Instance.Mother.CanConnect(pos, BCC.Set(bv, this));
-	}
-
-	public override string GetCustomDescription(
-		Vector3i pos, BlockValue bv)
-	{
-		return NodeManagerInterface.Instance.Mother
-			.GetCustomDescription(pos, bv);
-	}
-
-	public override string GetActivationText(
-		WorldBase world, BlockValue bv,
-		int clrIdx, Vector3i pos,
-		EntityAlive focused)
-	{
-		return base.GetActivationText(world, bv, clrIdx, pos, focused) 
-			+ "\n" + GetCustomDescription(pos, bv);
 	}
 
 }

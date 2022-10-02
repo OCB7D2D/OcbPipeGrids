@@ -14,12 +14,20 @@ namespace NodeManager
 
         public override ulong NextTick => 60;
 
+        public override uint StorageID => 7;
+
         // public override bool BreakDistance => true;
 
         public bool IsPowered { get; set; }
 
         public PipeReservoir(Vector3i position, BlockValue bv)
-            : base(position, bv) { }
+            : base(position, bv)
+        {
+            if (BV.Block.Properties.Contains("FluidType")) FluidType =
+                ushort.Parse(BV.Block.Properties.GetString("FluidType"));
+            if (BV.Block.Properties.Contains("IsPowered")) IsPowered =
+                bool.Parse(BV.Block.Properties.GetString("IsPowered"));
+        }
 
         public PipeReservoir(
             BinaryReader br)

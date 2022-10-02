@@ -64,7 +64,7 @@ namespace NodeManager
                 out NodeBase instance))
             {
                 node = instance as T;
-                return true;
+                return node != null;
             }
             node = null;
             return false;
@@ -160,6 +160,7 @@ namespace NodeManager
             for (int index = 0; index < nodes; ++index)
             {
                 uint type = br.ReadUInt32();
+                Log.Out(" Reading type {0}", type);
                 var node = InstantiateItem(type, br);
                 // Restore power state automatically
                 if (node is IPoweredNode powered)
@@ -168,6 +169,9 @@ namespace NodeManager
                     powered.IsPowered = br.ReadBoolean();
                 }
             }
+            foreach (var node in Nodes)
+                node.Value.OnAfterLoad();
+
         }
 
         //#####################################################################

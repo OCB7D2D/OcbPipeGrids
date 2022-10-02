@@ -9,7 +9,9 @@ abstract class ImpBlockPipeReservoirPowered : ImpBlockGridNodePowered, IBlockRes
 	public virtual float MaxFillState { get; set; } = 150f;
 	public override bool BreakDistance => true;
 
-	public override void Init()
+    public ushort FluidType { get; set; }
+
+    public override void Init()
 	{
 		base.Init();
 		// Parse optional block XML setting properties

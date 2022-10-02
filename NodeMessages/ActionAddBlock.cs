@@ -41,6 +41,13 @@
         public override NodeBase CreateNode() => new PipeFluidConverter(Position, BV);
         protected override void SetupNetPkg(NetPkgActionAddFluidConverter pkg) => pkg.Setup(this);
     }
+
+    public class ActionAddWaterBoiler : BaseActionAddBlock<NetPkgActionAddWaterBoiler>
+    {
+        public override NodeBase CreateNode() => new PipeWaterBoiler(Position, BV);
+        protected override void SetupNetPkg(NetPkgActionAddWaterBoiler pkg) => pkg.Setup(this);
+    }
+
     public abstract class BaseActionAddChest<N> : BaseActionAddBlock<N> where N : NetPackage
     {
 

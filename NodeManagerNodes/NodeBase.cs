@@ -38,6 +38,11 @@ namespace NodeManager
             bw.Write(WorldPos.z);
         }
 
+        public virtual void OnAfterLoad()
+        {
+
+        }
+
         public NodeBase AttachToManager(NodeManager manager)
         {
             OnManagerAttached(manager);

@@ -3,6 +3,9 @@
 class BlockPipeIrrigation : ImpBlockGridNodePowered
 {
 
+	public override bool BreakDistance => true;
+	public override bool NeedsPower => true;
+
 	public override void CreateGridItem(Vector3i position, BlockValue bv)
 	{
 		var action = new ActionAddIrrigation();

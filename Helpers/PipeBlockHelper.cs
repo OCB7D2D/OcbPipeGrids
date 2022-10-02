@@ -8,6 +8,8 @@ public static class PipeBlockHelper
 	{
 		if (block.Block.Properties.Contains("MaxFillState")) block.MaxFillState =
 			float.Parse(block.Block.Properties.GetString("MaxFillState"));
+		if (block.Block.Properties.Contains("FluidType")) block.FluidType =
+			ushort.Parse(block.Block.Properties.GetString("FluidType"));
 	}
 
 	static public void InitBlock(IBlockConnection block)

@@ -86,6 +86,7 @@
     <Content Include="Harmony\TileEntityPoweredProductor.css" />
     <Compile Include="Harmony\WaterExchange.cs" />
     <Compile Include="Interfaces\IBlockNode.cs" />
+    <Compile Include="Interfaces\IReservoir.cs" />
     <Compile Include="Interfaces\ILootChest.cs" />
     <Compile Include="Interfaces\ISunLight.cs" />
     <Compile Include="Interfaces\IConnector.cs" />
@@ -102,6 +103,8 @@
     <Compile Include="KdTreeLib\Metric\MetricManhatten.cs" />
     <Compile Include="KdTreeLib\NearestNeighbourList.cs" />
     <Compile Include="KdTreeLib\PriorityQueue.cs" />
+    <Compile Include="NodeManagerBlocks\BlockRemotePowered.cs" />
+    <Compile Include="NodeManagerBlocks\BlockRemote.cs" />
     <Compile Include="NodeManagerBlocks\BlockPowered.cs" />
     <Compile Include="NodeManagerBlocks\BlockBase.cs" />
     <Compile Include="NodeManagerNodes\LootBlock.cs" />
@@ -116,6 +119,7 @@
     <Compile Include="NodeMessages\MsgWaterLevelQuery.cs" />
     <Compile Include="NodeMessages\MsgConnectorQuery.cs" />
     <Compile Include="NodeMessages\MsgDescriptionResponse.cs" />
+    <Compile Include="PipeGridBlocks\BlockWaterBoiler.cs" />
     <Compile Include="PipeGridBlocks\BlockFluidConverter.cs" />
     <Compile Include="PipeGridBlocks\BlockPipeConnection.cs" />
     <Compile Include="Helpers\ConnectionHelper.cs" />
@@ -129,6 +133,7 @@
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirPowered.cs" />
     <Compile Include="PipeGridBlocks\ImpBlockPipeReservoirUnpowered.cs" />
     <Compile Include="NodeManagerNodes\NodeBlock.cs" />
+    <Compile Include="PipeGridNodes\PipeWaterBoiler.cs" />
     <Compile Include="PipeGridNodes\PipeFluidConverter.cs" />
     <Compile Include="PipeGridNodes\PipeSource.cs" />
     <Compile Include="PipeGridNodes\PipePump.cs" />

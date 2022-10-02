@@ -36,6 +36,11 @@
         protected override void SetupNetPkg(NetPkgActionRemoveFluidConverter pkg) => pkg.Setup(this);
     }
 
+    public class ActionRemoveWaterBoiler : BaseActionRemoveBlock<NetPkgActionRemoveWaterBoiler>
+    {
+        protected override void SetupNetPkg(NetPkgActionRemoveWaterBoiler pkg) => pkg.Setup(this);
+    }
+
     public abstract class BaseActionRemoveChest<N> : BaseActionRemoveBlock<N>
         where N : NetPackage
     {

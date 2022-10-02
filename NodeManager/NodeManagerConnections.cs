@@ -146,6 +146,7 @@ namespace NodeManager
                 if (TryGetNode(position + offset,
                     out PipeConnection neighbour))
                 {
+                    Log.Out("Found {0}", neighbour);
                     Neighbours[side].Set(neighbour);
                     count += 1;
                 }

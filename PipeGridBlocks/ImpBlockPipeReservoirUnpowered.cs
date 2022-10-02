@@ -2,6 +2,7 @@
 {
 	public virtual float MaxFillState { get; set; } = 150f;
 	public override bool BreakDistance => true;
+	public ushort FluidType { get; set; }
 
 	public override void Init()
 	{

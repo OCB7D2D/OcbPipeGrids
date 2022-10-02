@@ -10,7 +10,7 @@ namespace NodeManager
 
         public override ulong NextTick => 30;
 
-        public override uint StorageID => 3;
+        public override uint StorageID => 6;
 
         public PipeFluidConverter(Vector3i position, BlockValue bv)
             : base(position, bv)

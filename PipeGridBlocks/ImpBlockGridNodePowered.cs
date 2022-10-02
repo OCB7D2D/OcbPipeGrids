@@ -9,6 +9,7 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 	public virtual byte PypeType { get; set; } = 0;
 	public virtual bool MultiBlockPipe { get; set; } = false;
 	public virtual int MaxConnections { get; set; } = 6;
+	// public virtual ushort FluidType { get; } = 0;
 
     public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
 
