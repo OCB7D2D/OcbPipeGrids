@@ -133,7 +133,9 @@ namespace NodeManager
         }
 
 
-        public byte GetNeighbours(Vector3i position, ref BlockConnector[] Neighbours)
+        public byte GetNeighbours(Vector3i position,
+            ref BlockConnector[] Neighbours,
+            byte pipeDiameter = 0)
         {
             byte count = 0;
             //NbCache.Clear();
@@ -146,6 +148,11 @@ namespace NodeManager
                 if (TryGetNode(position + offset,
                     out PipeConnection neighbour))
                 {
+                    // Check if diameters are OK to connect to
+                    //byte diameter = neighbour.BLOCK.PipeDiameter;
+                    //Log.Out("Check {0} vs {1}", diameter, pipeDiameter);
+                    //if (diameter != 0 && pipeDiameter != 0 &&
+                    //    diameter != pipeDiameter) continue;
                     Log.Out("Found {0}", neighbour);
                     Neighbours[side].Set(neighbour);
                     count += 1;

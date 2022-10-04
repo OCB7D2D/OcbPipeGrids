@@ -27,4 +27,25 @@ namespace NodeManager
 		}
 	}
 
+	[HarmonyPatch(typeof(ItemActionConnectPower))]
+	[HarmonyPatch("OnHoldingUpdate")]
+
+	public class ItemActionConnectPower_OnHoldingUpdate
+	{
+
+		public static void Prefix(
+			ref ItemActionData _actionData)
+		{
+			WorldRayHitInfo info = _actionData.invData.hitInfo;
+			if (!info.bHitValid) return;
+			// Fix hit position if block is a child of a multi-dim block
+			BlockValue block = _actionData.invData.hitInfo.hit.blockValue;
+			if (!(block.ischild && block.Block is BlockPowered)) return;
+			// Adjust the hit info to master block
+			info.hit.blockPos += block.parent;
+			info.hit.blockValue = _actionData.invData
+				.world.GetBlock(info.hit.blockPos);
+		}
+	}
+
 }

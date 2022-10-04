@@ -8,10 +8,11 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 	public virtual uint SideMask { get; set; } = 0;
 	public virtual byte PypeType { get; set; } = 0;
 	public virtual bool MultiBlockPipe { get; set; } = false;
+	public virtual byte PipeDiameter { get; set; } = 0;
 	public virtual int MaxConnections { get; set; } = 6;
 	// public virtual ushort FluidType { get; } = 0;
 
-    public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
+	public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
 
 	public virtual bool CanConnect(byte side, byte rotation)
 		=> PipeBlockHelper.CanConnect(ConnectMask, side, rotation);

@@ -6,6 +6,8 @@
 
     bool NeedsPower { get; }
 
+    byte PipeDiameter { get; set; }
+
     int MaxConnections { get; set; }
 
     bool CanConnect(byte side, byte rotation);
@@ -15,5 +17,6 @@
     uint SideMask { get; set; }
 
     byte ConnectFlags { get; }
+
 
 }

@@ -13,6 +13,14 @@
 
 	<append xpath="/blocks">
 
+		<block name="ocbFarmPlotBlock">
+			<property name="Extends" value="farmPlotBlockPlayer"/>
+			<property name="Class" value="PipeReservoir, PipeGrids"/>
+			<property name="PipeConnectors" value="left,right,forward,back" />
+			<property name="DisplayInfo" value="Custom" />
+		</block>
+
+		
 		<block name="ocbWaterPipeSource">
 			<property name="CreativeMode" value="Player"/>
 			<property name="Tags" value="door"/>
@@ -63,7 +71,6 @@
 			<property name="MaxFillState" value="500"/>
 
 		</block>
-
 
 		<block name="ocbWaterPipePump">
 			<property name="CreativeMode" value="Player"/>

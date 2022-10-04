@@ -19,6 +19,9 @@ public static class PipeBlockHelper
 			block.MultiBlockPipe = block.Block
 				.Properties.GetBool("MultiBlockPipe");
 		}
+		if (block.Block.Properties.Contains("PipeDiameter")) block.PipeDiameter =
+			byte.Parse(block.Block.Properties.GetString("PipeDiameter"));
+
 		if (block.Block.Properties.Contains("PipeConnectors"))
 		{
 			block.ConnectMask = 0; // Reset the mask first

@@ -21,6 +21,9 @@
         public byte Rotation { get; private set; }
         public byte Flags { get; private set; }
         public int Grid { get; private set; }
+        public int BlockID { get; private set; }
+
+        public IBlockConnection BLOCK;
 
         public void Reset()
         {
@@ -34,6 +37,8 @@
 
         public BlockConnector Set(BlockValue bv, IBlockConnection block)
         {
+            BLOCK = block;
+            BlockID = bv.type;
             ConnectMask = block.ConnectMask;
             SideMask = block.SideMask;
             Distance = 0;
@@ -45,6 +50,9 @@
 
         public BlockConnector Set(PipeConnection connection)
         {
+            // Should be safe to use block config?
+            BLOCK = connection.BLOCK;
+            BlockID = connection.BlockID;
             ConnectMask = connection.ConnectMask;
             SideMask = connection.SideMask;
             Distance = connection.CountLongestDistance();
@@ -55,19 +63,22 @@
             return this;
         }
 
-        public void read(PooledBinaryReader br)
+        public void Read(PooledBinaryReader br)
         {
             // ToDo: pack more tightly
+            BlockID = br.ReadInt32();
             ConnectMask = br.ReadByte();
             SideMask = br.ReadUInt32();
             Distance = br.ReadByte();
             Rotation = br.ReadByte();
             Flags = br.ReadByte();
             Grid = br.ReadInt32();
+            GetBlock(out BLOCK);
         }
 
-        public void write(PooledBinaryWriter bw)
+        public void Write(PooledBinaryWriter bw)
         {
+            bw.Write(BlockID);
             bw.Write(ConnectMask);
             bw.Write(SideMask);
             bw.Write(Distance);
@@ -75,6 +86,12 @@
             bw.Write(Flags);
             bw.Write(Grid);
         }
+
+        // Return block of given type (may return null)
+        // We assume it is safe to access Blocks concurrently
+        // Since these should never change once loaded on startup
+        public bool GetBlock<T>(out T var) where T : class
+            => (var = Block.list[BlockID] as T) != null;
 
     }
 

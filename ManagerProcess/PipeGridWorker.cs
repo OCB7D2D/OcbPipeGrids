@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 
 namespace NodeManager
@@ -54,15 +55,20 @@ namespace NodeManager
             Running = false;
         }
 
+        Stopwatch Timer = new Stopwatch();
+
         // The thread procedure performs the task, such as formatting
         // and printing a document.
         public void ThreadProc()
         {
             Manager.LoadData();
+
             // Go into worker loop
             // Until stop signaled
             while (Running)
             {
+                Timer.Reset();
+                Timer.Start();
                 // ToDo: Implement proper clock
                 while (Input.TryDequeue(
                     out IActionWorker msg))
@@ -85,6 +91,9 @@ namespace NodeManager
                 {
                     Log.Error("NodeManager tick had error: {0}", err);
                 }
+                Timer.Stop();
+                if (Timer.ElapsedMilliseconds > 2)
+                    Log.Out("MS elapsed: {0}", Timer.ElapsedMilliseconds);
                 Thread.Sleep(25);
             }
             Manager.SaveData();

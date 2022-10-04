@@ -18,15 +18,15 @@ namespace NodeManager
 
         // public override bool BreakDistance => true;
 
-        public bool IsPowered { get; set; }
+        public bool IsPowered { get; set; } = true;
 
         public PipeReservoir(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
             if (BV.Block.Properties.Contains("FluidType")) FluidType =
                 ushort.Parse(BV.Block.Properties.GetString("FluidType"));
-            if (BV.Block.Properties.Contains("IsPowered")) IsPowered =
-                bool.Parse(BV.Block.Properties.GetString("IsPowered"));
+            //if (BV.Block.Properties.Contains("IsPowered")) IsPowered =
+            //    bool.Parse(BV.Block.Properties.GetString("IsPowered"));
         }
 
         public PipeReservoir(
@@ -107,8 +107,8 @@ namespace NodeManager
             float wanted = levels / reservoirs.Count;
             wanted = System.Math.Min(MaxFillState, wanted);
 
-            Log.Out("Found {0} Reservoirs with avg level {1}",
-                reservoirs.Count, wanted);
+            // Log.Out("Found {0} Reservoirs with avg level {1}",
+            //     reservoirs.Count, wanted);
 
             intake.Clear();
             outtake.Clear();
@@ -130,8 +130,8 @@ namespace NodeManager
                 }
             }
 
-            Log.Out("Have {0}/{1} intake and {2}/{3} outtake",
-                intakes, intake.Count, outtakes, outtake.Count);
+            // Log.Out("Have {0}/{1} intake and {2}/{3} outtake",
+            //     intakes, intake.Count, outtakes, outtake.Count);
 
             // Calculate how much we are able to pump in and out
             float pump = System.Math.Min(0.08f * delta,

@@ -84,6 +84,11 @@ namespace NodeManager
 
                 var query = new MsgConnectorQuery();
                 query.Setup(position); // Two steps
+                if (connector.GetBlock(out IBlockConnection blk))
+                {
+                    Log.Out("Set query diameter");
+                    query.SetPipeDiameter(blk.PipeDiameter);
+                }
                 RequestedCanConnect = position;
                 Log.Out("Query CanConnect at {0}", query.Position);
                 NodeManagerInterface.SendToServer(query);

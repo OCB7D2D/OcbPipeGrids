@@ -5,7 +5,7 @@ namespace NodeManager
     public static class ConnectionHelper
     {
 
-        static readonly byte MaxDistance = 5;
+        static readonly byte MaxDistance = 7;
 
         public static bool CanConnect(byte mask, byte rotation, byte face)
         {
@@ -114,7 +114,8 @@ namespace NodeManager
                         {
                             Log.Out("Cyclic grid {0} vs {1}",
                                 GridCache[n], NB[face].Grid);
-                            return false;
+                            //return false;
+                            break;
                         }
                     }
                     // Remember the grid for this connector
@@ -146,6 +147,20 @@ namespace NodeManager
                             return false;
                         }
                         // Log.Out("Block is not a breaker");
+                    }
+
+                    if (block.BLOCK.PipeDiameter != 0)
+                    {
+                        if (NB[face].BLOCK.PipeDiameter != 0)
+                        {
+                            if (block.BLOCK.PipeDiameter !=
+                                NB[face].BLOCK.PipeDiameter)
+                            {
+                                Log.Out("Pipe diameter not matching");
+                                return false;
+                            }
+                        }
+
                     }
 
                     // Found connector

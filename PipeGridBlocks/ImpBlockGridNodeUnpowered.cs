@@ -7,6 +7,7 @@ public abstract class ImpBlockGridNodeUnpowered : BlockRemote, IBlockConnection
 	public virtual byte ConnectMask { get; set; } = 63;
 	public virtual uint SideMask { get; set; } = 0;
 	public virtual bool MultiBlockPipe { get; set; } = false;
+	public virtual byte PipeDiameter { get; set; } = 0;
 	public virtual int MaxConnections { get; set; } = 6;
 
 	public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);

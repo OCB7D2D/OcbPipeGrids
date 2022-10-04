@@ -14,14 +14,14 @@
         {
             base.Read(br);
             for (int i = 0; i < NB.Length; i++)
-                NB[i].read(br);
+                NB[i].Read(br);
         }
 
         public override void Write(PooledBinaryWriter bw)
         {
             base.Write(bw);
             for (int i = 0; i < NB.Length; i++)
-                NB[i].write(bw);
+                NB[i].Write(bw);
         }
 
         protected override void SetupNetPkg(NetPkgConnectorResponse pkg) => pkg.FromMsg(this);
