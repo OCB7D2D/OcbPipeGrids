@@ -4,20 +4,21 @@ using UnityEngine;
 
 namespace NodeManager
 {
-    public class PlantationFarmPlot : NodeBlock<BlockPlantationFarmPlot>, IFarmPlot
+
+    public class PlantationFarmPlot : PipeReservoir, IFarmPlot
     {
-
-        static int IDs = 0;
-
-        public int ID = IDs++;
 
         public override ulong NextTick => 5;
 
         public override uint StorageID => 10;
 
-        public float GrowProgress { get; set; } = 0;
+        public float CurrentRain { get; set; } = 0;
 
-        public HashSet<IPlant> Plants { get; } = new HashSet<IPlant>();
+        public float WaterFactor { get; set; } = 0.5f;
+
+        public float SoilFactor { get; set; } = 1f;
+
+        public HashSet<IComposter> Composters { get; } = new HashSet<IComposter>();
 
         public PlantationFarmPlot(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -27,7 +28,8 @@ namespace NodeManager
         public PlantationFarmPlot(BinaryReader br)
             : base(br)
         {
-            // GrowProgress = br.ReadSingle();
+            WaterFactor = br.ReadSingle();
+            SoilFactor = br.ReadSingle();
         }
 
         public override void Write(BinaryWriter bw)
@@ -35,12 +37,14 @@ namespace NodeManager
             // Write base data first
             base.Write(bw);
             // Store additional data
-            // bw.Write(GrowProgress);
+            bw.Write(WaterFactor);
+            bw.Write(SoilFactor);
         }
 
         public override string GetCustomDescription()
         {
-            return string.Format("Farm Plot {0}", GrowProgress);
+            return string.Format("Soil: {0:.00}, Water: {1:.00}\n{2}",
+                SoilFactor, WaterFactor, base.GetCustomDescription());
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -78,7 +82,7 @@ namespace NodeManager
                 var ic = chest[i]?.itemValue?.ItemClass;
                 if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
                 {
-                    GrowProgress += 1f * factor;
+                    //GrowProgress += 1f * factor;
                     action.AddChange(chest[i]?.itemValue, -1);
                 }
             }

@@ -31,6 +31,11 @@ namespace NodeManager
             ScheduledTicksSorted = new HarmonyFieldProxy<SortedList>(
                 typeof(WorldBlockTicker), "scheduledTicksSorted");
 
+        internal static bool IsInReach(Vector3i a, Vector3i b, int dist)
+            => Math.Abs(a.x - b.x) <= dist
+            || Math.Abs(a.y - b.y) <= dist
+            || Math.Abs(a.z - b.z) <= dist;
+
         static readonly HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>
             ScheduledTicksDict = new HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>(
                 typeof(WorldBlockTicker), "scheduledTicksDict");

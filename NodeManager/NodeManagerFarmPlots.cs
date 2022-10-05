@@ -6,6 +6,9 @@ namespace NodeManager
 
     public interface IFarmPlot
     {
+        HashSet<IComposter> Composters { get; }
+        public float WaterFactor { get; }
+        public float SoilFactor { get; }
 
     }
 

@@ -26,6 +26,7 @@
     <PostBuildEvent>
       copy /Y /B "$(AssemblyName).dll" "..\..\..\$(AssemblyName).dll"
     </PostBuildEvent>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -80,12 +81,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\CustomTerrain.cs" />
     <Compile Include="Harmony\FixBlockScheduler.cs" />
     <Compile Include="Harmony\Interfaces.cs" />
     <Compile Include="Harmony\LateBlockChanges.cs" />
     <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />
     <Compile Include="Harmony\TerrainTest.cs" />
+    <Compile Include="Utils\WellHelper.cs" />
     <Content Include="Harmony\TileEntityPoweredProductor.css" />
     <Compile Include="Harmony\WaterExchange.cs" />
     <Compile Include="Interfaces\IBlockNode.cs" />
@@ -112,6 +115,7 @@
     <Compile Include="NodeManagerBlocks\BlockBase.cs" />
     <Compile Include="NodeManagerNodes\LootBlock.cs" />
     <Compile Include="NodeManager\NodeManagerChests.cs" />
+    <Compile Include="NodeManager\NodeManagerFarmLands.cs" />
     <Compile Include="NodeManager\NodeManagerFarmPlots.cs" />
     <Compile Include="NodeManager\NodeManagerComposters.cs" />
     <Compile Include="NodeMessages\ActionSetPower.cs" />
@@ -151,6 +155,7 @@
     <Compile Include="NodeManager\NodeManagerWells.cs" />
     <Compile Include="NodeManager\NodeManagerPlantation.cs" />
     <Compile Include="NodeManager\NodeManagerConnections.cs" />
+    <Compile Include="PlantationBlocks\BlockPlantationFarmLand.cs" />
     <Compile Include="PlantationBlocks\BlockPlantationFarmPlot.cs" />
     <Compile Include="PlantationBlocks\BlockComposter.cs" />
     <Compile Include="PlantationBlocks\BlockPlantationGrowing.cs" />
@@ -163,6 +168,8 @@
     <Compile Include="PlantationMessages\ActionRemoveBlock.cs" />
     <Compile Include="PlantationMessages\ActionUpdatePlantStats.cs" />
     <Compile Include="PlantationNetPackages\PlantationPackages.cs" />
+    <Compile Include="PlantationNodes\ExtensionMethods.cs" />
+    <Compile Include="PlantationNodes\PlantationFarmLand.cs" />
     <Compile Include="PlantationNodes\PlantationFarmPlot.cs" />
     <Compile Include="PlantationNodes\PlantationComposter.cs" />
     <Compile Include="PlantationNodes\PlantationGrowing.cs" />

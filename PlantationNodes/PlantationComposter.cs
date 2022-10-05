@@ -7,10 +7,6 @@ namespace NodeManager
     public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
     {
 
-        static int IDs = 0;
-
-        public int ID = IDs++;
-
         public override ulong NextTick => 5;
 
         public override uint StorageID => 12;

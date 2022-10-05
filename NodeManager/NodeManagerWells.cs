@@ -19,12 +19,22 @@ namespace NodeManager
             // Search for output to fill up the well
             var wells = Irrigators.RadialSearch(
                 well.WorldPos, IrrigatorToWellReach);
+
             for (int i = 0; i < wells.Length; i += 1)
             {
                 well.Irrigators.Add(wells[i].Item2);
                 wells[i].Item2.Wells.Add(well);
 
             }
+            // Search for farm plots we will server
+            var lands = FarmLands.RadialSearch(
+                well.WorldPos, well.BLOCK.BlockReach);
+            for (int i = 0; i < lands.Length; i += 1)
+            {
+                well.FarmLands.Add(lands[i].Item2);
+                lands[i].Item2.Wells.Add(well);
+            }
+
             // Search for plants this well will serve
             var plants = PlantGrowings.RadialSearch(
                 well.WorldPos, WellToPlantReach);
@@ -41,6 +51,8 @@ namespace NodeManager
             foreach (var node in well.Plants)
                 node.Wells.Remove(well);
             foreach (var node in well.Irrigators)
+                node.Wells.Remove(well);
+            foreach (var node in well.FarmLands)
                 node.Wells.Remove(well);
             well.Plants.Clear();
             well.Irrigators.Clear();

@@ -57,6 +57,9 @@ namespace NodeManager
 
             foreach (var kv in wells)
             {
+                if (!BlockHelper.IsInReach(
+                    plant.WorldPos, kv.Item1,
+                    kv.Item2.BLOCK.BlockReach)) continue;
                 plant.Wells.Add(kv.Item2);
                 kv.Item2.Plants.Add(plant);
             }

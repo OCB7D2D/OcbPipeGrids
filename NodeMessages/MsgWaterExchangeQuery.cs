@@ -20,7 +20,7 @@
             if (manager.TryGetNode(Position, out PipeWell well))
             {
                 response.Exchanged = well.ExchangeWater(HoldingCount, Factor);
-                response.WaterLevel = well.WaterAvailable;
+                response.WaterLevel = well.FillState;
             }
             response.InventorySlot = InventorySlot;
             response.HoldingCount = HoldingCount;

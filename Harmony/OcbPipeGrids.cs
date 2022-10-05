@@ -11,12 +11,17 @@ using Unity.Collections;
 public class OcbPipeGrids : IModApi
 {
 
+	bool Registered = false;
+
 	// Entry class for A20 patching
 	public void InitMod(Mod mod)
 	{
 		Log.Out("Loading OCB Pipe Grids Patch: " + GetType().ToString());
 		var harmony = new Harmony(GetType().ToString());
 		harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+		ModEvents.GameStartDone.RegisterHandler(GameStartDone);
+		ModEvents.GameShutdown.RegisterHandler(GameShutdown);
 		ModEvents.GameUpdate.RegisterHandler(GameUpdate);
 
 		ReflectionHelpers.FindTypesImplementingBase(typeof(NetPackage), (System.Action<System.Type>)(_type => Log.Out("Package {0} vs {1}", _type.Name, _type)));
@@ -33,10 +38,24 @@ public class OcbPipeGrids : IModApi
 
 		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
 
+		NodeManager.NodeManager.RegisterFactory(8, (br) => new PlantationFarmLand(br));
 		NodeManager.NodeManager.RegisterFactory(10, (br) => new PlantationFarmPlot(br));
 		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br));
 		NodeManager.NodeManager.RegisterFactory(12, (br) => new PlantationComposter(br));
 
+	}
+
+	public void GameStartDone()
+	{
+		if (Registered) return;
+		Registered = true;
+	}
+
+	public void GameShutdown()
+	{
+		if (!Registered) return;
+		CustomTerrain.GameShutdown();
+		Registered = false;
 	}
 
 	private void GameUpdate()

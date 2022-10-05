@@ -9,7 +9,13 @@ using UnityEngine;
 
 namespace NodeManager
 {
-    public class PipeWell : NodeBlock<BlockPipeWell>, ISunLight
+
+    public interface IWell : ISunLight, IEqualityComparer<NodeBase>
+    {
+        float FillState { get; set; }
+    }
+
+    public class PipeWell : NodeBlock<BlockPipeWell>, IWell
     {
         public override ulong NextTick => 30;
 
@@ -17,7 +23,7 @@ namespace NodeManager
 
         public byte CurrentSunLight { get; set; } = 0;
 
-        public float WaterAvailable = 0;
+        public float FillState { get; set; } = 0;
 
         public float AddWater = 0;
 
@@ -39,6 +45,10 @@ namespace NodeManager
         internal readonly HashSet<PlantationGrowing> Plants
             = new HashSet<PlantationGrowing>();
 
+        // Keep a list of plants that get water from us.
+        internal readonly HashSet<IFarmLand> FarmLands
+            = new HashSet<IFarmLand>();
+
         public PipeWell(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
@@ -47,7 +57,7 @@ namespace NodeManager
         public PipeWell(BinaryReader br)
             : base(br)
         {
-            WaterAvailable = br.ReadSingle();
+            FillState = br.ReadSingle();
             CurrentSunLight = br.ReadByte();
             Log.Out("------- LOADDED {0}", WorldPos);
         }
@@ -57,14 +67,14 @@ namespace NodeManager
             // Write base data first
             base.Write(bw);
             // Store additional data
-            bw.Write(WaterAvailable);
+            bw.Write(FillState);
             bw.Write(CurrentSunLight);
         }
 
         public override string GetCustomDescription()
         {
             return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Plants: {5}",
-                WaterAvailable, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Plants.Count);
+                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Plants.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -80,7 +90,7 @@ namespace NodeManager
             base.Tick(delta);
 
             // Log.Out("Ticked the well");
-            if (WaterAvailable >= MaxWaterLevel) return true;
+            if (FillState >= MaxWaterLevel) return true;
 
             // Check if chunk is loaded to update light level
             // This determines if rain fall can reach the well
@@ -137,24 +147,24 @@ namespace NodeManager
 
         public bool ConsumeWater(float amount)
         {
-            if (WaterAvailable < amount) return false;
-            WaterAvailable -= amount;
+            if (FillState < amount) return false;
+            FillState -= amount;
             return true;
         }
 
         public void FillWater(float amount)
         {
             if (amount <= 0) return;
-            if (WaterAvailable > MaxWaterLevel)
+            if (FillState > MaxWaterLevel)
             {
-                WaterAvailable = MaxWaterLevel;
+                FillState = MaxWaterLevel;
                 // UpdateWaterLevel();
             }
-            else if (WaterAvailable < MaxWaterLevel)
+            else if (FillState < MaxWaterLevel)
             {
-                WaterAvailable += amount;
-                if (WaterAvailable > MaxWaterLevel)
-                    WaterAvailable = MaxWaterLevel;
+                FillState += amount;
+                if (FillState > MaxWaterLevel)
+                    FillState = MaxWaterLevel;
                 // UpdateWaterLevel();
             }
         }
@@ -170,7 +180,7 @@ namespace NodeManager
         {
             if (factor < 0)
             {
-                float req = WaterAvailable - MaxWaterLevel;
+                float req = FillState - MaxWaterLevel;
                 int buckets = (int)Mathf.Ceil(req / factor);
                 buckets = MathUtils.Min(count, buckets);
                 FillWater(buckets * -factor);
@@ -178,7 +188,7 @@ namespace NodeManager
             }
             else if (factor > 0)
             {
-                int buckets = (int)(WaterAvailable / factor);
+                int buckets = (int)(FillState / factor);
                 buckets = MathUtils.Min(count, buckets);
                 ConsumeWater(buckets * factor);
                 return buckets;

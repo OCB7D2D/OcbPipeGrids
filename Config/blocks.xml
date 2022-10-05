@@ -1,6 +1,12 @@
 <configs patcher-version="1">
 
 	<include path="blocks.pipe.xml"/>
+
+	<append xpath="/blocks/block[@name='terrFarmland']">
+		<property name="Class" value="PlantationFarmLand, PipeGrids"/>
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+				  
 	
 	<append xpath="/blocks/block[@name='plantedCorn1']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
@@ -232,7 +238,7 @@
 			<property name="FromSnowfall" value="0.4" />
 			<property name="FromRainfall" value="0.8" />
 			<property name="FromIrrigation" value="5" />
-			<property name="BlockReach" value="2" />
+			<property name="BlockReach" value="3" />
 
 			<property class="RepairItems">
 				<property name="resourceForgedSteel" value="40"/>

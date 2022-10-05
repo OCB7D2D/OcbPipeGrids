@@ -14,7 +14,7 @@
             if (manager.TryGetNode(Position, out PipeWell well))
             {
                 well.AddWater = AddWater;
-                response.WaterLevel = well.WaterAvailable;
+                response.WaterLevel = well.FillState;
             }
             worker.AnswerToClient(response);
         }

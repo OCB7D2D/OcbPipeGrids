@@ -5,6 +5,10 @@ namespace NodeManager
     public abstract class NodeBlock<B> : NodeBase where B : class, IBlockNode
     {
 
+        static ulong IDs = 0;
+
+        public ulong ID = IDs++;
+
         public BlockValue BV = BlockValue.Air; // Air
 
         public int BlockID => BV.type;

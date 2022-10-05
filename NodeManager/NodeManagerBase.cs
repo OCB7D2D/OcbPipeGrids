@@ -12,6 +12,8 @@ namespace NodeManager
     public partial class NodeManager : GlobalTicker, IPersistable
     {
 
+        static internal float TimeScale(float delta) => delta / 60000f;
+
         public string GetPersistName() => "PipeGridManager";
         public string GetLoadInfo() => Nodes.Count.ToString();
 

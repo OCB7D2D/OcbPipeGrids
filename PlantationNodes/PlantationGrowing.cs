@@ -19,10 +19,6 @@ namespace NodeManager
     public abstract class PlantationBase : NodeBlock<BlockPlantationGrowing>, IPlant
     {
 
-        static int IDs = 0;
-
-        public int ID = IDs++;
-
         // public List<IPlant> Plants { get; } = new List<IPlant>();
 
         public HashSet<IPlant> Plants { get; } = new HashSet<IPlant>();
@@ -242,7 +238,7 @@ namespace NodeManager
             {
 
 
-                // See if we can consume any water
+                // See if we can consume any water  
                 foreach (PipeWell well in Wells)
                 {
 
