@@ -1,6 +1,12 @@
 ﻿namespace NodeManager
 {
 
+    public class ActionAddFarmPlot : BaseActionAddBlock<NetPkgActionAddFarmPlot>
+    {
+        public override NodeBase CreateNode() => new PlantationFarmPlot(Position, BV);
+        protected override void SetupNetPkg(NetPkgActionAddFarmPlot pkg) => pkg.Setup(this);
+    }
+
     public class ActionAddPlantGrowing : BaseActionAddBlock<NetPkgActionAddPlantGrowing>
     {
         public override NodeBase CreateNode() => new PlantationGrowing(Position, BV);

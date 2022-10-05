@@ -1,6 +1,9 @@
 ﻿namespace NodeManager
 {
 
+    public class NetPkgActionAddFarmPlot : NetPkgWorkerQuery<ActionAddFarmPlot> { }
+    public class NetPkgActionRemoveFarmPlot : NetPkgWorkerQuery<ActionRemoveFarmPlot> { }
+
     public class NetPkgActionAddPlantGrowing : NetPkgWorkerQuery<ActionAddPlantGrowing> { }
     public class NetPkgActionRemovePlantGrowing : NetPkgWorkerQuery<ActionRemovePlantGrowing> { }
 

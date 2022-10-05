@@ -27,7 +27,7 @@
 
 		<block name="ocbFarmPlotBlock">
 			<property name="Extends" value="farmPlotBlockPlayer"/>
-			<property name="Class" value="PipeReservoir, PipeGrids"/>
+			<property name="Class" value="PlantationFarmPlot, PipeGrids"/>
 			<property name="PipeConnectors" value="left,right,forward,back" />
 			<property name="DisplayInfo" value="Custom" />
 		</block>

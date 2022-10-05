@@ -112,6 +112,7 @@
     <Compile Include="NodeManagerBlocks\BlockBase.cs" />
     <Compile Include="NodeManagerNodes\LootBlock.cs" />
     <Compile Include="NodeManager\NodeManagerChests.cs" />
+    <Compile Include="NodeManager\NodeManagerFarmPlots.cs" />
     <Compile Include="NodeManager\NodeManagerComposters.cs" />
     <Compile Include="NodeMessages\ActionSetPower.cs" />
     <Compile Include="NodeMessages\ActionRemoveBlock.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="NodeManager\NodeManagerWells.cs" />
     <Compile Include="NodeManager\NodeManagerPlantation.cs" />
     <Compile Include="NodeManager\NodeManagerConnections.cs" />
+    <Compile Include="PlantationBlocks\BlockPlantationFarmPlot.cs" />
     <Compile Include="PlantationBlocks\BlockComposter.cs" />
     <Compile Include="PlantationBlocks\BlockPlantationGrowing.cs" />
     <Compile Include="PlantationMessages\ActionUpdateChest.cs" />
@@ -161,6 +163,7 @@
     <Compile Include="PlantationMessages\ActionRemoveBlock.cs" />
     <Compile Include="PlantationMessages\ActionUpdatePlantStats.cs" />
     <Compile Include="PlantationNetPackages\PlantationPackages.cs" />
+    <Compile Include="PlantationNodes\PlantationFarmPlot.cs" />
     <Compile Include="PlantationNodes\PlantationComposter.cs" />
     <Compile Include="PlantationNodes\PlantationGrowing.cs" />
     <Compile Include="Utils\BlockHelper.cs" />
