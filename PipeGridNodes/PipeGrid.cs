@@ -28,7 +28,7 @@
         // Invoked from `PipeGrid.UpdateGrid`
         internal void RemoveConnection(PipeConnection connection)
         {
-            Log.Out("Grid has connection removed");
+            // Log.Out("Grid has connection removed");
             if (--Count == 0) Manager.RemoveGrid(this);
             // Need to update neighbours for all removals
 

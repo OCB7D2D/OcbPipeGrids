@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using NodeManager;
+using Unity.Collections;
 
 public class OcbPipeGrids : IModApi
 {
@@ -42,7 +43,92 @@ public class OcbPipeGrids : IModApi
 		if (!NodeManagerInterface.HasInstance) return;
 		NodeManagerInterface.Instance.Update();
     }
-/*
+
+
+	[HarmonyPatch(typeof(OriginParticles))]
+	[HarmonyPatch("OnEnable")]
+	public class RepositionParticlesOnEnable
+	{
+		static void Prefix()
+		{
+
+
+
+
+			Log.Out("+++++++++ Enable Particle and register it");
+			// Create the instance and start it
+			// Will make sure to only create server
+			// and client parts only when necessary 
+			// Log.Warning("Added Ticker At {0}",
+			// 	_wbte.scheduledTime);
+			// NodeManagerInterface.Instance.Init();
+		}
+	}
+	
+
+	[HarmonyPatch(typeof(Origin))]
+	[HarmonyPatch("RepositionParticles")]
+	public class RepositionParticles
+	{
+		static bool Prefix(Vector3 _deltaV)
+		{
+			return true;
+			/*
+			Log.Out("---------- Reposition particles is called");
+
+
+			for (int index1 = Origin.particleSystemTs.Count - 1; index1 >= 0; --index1)
+			{
+				Transform particleSystemT = Origin.particleSystemTs[index1];
+				if (!(bool)(UnityEngine.Object)particleSystemT)
+				{
+					Origin.particleSystemTs.RemoveAt(index1);
+				}
+				else
+				{
+					Log.Out("!!!!!!!!! Reposition {0}", particleSystemT);
+					ParticleSystem[] componentsInChildren = particleSystemT.GetComponentsInChildren<ParticleSystem>();
+					for (int index2 = componentsInChildren.Length - 1; index2 >= 0; --index2)
+					{
+						ParticleSystem particleSystem = componentsInChildren[index2];
+						Log.Out("     ===!!!!!!!!! Repositioned {0} {1}", particleSystem.isPlaying, particleSystem.main.simulationSpace);
+							// particleSystem.transform.position
+						if (particleSystem.isPlaying && particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World)
+						{
+							var array = new NativeArray<ParticleSystem.Particle>(512, Allocator.Persistent);
+							int particles = particleSystem.GetParticles(array);
+							for (int index3 = 0; index3 < particles; ++index3)
+							{
+								ParticleSystem.Particle particle = array[index3];
+								Log.Out("        !!!!!!!!! Repositioned {0}", particle);
+								particle.position += _deltaV;
+								array[index3] = particle;
+							}
+							particleSystem.SetParticles(array, particles);
+							particleSystem.Simulate(0.0f, false, false);
+							particleSystem.Play(false);
+						}
+					}
+				}
+			}
+			return false;
+
+			foreach (var asd in Origin.particleSystemTs)
+            {
+				// Log.Out("!!!!!!!!! Reposition {0}", asd);
+            }
+			*/
+			// Create the instance and start it
+			// Will make sure to only create server
+			// and client parts only when necessary 
+			// Log.Warning("Added Ticker At {0}",
+			// 	_wbte.scheduledTime);
+			// NodeManagerInterface.Instance.Init();
+		}
+	}
+
+	
+		/*
 	// Hook into `VehicleManager.Init`
 	[HarmonyPatch(typeof(WorldBlockTicker))]
 	[HarmonyPatch("add")]
@@ -79,12 +165,12 @@ public class OcbPipeGrids : IModApi
 		}
 	}
 */
-	// Hook into `VehicleManager.Init`
+		// Hook into `VehicleManager.Init`
 
-	
 
-	// Hook into `VehicleManager.Init`
-	[HarmonyPatch(typeof(VehicleManager))]
+
+		// Hook into `VehicleManager.Init`
+		[HarmonyPatch(typeof(VehicleManager))]
 	[HarmonyPatch("Init")]
 	public class PipeGridManagerInit
 	{

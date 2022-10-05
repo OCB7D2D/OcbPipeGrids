@@ -160,7 +160,7 @@ namespace NodeManager
             for (int index = 0; index < nodes; ++index)
             {
                 uint type = br.ReadUInt32();
-                Log.Out(" Reading type {0}", type);
+                //Log.Out(" Reading type {0}", type);
                 var node = InstantiateItem(type, br);
                 // Restore power state automatically
                 if (node is IPoweredNode powered)

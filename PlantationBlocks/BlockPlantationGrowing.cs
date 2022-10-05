@@ -1,4 +1,6 @@
 ﻿using NodeManager;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 {
@@ -12,6 +14,16 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 	public BlockPlantationGrowing()
     {
 		this.IsNotifyOnLoadUnload = true;
+	}
+
+	private string IllnessEffect = string.Empty;
+
+	public override void Init()
+    {
+        base.Init();
+		// Parse optional block XML setting properties
+		if (Properties.Contains("IllnessEffect")) IllnessEffect =
+			Properties.GetString("IllnessEffect").Trim();
 	}
 
 	public virtual void CreateGridItem(Vector3i position, BlockValue bv)
@@ -51,6 +63,8 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (bv.isair || bv.ischild) return true;
 		world.GetWBT().AddScheduledBlockUpdate(
 			clrIdx, pos, blockID, GetTickRate());
+		var chunk = world.GetChunkFromWorldPos(pos);
+		//UpdateParticleEffect(world, chunk, pos, bv);
 		return true;
     }
 
@@ -69,6 +83,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 			chunk.ClrIdx, pos, blockID, GetTickRate());
 		//world.GetWBT().AddScheduledBlockUpdate(
 		//	chunk.ClrIdx, pos, blockID, GetTickRate());
+		UpdateParticleEffect(pos, bv);
 	}
 
 	public override void OnBlockRemoved(
@@ -80,12 +95,21 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (bv.isair || bv.ischild) return;
 		Log.Out("- Plant Removed");
 		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+		if (checks.TryGetValue(pos,
+			out GameObject go))
+        {
+			Origin.Remove(go.transform);
+			go.SetActive(false);
+			Object.Destroy(go);
+			checks.Remove(pos);
+        }
 	}
 
-    public override void OnBlockValueChanged(WorldBase _world, Chunk _chunk, int _clrIdx, Vector3i _blockPos, BlockValue _oldBlockValue, BlockValue _newBlockValue)
+	public override void OnBlockValueChanged(WorldBase _world, Chunk _chunk, int _clrIdx, Vector3i _blockPos, BlockValue _oldBlockValue, BlockValue _newBlockValue)
     {
 		Log.Out("~ Plant Changed");
 		base.OnBlockValueChanged(_world, _chunk, _clrIdx, _blockPos, _oldBlockValue, _newBlockValue);
+		UpdateParticleEffect(_blockPos, _newBlockValue);
     }
 
     public override void OnBlockLoaded(WorldBase world,
@@ -95,12 +119,14 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (bv.isair || bv.ischild) return;
 		world.GetWBT().AddScheduledBlockUpdate(
 			clrIdx, pos, blockID, GetTickRate());
+		var chunk = world.GetChunkFromWorldPos(pos);
+		UpdateParticleEffect(pos, bv);
 	}
 
 	// public override void OnBlockUnloaded(WorldBase world,
 	// 	int clrIdx, Vector3i pos, BlockValue bv)
-    // {
-    //     base.OnBlockUnloaded(world, clrIdx, pos, bv);
+	// {
+	//     base.OnBlockUnloaded(world, clrIdx, pos, bv);
 	// 	if (bv.isair || bv.ischild) return;
 	// }
 
@@ -121,5 +147,45 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 			+ "\n" + GetCustomDescription(pos, bv);
 	}
 
+    public override void OnBlockEntityTransformBeforeActivated(WorldBase _world, Vector3i _blockPos, int _cIdx, BlockValue _blockValue, BlockEntityData _ebcd)
+    {
+        base.OnBlockEntityTransformBeforeActivated(_world, _blockPos, _cIdx, _blockValue, _ebcd);
+		Log.Warning("On Transform Before Activated ============== {0}");
+	}
+
+	public override void OnBlockEntityTransformAfterActivated(WorldBase _world, Vector3i _blockPos, int _cIdx, BlockValue _blockValue, BlockEntityData _ebcd)
+    {
+        base.OnBlockEntityTransformAfterActivated(_world, _blockPos, _cIdx, _blockValue, _ebcd);
+		Log.Warning("On Transform After Activated ============== {0}");
+		// UpdateParticleEffect(_world);
+	}
+
+	static Dictionary<Vector3i, GameObject> checks =
+		new Dictionary<Vector3i, GameObject>();
+
+	public void UpdateParticleEffect(
+		Vector3i pos, BlockValue bv)
+	{
+		if (IllnessEffect == string.Empty) return;
+		// Try to get game object
+		if (!checks.TryGetValue(pos,
+			out GameObject go))
+        {
+			var effect = DataLoader.LoadAsset<GameObject>(IllnessEffect);
+			if (effect == null) return;
+			go = Object.Instantiate(effect);
+			if (go == null) return;
+			checks.Add(pos, go);
+			// Shift with origin
+			Origin.Add(go.transform, -1);
+		}
+		if (go == null) return;
+		// Update position for object
+		go.transform.localPosition = pos
+			+ Vector3.one / 2f
+			- Origin.position;
+		// Check if plant is actually sick
+		go.SetActive((bv.meta2 & 2) == 2);
+	}
 
 }

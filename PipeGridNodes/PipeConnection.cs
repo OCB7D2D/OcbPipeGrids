@@ -69,7 +69,7 @@ namespace NodeManager
         // Overload to add more behavior on grid change
         protected virtual void UpdateGrid(PipeGrid grid)
         {
-            Log.Out("::::::: UpdateGrid {0}", grid);
+            //Log.Out("::::::: UpdateGrid {0}", grid);
             Grid?.RemoveConnection(this);
             grid?.AddConnection(this);
         }
@@ -291,25 +291,25 @@ namespace NodeManager
 
             if (grids == 0)
             {
-                Log.Out("Creating Grid");
+                //Log.Out("Creating Grid");
                 Grid = new PipeGrid(manager);
-                Log.Out("Created Grid");
+                //Log.Out("Created Grid");
             }
             else
             {
                 for (byte side = 0; side < 6; side++)
                 {
                     if (Neighbours[side] == null) continue;
-                    Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
+                    //Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
                 }
-                Log.Out("Joining grid");
+                //Log.Out("Joining grid");
                 // Grid = Neighbours[source].Grid;
                 PropagateGridChange(Neighbours[source]);
-                Log.Out("Joined grid");
+                //Log.Out("Joined grid");
                 for (byte side = 0; side < 6; side++)
                 {
                     if (Neighbours[side] == null) continue;
-                    Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
+                    //Log.Out("Neigh {0}", Neighbours[side].CountLongestDistance());
                 }
             }
 

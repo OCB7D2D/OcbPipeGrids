@@ -30,6 +30,8 @@ namespace NodeManager
 
         public float WaterFactor = 0.01f;
 
+        // public byte Flags = 0;
+
         // public float FromGround => BLK != null ? BLK.FromGround : 0.08f / 1000f;
         // public float FromFreeSky => BLK != null ? BLK.FromFreeSky : 0.25f / 1000f;
         // public float FromWetSurface => BLK != null ? BLK.FromWetSurface : 0.15f / 1000f;
@@ -68,18 +70,19 @@ namespace NodeManager
             bw.Write(CurrentSunLight);
             bw.Write(CurrentFertility);
             bw.Write(CurrentRain);
+            // bw.Write(Flags);
         }
 
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0}\nWater: {1}, Light: {2}\nFert: {3}, Rain: {4}\nWells: {5}",
-                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertility, CurrentRain, Wells.Count);
+            return string.Format("Plant Growing {0}\nWater: {1}, Light: {2}\nFert: {3}, Rain: {4}\nWells: {5}, Sick: {6}",
+                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertility, CurrentRain, Wells.Count, BV.meta2);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
         {
-            Log.Out("Attach Man {0} {1} {2}",
-                ID, Manager, manager);
+            //Log.Out("Attach Man {0} {1} {2}",
+            //    ID, Manager, manager);
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
             Manager?.RemovePlantGrowing(this);
@@ -92,13 +95,48 @@ namespace NodeManager
 
         public override bool Tick(ulong delta)
         {
-            Log.Out("1Tick plant {0}", ID);
+            //Log.Out("1Tick plant {0}", ID);
             if (!base.Tick(delta))
                 return false;
-            Log.Out("2Tick plant {0}", ID);
+            //Log.Out("2Tick plant {0}", ID);
 
             bool NeedsWater = true;
 
+            if (UnityEngine.Random.value > 0.5f)
+            {
+                if ((BV.meta2 & 2) != 2)
+                {
+                    BV.meta2 |= 2;
+                    Log.Warning("Plant has become sick {0}", WorldPos);
+                    var action = new ExecuteBlockChange();
+                    action.Setup(WorldPos, BV);
+                    if (Manager == null)
+                    {
+                        Log.Warning("Plant withouzt Manager");
+                        return false;
+                    }
+                    Log.Out("Enqueue to manager {0}", Manager);
+                    Manager.ToMainThread.Enqueue(action);
+                }
+            }
+
+            else if (UnityEngine.Random.value < 0.00035f)
+            {
+                if ((BV.meta2 & 2) == 2)
+                {
+                    BV.meta2 ^= 2;
+                    Log.Warning("Plant has healed {0}", WorldPos);
+                    var action = new ExecuteBlockChange();
+                    action.Setup(WorldPos, BV);
+                    if (Manager == null)
+                    {
+                        Log.Warning("Plant withouzt Manager");
+                        return false;
+                    }
+                    Log.Out("Enqueue to manager {0}", Manager);
+                    Manager.ToMainThread.Enqueue(action);
+                }
+            }
 
             // Check if plant needs water to grow
             // Should be the only water grid API use
@@ -144,7 +182,7 @@ namespace NodeManager
             // else GrowToNext(world, PlantManager.Instance);
 
             // Grow to next phase
-            if (GrowProgress > 100f)
+            if (GrowProgress * 0.001f > 100f)
             {
                 Log.Warning("Grow into {0}", FieldNextPlant.Get(BLOCK).Block.GetBlockName());
 

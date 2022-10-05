@@ -4,10 +4,22 @@
 	
 	<append xpath="/blocks/block[@name='plantedCorn1']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 	<append xpath="/blocks/block[@name='plantedCorn2']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+	<append xpath="/blocks/block[@name='plantedHop1']">
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="DisplayInfo" value="Custom" />
+	</append>
+	<append xpath="/blocks/block[@name='plantedHop2']">
+		<property name="Class" value="PlantationGrowing, PipeGrids" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 

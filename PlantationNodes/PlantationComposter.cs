@@ -42,8 +42,8 @@ namespace NodeManager
 
         protected override void OnManagerAttached(NodeManager manager)
         {
-            Log.Out("Attach Man {0} {1} {2}",
-                ID, Manager, manager);
+            //Log.Out("Attach Man {0} {1} {2}",
+            //    ID, Manager, manager);
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
             //manager?.AddComposter(this);

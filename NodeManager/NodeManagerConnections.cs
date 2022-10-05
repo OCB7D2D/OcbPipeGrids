@@ -51,7 +51,7 @@ namespace NodeManager
                         }
                         else
                         {
-                            Log.Out("Create new grid -----");
+                            //Log.Out("Create new grid -----");
                             // Assign new grid to current connection
                             // connection.Grid = new PipeGrid();
                             // Propagate that change into neighbour tree
@@ -107,9 +107,9 @@ namespace NodeManager
 
             if (grids == 0)
             {
-                Log.Out("Creating Grid");
+                //Log.Out("Creating Grid");
                 connection.Grid = new PipeGrid(this);
-                Log.Out("Created Grid");
+                //Log.Out("Created Grid");
             }
             else
             {
@@ -117,11 +117,11 @@ namespace NodeManager
                 {
                     if (connection.Neighbours[side] == null) continue;
                 }
-                Log.Out("Joining grid");
+                //Log.Out("Joining grid");
                 // Grid = Neighbours[source].Grid;
                 connection.PropagateGridChange(
                     connection.Neighbours[source]);
-                Log.Out("Joined grid");
+                //Log.Out("Joined grid");
                 for (byte side = 0; side < 6; side++)
                 {
                     if (connection.Neighbours[side] == null) continue;
