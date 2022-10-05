@@ -9,18 +9,46 @@ using UnityEngine;
 
 namespace NodeManager
 {
-    public class PlantationGrowing : NodeBlock<BlockPlantationGrowing>, ISunLight
+
+    public interface IPlant : ISunLight, ITickable, IfaceGridNodeManaged
+    {
+        HashSet<IPlant> Plants { get; }
+        HashSet<IComposter> Composters { get; }
+    }
+
+    public abstract class PlantationBase : NodeBlock<BlockPlantationGrowing>, IPlant
     {
 
         static int IDs = 0;
 
         public int ID = IDs++;
 
+        // public List<IPlant> Plants { get; } = new List<IPlant>();
+
+        public HashSet<IPlant> Plants { get; } = new HashSet<IPlant>();
+        public HashSet<IComposter> Composters { get; } = new HashSet<IComposter>();
+
+        public byte CurrentSunLight { get; set; } = 0;
+
+        public PlantationBase(Vector3i position, BlockValue bv)
+            : base(position, bv)
+        {
+        }
+
+        public PlantationBase(BinaryReader br)
+            : base(br)
+        {
+        }
+
+    }
+
+        public class PlantationGrowing : PlantationBase
+    {
+
+
         public override ulong NextTick => 5;
 
         public override uint StorageID => 11;
-
-        public byte CurrentSunLight { get; set; } = 0;
 
         public byte CurrentFertility { get; set; } = 0;
 
@@ -28,7 +56,15 @@ namespace NodeManager
 
         public float GrowProgress = 0;
 
-        public float WaterFactor = 0.01f;
+        public float WaterFactor = 0.5f;
+
+        public float SoilFactor = 1f;
+
+        public float HealthFactor = 1f;
+
+        public float SickFactor = 0.01f;
+
+        private PipeReservoir Reservoir = null;
 
         // public byte Flags = 0;
 
@@ -45,6 +81,9 @@ namespace NodeManager
         internal readonly HashSet<PipeWell> Wells
             = new HashSet<PipeWell>();
 
+        // internal readonly HashSet<PlantationComposter> Composters
+        //     = new HashSet<PlantationComposter>();
+
         public PlantationGrowing(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
@@ -54,6 +93,8 @@ namespace NodeManager
             : base(br)
         {
             WaterFactor = br.ReadSingle();
+            SoilFactor = br.ReadSingle();
+            HealthFactor = br.ReadSingle();
             GrowProgress = br.ReadSingle();
             CurrentSunLight = br.ReadByte();
             CurrentFertility = br.ReadByte();
@@ -66,6 +107,8 @@ namespace NodeManager
             base.Write(bw);
             // Store additional data
             bw.Write(WaterFactor);
+            bw.Write(SoilFactor);
+            bw.Write(HealthFactor);
             bw.Write(GrowProgress);
             bw.Write(CurrentSunLight);
             bw.Write(CurrentFertility);
@@ -75,8 +118,8 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0}\nWater: {1}, Light: {2}\nFert: {3}, Rain: {4}\nWells: {5}, Sick: {6}",
-                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertility, CurrentRain, Wells.Count, BV.meta2);
+            return string.Format("Plant Growing {0:.00}\nWater: {1:.00}, Light: {2}\nFert: {3}, Rain: {4:.00}\nWells: {5}, Sick: {6}\nPlants: {7}, Reservoir: {8:.00}\nSoil: {9:.00}, Health: {10:.00}, Sick: {11:.00}\nComposters: {12}",
+                GrowProgress, WaterFactor, CurrentSunLight, CurrentFertility, CurrentRain, Wells.Count, BV.meta2, Plants.Count, Reservoir?.FillState, SoilFactor, HealthFactor, SickFactor, Composters.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -89,71 +132,120 @@ namespace NodeManager
             manager?.AddPlantGrowing(this);
         }
 
+        public override void OnAfterLoad()
+        {
+            base.OnAfterLoad();
+            Manager.TryGetNode(
+                WorldPos + Vector3i.down,
+                out Reservoir);
+        }
+
         static readonly HarmonyFieldProxy<BlockValue>
             FieldNextPlant = new HarmonyFieldProxy<BlockValue>(
                 typeof(BlockPlantGrowing), "nextPlant");
 
-        public override bool Tick(ulong delta)
+        public void DoSicknessCheck(ulong delta)
         {
-            //Log.Out("1Tick plant {0}", ID);
-            if (!base.Tick(delta))
-                return false;
-            //Log.Out("2Tick plant {0}", ID);
 
-            bool NeedsWater = true;
+            // HealthFactor
 
-            if (UnityEngine.Random.value > 0.5f)
+            // Composter
+            if (Manager == null)
             {
-                if ((BV.meta2 & 2) != 2)
+                Log.Warning("Plant without Manager");
+                return;
+            }
+
+            if (UnityEngine.Random.value > 0.95f)
+            {
+                int illness = BlockHelper.GetIllness(BV);
+                if (illness < 7)
                 {
-                    BV.meta2 |= 2;
-                    Log.Warning("Plant has become sick {0}", WorldPos);
+                    BlockHelper.SetIllness(ref BV, illness + 1);
+                    Log.Warning("Plant now ill {0}", BV.meta2);
                     var action = new ExecuteBlockChange();
                     action.Setup(WorldPos, BV);
-                    if (Manager == null)
-                    {
-                        Log.Warning("Plant withouzt Manager");
-                        return false;
-                    }
-                    Log.Out("Enqueue to manager {0}", Manager);
+                    // Log.Out("Enqueue to manager {0}", Manager);
                     Manager.ToMainThread.Enqueue(action);
                 }
             }
 
-            else if (UnityEngine.Random.value < 0.00035f)
+            else if (UnityEngine.Random.value < 0.45f)
             {
-                if ((BV.meta2 & 2) == 2)
+                int illness = BlockHelper.GetIllness(BV);
+                if (illness > 0)
                 {
-                    BV.meta2 ^= 2;
                     Log.Warning("Plant has healed {0}", WorldPos);
+                    BlockHelper.SetIllness(ref BV, illness - 1);
                     var action = new ExecuteBlockChange();
                     action.Setup(WorldPos, BV);
-                    if (Manager == null)
-                    {
-                        Log.Warning("Plant withouzt Manager");
-                        return false;
-                    }
-                    Log.Out("Enqueue to manager {0}", Manager);
+                    // Log.Out("Enqueue to manager {0}", Manager);
                     Manager.ToMainThread.Enqueue(action);
                 }
             }
+        }
 
+        private float MixMe(float waterFactor, float newFactor, ulong delta)
+        {
+            ulong span = 12000;
+            waterFactor = waterFactor * (span - delta) +
+                newFactor * (delta);
+            waterFactor /= span;
+            return waterFactor;
+        }
+
+        public void DoWaterCheck(ulong delta)
+        {
+
+            float factor = delta / 60000f;
             // Check if plant needs water to grow
             // Should be the only water grid API use
-            if (NeedsWater)
-            {
-                // 3% without water
-                // GrowthFactor = 0.03f;
-                // HasWater = 0.0f;
-                float consumedWater = 0;
 
-                consumedWater += CurrentRain * delta / 100f;
-                CurrentRain -= delta / 100f;
+            // 3% without water
+            // GrowthFactor = 0.03f;
+            // HasWater = 0.0f;
+            float consumedWater = 0;
+
+            // Add water from current rain
+            consumedWater += CurrentRain * factor;
+            // Consume the rain (once unloaded)
+            CurrentRain -= factor;
+
+            if (Reservoir != null)
+            {
+                float quality = 1f;
+                switch (Reservoir.FluidType)
+                {
+                    case 2: quality = 2f; break;
+                    case 3: quality = 3f; break;
+                    default: quality = 1f; break;
+                }
+
+                float wanted = 0.5f * factor * WaterFactor;
+                consumedWater += Reservoir.ConsumeFluid(wanted);
+
+                float newFactor = consumedWater / wanted * quality;
+
+                WaterFactor = MixMe(WaterFactor, newFactor, delta);
+
+                //WaterFactor += consumedWater > 0 ?
+                //    delta / 2000f * consumedWater :
+                //    -2f * delta / 2000f;
+
+                if (WaterFactor > 5f) WaterFactor = 5f;
+                else if (WaterFactor < 0.03f) WaterFactor = 0.03f;
+
+            }
+            // Plants on ground can only get murky water for soil
+            // Reason is that natural soil will make it murky again
+            else
+            {
+
 
                 // See if we can consume any water
                 foreach (PipeWell well in Wells)
                 {
-                
+
                     if (well.ConsumeWater(0.01f * delta * WaterFactor / 100f))
                         consumedWater += WaterFactor;
                 }
@@ -167,10 +259,49 @@ namespace NodeManager
                 if (WaterFactor > 2f) WaterFactor = 2f;
                 else if (WaterFactor < 0.03f) WaterFactor = 0.03f;
             }
-            else
+
+        }
+
+        public void DoSoilQualityCheck(ulong delta)
+        {
+            float factor = delta / 50f;
+            // Log.Out("Delta is {0}", delta); // around 50?
+            if (Composters.Count == 0) return;
+            float wanting = 100f - SoilFactor;
+            if (wanting > 0.4f * factor) wanting = 0.4f * factor
+                    + 0.2f * Composters.Count * factor;
+            wanting /= Composters.Count;
+            float taken = 0f;
+            foreach (IComposter composter in Composters)
             {
-                WaterFactor = 1f; // Base value
+                var asd = composter as PlantationComposter;
+                if (composter.GrowProgress < wanting)
+                {
+                    taken += composter.GrowProgress;
+                    composter.GrowProgress = 0;
+                }
+                else
+                {
+                    composter.GrowProgress -= wanting;
+                    taken += wanting;
+                }
             }
+            SoilFactor += taken - 0.01f * factor;
+        }
+
+        public override bool Tick(ulong delta)
+        {
+            //Log.Out("1Tick plant {0}", ID);
+            if (!base.Tick(delta))
+                return false;
+            //Log.Out("2Tick plant {0}", ID);
+
+            DoSoilQualityCheck(delta);
+
+            DoWaterCheck(delta);
+
+            DoSicknessCheck(delta);
+
 
             // HasWater = WaterFactor;
 

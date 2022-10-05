@@ -153,11 +153,14 @@ namespace KdTree3
 				}
 			}
 
-			public void RemoveAt(Vector3i point)
+			public bool RemoveAt(Vector3i point)
 			{
+				// Easiest to ensure no errors
+				var count = Count;
+
 				// Is tree empty?
 				if (root == null)
-					return;
+					return count != Count;
 
 				Node node;
 
@@ -167,7 +170,7 @@ namespace KdTree3
 					root = null;
 					Count--;
 					ReaddChildNodes(node);
-					return;
+					return count != Count;
 				}
 
 				node = root;
@@ -181,7 +184,7 @@ namespace KdTree3
 
 					if (node[compare] == null)
 						// Can't find node
-						return;
+						return count != Count;
 
 					if (point == node[compare].Point)
 					{
@@ -190,11 +193,13 @@ namespace KdTree3
 						Count--;
 
 						ReaddChildNodes(nodeToRemove);
+						// Can I return true here?
 					}
 					else
 						node = node[compare];
 				}
 				while (node != null);
+				return count != Count;
 			}
 
 			public void GetNearestNeighbours(Vector3i point, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)

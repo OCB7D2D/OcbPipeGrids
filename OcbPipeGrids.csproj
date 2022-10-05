@@ -112,6 +112,7 @@
     <Compile Include="NodeManagerBlocks\BlockBase.cs" />
     <Compile Include="NodeManagerNodes\LootBlock.cs" />
     <Compile Include="NodeManager\NodeManagerChests.cs" />
+    <Compile Include="NodeManager\NodeManagerComposters.cs" />
     <Compile Include="NodeMessages\ActionSetPower.cs" />
     <Compile Include="NodeMessages\ActionRemoveBlock.cs" />
     <Compile Include="NodeMessages\ActionAddBlock.cs" />

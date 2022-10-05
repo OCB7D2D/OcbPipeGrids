@@ -133,5 +133,25 @@ namespace NodeManager
             helper.localPosition = pos - Origin.position + offset;
             helper.gameObject.SetActive((bv.meta2 & 1) != 0);
         }
+
+        //########################################################
+        // Helpers for plant states
+        //########################################################
+
+        public static int GetIllness(BlockValue bv)
+        {
+            return bv.meta2 & 0b_0000_0111;
+        }
+
+        public static void SetIllness(ref BlockValue bv, int state)
+        {
+            if (state < 0) state = 0;
+            if (state > 7) state = 7;
+            bv.meta2 = (byte)(
+                (byte)(state & 0b_0000_0111) +
+                (byte)(bv.meta2 & ~0b_0000_0111));
+            Log.Out("Set meta2 to {0}", bv.meta2);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
@@ -168,6 +169,18 @@ namespace NodeManager
                 MaxFillState, FillState);
 
             return true;
+        }
+
+        internal float ConsumeFluid(float wanted, bool fully = false)
+        {
+            // Check if we have not enough to fill up
+            if (fully && wanted > FillState) return 0;
+            // Test if we want more than having
+            if (wanted > FillState)
+                wanted = FillState;
+            // Consume what we wanted
+            FillState -= wanted;
+            return wanted;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace NodeManager
 {
-    public class PlantationComposter : LootBlock<BlockComposter>
+    public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
     {
 
         static int IDs = 0;
@@ -14,7 +15,9 @@ namespace NodeManager
 
         public override uint StorageID => 12;
 
-        public float GrowProgress = 0;
+        public float GrowProgress { get; set; } = 0;
+
+        public HashSet<IPlant> Plants { get; } = new HashSet<IPlant>();
 
         public PlantationComposter(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -46,11 +49,15 @@ namespace NodeManager
             //    ID, Manager, manager);
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            //manager?.AddComposter(this);
+            Manager?.RemoveComposter(this);
+            manager?.AddComposter(this);
         }
 
         public override bool Tick(ulong delta)
         {
+
+            var factor = delta / 100f;
+
             if (Manager == null)
             {
                 Log.Out("No manager");
@@ -71,7 +78,7 @@ namespace NodeManager
                 var ic = chest[i]?.itemValue?.ItemClass;
                 if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
                 {
-                    GrowProgress += 0.01f;
+                    GrowProgress += 1f * factor;
                     action.AddChange(chest[i]?.itemValue, -1);
                 }
             }

@@ -184,6 +184,14 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		go.transform.localPosition = pos
 			+ Vector3.one / 2f
 			- Origin.position;
+		foreach (var particles in go.transform.GetComponentsInChildren<ParticleSystem>())
+        {
+			var qwe = particles.main;
+			qwe.maxParticles = BlockHelper.GetIllness(bv);
+			Log.Out("Changes particles to {0}", qwe.maxParticles);
+
+		}
+
 		// Check if plant is actually sick
 		go.SetActive((bv.meta2 & 2) == 2);
 	}
