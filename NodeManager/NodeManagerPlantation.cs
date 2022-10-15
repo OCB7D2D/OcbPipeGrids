@@ -7,86 +7,43 @@ namespace NodeManager
         : GlobalTicker, IPersistable
     {
 
+        private const int PlantToPlantReach = 3;
+
         // Store all powered items in a dictionary to update state
-        public readonly Dictionary<Vector3i, PlantationGrowing> PlantGrowing
-            = new Dictionary<Vector3i, PlantationGrowing>();
+        public readonly Dictionary<Vector3i, IPlant> PlantsDict
+            = new Dictionary<Vector3i, IPlant>();
 
-        public readonly KdTree<MetricChebyshev>.Vector3i<PlantationGrowing> PlantGrowings
-            = new KdTree<MetricChebyshev>.Vector3i<PlantationGrowing>();
-
-        public readonly KdTree<MetricChebyshev>.Vector3i<IPlant> Plants
+        public readonly KdTree<MetricChebyshev>.Vector3i<IPlant> PlantsTree
             = new KdTree<MetricChebyshev>.Vector3i<IPlant>();
 
-        
-
-        public void AddPlantGrowing(PlantationGrowing plant)
+        public void AddPlantGrowing(IPlant plant)
         {
-            Log.Warning("Add plant growing {0}", plant);
-            PlantGrowing.Add(plant.WorldPos, plant);
-            PlantGrowings.Add(plant.WorldPos, plant);
-
-            // We only need to check for reservoir below once
-            // Because it is impossible to change once placed
-
-
-            //Manager.Com
-
-            // Search for existing plants
-            System.Tuple<Vector3i, IPlant>[] plants =
-                Plants.RadialSearch(plant.WorldPos, 3);
-            foreach (var kv in plants)
-            {
-                plant.Plants.Add(kv.Item2);
-                kv.Item2.Plants.Add(plant);
-            }
-
-
-            System.Tuple<Vector3i, IComposter>[] composters =
-                Composters.RadialSearch(plant.WorldPos, 3);
-            foreach (var kv in composters)
-            {
-                plant.Composters.Add(kv.Item2);
-                kv.Item2.Plants.Add(plant);
-            }
-
-            // Add our plant to the index
-            Plants.Add(plant.WorldPos, plant);
-
-            System.Tuple<Vector3i, PipeWell>[] wells =
-                Wells.RadialSearch(plant.WorldPos, 20);
-
-            foreach (var kv in wells)
-            {
-                if (!BlockHelper.IsInReach(
-                    plant.WorldPos, kv.Item1,
-                    kv.Item2.BLOCK.BlockReach)) continue;
-                plant.Wells.Add(kv.Item2);
-                kv.Item2.Plants.Add(plant);
-            }
+            PlantsDict.Add(plant.WorldPos, plant);
+            PlantsTree.Add(plant.WorldPos, plant);
+            ReachHelper.AddLinks(plant, PlantsTree,
+                PlantToPlantReach);
         }
 
-        public bool RemovePlantGrowing(PlantationGrowing plant)
+        public bool RemovePlantGrowing(IPlant plant)
         {
-            Log.Warning("Remove plant growing");
+            // Make sure to unregister us from links
             foreach (var other in plant.Plants)
                 other.Plants.Remove(plant);
+            // Clear our links
             plant.Plants.Clear();
-            foreach (var well in plant.Wells)
-                well.Plants.Remove(plant);
-            plant.Wells.Clear();
-            Plants.RemoveAt(plant.WorldPos);
-            PlantGrowings.RemoveAt(plant.WorldPos);
-            return PlantGrowing.Remove(plant.WorldPos);
+            // Remove from tree and dictionary
+            return PlantsTree.RemoveAt(plant.WorldPos)
+                || PlantsDict.Remove(plant.WorldPos);
         }
 
         public void UpdatePlantStats(ActionUpdatePlantStats stats)
         {
-            if (PlantGrowing.TryGetValue(stats.Position,
-                out PlantationGrowing plant))
+            // Use dictionary as it is hopefully faster than KD tree
+            if (PlantsDict.TryGetValue(stats.Position, out IPlant plant))
             {
                 plant.CurrentSunLight = stats.SunLight;
-                plant.CurrentFertility = stats.Fertility;
-                plant.CurrentRain = stats.Rain;
+                //plant.CurrentFertility = stats.Fertility;
+                //plant.CurrentRain = stats.Rain;
             }
         }
 

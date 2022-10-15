@@ -108,6 +108,9 @@ public class PersistedData
         }
         catch (Exception)
         {
+            Log.Warning("Loading {0} failed, trying backup ...",
+                Persitable.GetPersistName());
+            // ToDo: should reset partially loaded stuff?
             string backup = Persitable.GetBackupPath();
             if (!File.Exists(backup)) return;
             using (FileStream fileStream = File.OpenRead(backup))

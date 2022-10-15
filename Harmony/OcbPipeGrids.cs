@@ -253,9 +253,13 @@ public class OcbPipeGrids : IModApi
 			}
 			if (_holdingBlockValue.Block is IBoundHelper helper)
             {
-				___transformFocusCubePrefab.localScale +=
-					Vector3.one * helper.BlockReach * 5.08f;
-            }
+				var scale = ___transformFocusCubePrefab.localScale;
+				//scale.x += helper.BlockReach.x * 5.08f;
+				//scale.z += helper.BlockReach.z * 5.08f;
+				___transformFocusCubePrefab.localScale = scale;
+				// ___transformFocusCubePrefab.localScale +=
+				// 	Vector3.one * helper.BlockReach * 5.08f;
+			}
 		}
 	}
 

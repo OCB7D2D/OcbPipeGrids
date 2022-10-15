@@ -349,21 +349,140 @@ namespace KdTree3
 				distanceSquaredToTarget = metric.DistanceSquared(node.Point, target);
 
 				if (distanceSquaredToTarget <= maxSearchRadiusSquared)
+				{
+					nearestNeighbours.Add(new Tuple<Vector3i, TValue>(node.Point, node.Value), distanceSquaredToTarget);
+				}
+
+			}
+
+
+			private void AddNearestNeighbours(
+				Node node,
+				Vector3i target,
+				HyperRect rect,
+				int depth,
+				NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList nearestNeighbours,
+				Vector3i distance)
+			{
+
+				if (node == null) return;
+
+				// Split our hyper-rect into 2 sub rects along the
+				// current node's point on the current dimension
+				// Note: this makes a copy of the structs
+				HyperRect leftRect = rect;
+				HyperRect rightRect = rect;
+				bool goLeft = false;
+
+				if (depth == 0)
+				{
+					leftRect.MaxPoint.x = node.Point.x;
+					rightRect.MinPoint.x = node.Point.x;
+					goLeft = target.x <= node.Point.x;
+				}
+				else if (depth == 1)
+				{
+					leftRect.MaxPoint.y = node.Point.y;
+					rightRect.MinPoint.y = node.Point.y;
+					goLeft = target.y <= node.Point.y;
+				}
+				else if (depth == 2)
+				{
+					leftRect.MaxPoint.z = node.Point.z;
+					rightRect.MinPoint.z = node.Point.z;
+					goLeft = target.z <= node.Point.z;
+				}
+
+				HyperRect nearerRect = goLeft ? leftRect : rightRect;
+				HyperRect furtherRect = goLeft ? rightRect : leftRect;
+
+				Node nearerNode = goLeft ? node.LeftChild : node.RightChild;
+				Node furtherNode = goLeft ? node.RightChild : node.LeftChild;
+
+				// Let's walk down into the nearer branch
+				if (nearerNode != null)
+				{
+					AddNearestNeighbours(
+						nearerNode,
+						target,
+						nearerRect,
+						Increment(depth),
+						nearestNeighbours,
+						distance);
+				}
+
+				// Walk down into the further branch but only if our capacity hasn't been reached 
+				// OR if there's a region in the further rect that's closer to the target than our
+				// current furtherest nearest neighbour
+				Vector3i closestPointInFurtherRect = Vector3i.zero;
+				furtherRect.GetClosestPoint(target, ref closestPointInFurtherRect);
+				var distanceSquaredToTarget = metric.DistanceSquared(closestPointInFurtherRect, target);
+
+				if (IsInReach(closestPointInFurtherRect, target, distance))
+				{
+					if (!nearestNeighbours.IsFull || distanceSquaredToTarget < nearestNeighbours.FurtherestDistance)
+					{
+						AddNearestNeighbours(
+							furtherNode,
+							target,
+							furtherRect,
+							Increment(depth),
+							nearestNeighbours,
+							distance);
+					}
+				}
+
+				// Try to add the current node to our nearest neighbours list
+				distanceSquaredToTarget = metric.DistanceSquared(node.Point, target);
+
+				if (IsInReach(node.Point, target, distance))
 					nearestNeighbours.Add(new Tuple<Vector3i, TValue>(node.Point, node.Value), distanceSquaredToTarget);
 
 			}
 
-			/// <summary>
-			/// Performs a radial search up to a maximum count.
-			/// </summary>
-			/// <param name="center">Center point</param>
-			/// <param name="radius">Radius to find neighbours within</param>
-			/// <param name="count">Maximum number of neighbours</param>
-			public Tuple<Vector3i, TValue>[] RadialSearch(Vector3i center, int radius, int maxCapacity = int.MaxValue)
+            private bool IsInReach(Vector3i center, Vector3i target, Vector3i distance)
+            {
+				return Math.Abs(center.x - target.x) <= distance.x
+					|| Math.Abs(center.y - target.y) <= distance.y
+					|| Math.Abs(center.z - target.z) <= distance.z;
+
+			}
+
+            /// <summary>
+            /// Performs a radial search up to a maximum count.
+            /// </summary>
+            /// <param name="center">Center point</param>
+            /// <param name="radius">Radius to find neighbours within</param>
+            /// <param name="count">Maximum number of neighbours</param>
+            public Tuple<Vector3i, TValue>[] RadialSearch(
+				Vector3i center, int radius, int maxCapacity = int.MaxValue,
+				Func<Tuple<Vector3i, TValue>, int, bool> condition = null)
 			{
 				var results = CreateNearestNeighbourList(maxCapacity);
+				results.Condition = condition;
 				RadialSearch(center, radius, results);
 				return results.GetSortedArray();
+			}
+
+			public Tuple<Vector3i, TValue>[] RadialSearch(
+				Vector3i center, Vector3i radius, int maxCapacity = int.MaxValue,
+				Func<Tuple<Vector3i, TValue>, int, bool> condition = null)
+			{
+				var results = CreateNearestNeighbourList(maxCapacity);
+				results.Condition = condition;
+				RadialSearch(center, radius, results);
+				return results.GetSortedArray();
+			}
+
+			public void RadialSearch(Vector3i center, Vector3i radius, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)
+			{
+				AddNearestNeighbours(
+					root,
+					center,
+					HyperRect.Infinite,
+					0,
+					results,
+					radius);
 			}
 
 			public void RadialSearch(Vector3i center, int radius, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)

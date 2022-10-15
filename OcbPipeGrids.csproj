@@ -26,7 +26,6 @@
     <PostBuildEvent>
       copy /Y /B "$(AssemblyName).dll" "..\..\..\$(AssemblyName).dll"
     </PostBuildEvent>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -88,6 +87,11 @@
     <Compile Include="Harmony\NewShapeWireFix.cs" />
     <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />
     <Compile Include="Harmony\TerrainTest.cs" />
+    <Compile Include="Interfaces\Plantation.cs" />
+    <Compile Include="Utils\asd.cs" />
+    <Compile Include="Utils\Class1.cs" />
+    <Compile Include="Utils\PlantHelper.cs" />
+    <Compile Include="Utils\ReachHelper.cs" />
     <Compile Include="Utils\WellHelper.cs" />
     <Content Include="Harmony\TileEntityPoweredProductor.css" />
     <Compile Include="Harmony\WaterExchange.cs" />

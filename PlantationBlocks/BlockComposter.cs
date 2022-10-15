@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityChangedListener
 {
-	Block IBlockNode.Block => this;
+	Block IBlockNode.BLK => this;
 
 	public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
 
@@ -81,15 +81,12 @@ public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityCh
 	}
 }
 
-public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
+public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherBlock
 {
 
 	//########################################################
 	// Implementation for block specialization
 	//########################################################
-
-
-
 
 	// Sync the state with worker manager
 	// When loading sync from manager to TE
@@ -97,16 +94,18 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 	// When unloading, sync again just to be sure
 	// So the manager has a copy of all items in chest!?
 
-	Block IBlockNode.Block => this;
+	public IBlockNode IBLK => this;
 
-	public int BlockReach { get; protected set; }
+	public Vector3i BlockReach { get; set; } = Vector3i.zero;
+	public Vector3i ReachOffset { get; set; } = Vector3i.zero;
+	public Color BoundHelperColor { get; set; } = new Color32(160, 82, 45, 255);
+	public Color ReachHelperColor { get; set; } = new Color32(160, 82, 45, 255);
 
 	public override void Init()
     {
         base.Init();
-		// Parse optional block XML setting properties
-		if (Properties.Contains("BlockReach")) BlockReach =
-			int.Parse(Properties.GetString("BlockReach"));
+		// Parse block XML properties
+		ReachHelper.InitBlock(this);
 	}
 
 	public BlockComposter()
@@ -173,14 +172,11 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 		return true;
 	}
 
-	private Color BoundHelperColor = new Color32(160, 82, 45, 255);
-
 	public override void OnBlockValueChanged(WorldBase world, Chunk chunk,
 		int clrIdx, Vector3i pos, BlockValue bv_old, BlockValue bv_new)
 	{
 		base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
-		BlockHelper.UpdateBoundHelper(pos, bv_new,
-			this, BoundHelperColor, BlockReach);
+		BlockHelper.UpdateBoundHelper(pos, bv_new, this, this);
 	}
 
 	//########################################################
@@ -191,8 +187,8 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 	public override void CreateGridItem(Vector3i position, BlockValue bv)
 	{
 		var action = new ActionAddComposter();
-		Log.Out("Create Composter Item to send to server");
 		action.Setup(position, bv);
+		Log.Warning("Creating new composter {0}", bv.type);
 		NodeManagerInterface.SendToServer(action);
 	}
 
@@ -215,8 +211,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 		Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockAdded(world, chunk, pos, bv);
-		BlockHelper.UpdateBoundHelper(pos, bv,
-			this, BoundHelperColor, BlockReach);
+		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
 		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
@@ -227,7 +222,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 	{
 		base.OnBlockRemoved(world, chunk, pos, bv);
 		if (bv.isair || bv.ischild) return;
-		LandClaimBoundsHelper.RemoveBoundsHelper(pos);
+		BoundsHelper.RemoveBoundsHelper(pos);
 		if (!NodeManagerInterface.HasServer) return;
 		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
@@ -255,8 +250,9 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 
 	public override void OnBlockUnloaded(WorldBase world, int clrIdx, Vector3i pos, BlockValue bv)
     {
-		LandClaimBoundsHelper.RemoveBoundsHelper(pos);
+		BoundsHelper.RemoveBoundsHelper(pos);
 		base.OnBlockUnloaded(world, clrIdx, pos, bv);
+		if (bv.ischild) return; // Only register master
 		if (world.IsRemote()) return; // Only execute on server
 		if (world.GetTileEntity(clrIdx, pos) is
 			TileEntityLootContainer container)
@@ -271,13 +267,14 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 	public override void OnBlockLoaded(WorldBase world, int clrIdx, Vector3i pos, BlockValue bv)
 	{
 		base.OnBlockLoaded(world, clrIdx, pos, bv);
-		BlockHelper.UpdateBoundHelper(pos, bv,
-			this, BoundHelperColor, BlockReach);
+		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
+		if (bv.ischild) return; // Only register master
+		if (world.IsRemote()) return; // Only execute on server
 		// Apply pending changes and check if valid!
 		if (world.GetTileEntity(clrIdx, pos) is
 			TileEntityLootContainer container)
 		{
-			Log.Warning("Loaded ok, with TE");
+			Log.Warning("Loaded ok, with TE {0}", pos);
 			if (ChestChanges.TryGetValue(pos,
 				out Dictionary<ushort, short> stack))
 			{
@@ -285,32 +282,18 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper
 					.ApplyChangesToChest(
 						stack, container);
 			}
-			// Apply all changes
-			//if (ChestChanges.TryGetValue(pos,
-			//	out List<ItemStack> stack))
-			//{
-			//    for (int i = 0; i < stack.Count; i++)
-			//    {
-			//        while (stack[i].count < 0)
-			//        {
-			//			if (container.HasItem(stack[i].itemValue))
-			//				container.RemoveItem(stack[i].itemValue);
-			//			else break; // Abort if not possible
-			//			stack[i].count += 1;
-			//		}
-			//		while (stack[i].count > 0)
-			//		{
-			//			if (container.TryStackItem(0, stack[i]))
-			//				stack[i].count = 0;
-			//			else break;
-			//		}
-			//	}
-			//}
+
+			// ToDo: inform worker of chest?
+			var action = new ActionUpdateChest();
+			action.Setup(pos, container.GetItems());
+			NodeManagerInterface.Instance
+				.ToWorker.Enqueue(action);
+
 		}
 		else
         {
-			Log.Warning("Loaded without TE");
+			Log.Warning("Loaded without TE {0}", pos);
         }
 	}
 
-	}
+}

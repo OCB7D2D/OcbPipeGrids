@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,6 +55,39 @@ namespace NodeManager
         public bool RemoveChest(Vector3i pos)
         {
             return Chests.Remove(pos);
+        }
+
+        private void ReadChests(BinaryReader br)
+        {
+            return;
+            int nodes = br.ReadInt32();
+            for (int i = 0; i < nodes; i += 1)
+            {
+                Vector3i pos = new Vector3i(
+                    br.ReadInt32(),
+                    br.ReadInt32(),
+                    br.ReadInt32());
+                short items = br.ReadInt16();
+                var stack = new ItemStack[items];
+                for (int n = 0; n < items; ++n)
+                    stack[n].Read(br);
+                Chests.Add(pos, stack);
+            }
+
+        }
+        private void WriteChests(BinaryWriter bw)
+        {
+            return;
+            bw.Write(Chests.Count);
+            foreach (var chest in Chests)
+            {
+                bw.Write(chest.Key.x);
+                bw.Write(chest.Key.y);
+                bw.Write(chest.Key.z);
+                bw.Write((short)chest.Value.Length);
+                foreach (ItemStack itemStack in chest.Value)
+                    itemStack.Clone().Write(bw);
+            }
         }
 
     }

@@ -10,13 +10,19 @@ using UnityEngine;
 namespace NodeManager
 {
 
-    public interface IWell : ISunLight, IEqualityComparer<NodeBase>
+    public class PipeWell : NodeBlock<BlockPipeWell>, IWell //, IWorldLink<PipeIrrigation>
     {
-        float FillState { get; set; }
-    }
+        public bool IsInReach(Vector3i target)
+            => ReachHelper.IsInReach(this, target);
 
-    public class PipeWell : NodeBlock<BlockPipeWell>, IWell
-    {
+        public Vector3i RotatedOffset => FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
+        public Vector3i RotatedReach => FullRotation.Rotate(Rotation, BLOCK.BlockReach);
+        public Vector3i Dimensions => BLOCK.multiBlockPos?.dim ?? Vector3i.one;
+        public Vector3i BlockReach { get => BLOCK.BlockReach; set => BLOCK.BlockReach = value; }
+        public Vector3i ReachOffset { get => BLOCK.ReachOffset; set => BLOCK.ReachOffset = value; }
+        public Color BoundHelperColor { get => BLOCK.BoundHelperColor; set => BLOCK.BoundHelperColor = value; }
+        public Color ReachHelperColor { get => BLOCK.ReachHelperColor; set => BLOCK.ReachHelperColor = value; }
+
         public override ulong NextTick => 30;
 
         public override uint StorageID => 9;
@@ -36,18 +42,28 @@ namespace NodeManager
         public float FromIrrigation => BLOCK != null ? BLOCK.FromIrrigation : 5f / 1000f;
         public float MaxWaterLevel => BLOCK != null ? BLOCK.MaxWaterLevel : 150f;
 
+
+
         // Keep a list of pumps to get water from?
         // Add pumps from different grids (sources)?
-        internal readonly HashSet<PipeIrrigation> Irrigators
-            = new HashSet<PipeIrrigation>();
+        public HashSet<IIrrigator> Irrigators { get; }
+            = new HashSet<IIrrigator>();
+
+        public void AddLink(IIrrigator irrigator)
+        {
+            Irrigators.Add(irrigator);
+            irrigator.Wells.Add(this);
+        }
 
         // Keep a list of plants that get water from us.
-        internal readonly HashSet<PlantationGrowing> Plants
-            = new HashSet<PlantationGrowing>();
+        public HashSet<ISoil> Soils
+            { get; } = new HashSet<ISoil>();
 
-        // Keep a list of plants that get water from us.
-        internal readonly HashSet<IFarmLand> FarmLands
-            = new HashSet<IFarmLand>();
+        public void AddLink(ISoil soil)
+        {
+            Soils.Add(soil);
+            soil.Wells.Add(this);
+        }
 
         public PipeWell(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -73,8 +89,8 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Plants: {5}",
-                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Plants.Count);
+            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Soils: {5}",
+                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Soils.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -105,15 +121,18 @@ namespace NodeManager
 
             // Fill well from "free sky"
             float fill = FromFreeSky *
-                // Quadratic fall-off
+                // Quadratic fall-off from "free sky"
                 CurrentSunLight * CurrentSunLight / 225f;
             // Some free for all
             fill += FromGround;
 
+            // Add factor now
+            fill *= delta;
+
             // Outside effects that add water
             // E.g. weather at loaded blocks
-            fill += AddWater;
-            AddWater /= 2;
+            fill += AddWater / 8f;
+            AddWater *= 7f / 8f;
 
             // Add Biome weather bonus if loaded
             //if (BlockHelper.IsLoaded(WorldPos))
@@ -124,8 +143,6 @@ namespace NodeManager
             //    fill += FromRainfall * weather.GetCurrentRainfallValue();
             //}
 
-            // Add factor now
-            fill *= delta;
 
             // Fill well from water outputs
             // ToDo: Only fill once per grid?
@@ -134,7 +151,7 @@ namespace NodeManager
                 if (irrigator == null) continue;
                 if (!irrigator.IsPowered) continue;
                 float take = FromIrrigation * delta;
-                take = System.Math.Min(take, irrigator.FillState);
+                take = Math.Min(take, irrigator.FillState);
                 irrigator.FillState -= take;
                 fill += take;
             }

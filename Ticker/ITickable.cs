@@ -1,10 +1,10 @@
 ﻿
 using NodeManager;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-public interface ITickable
+public interface ITickable : IWorldPos, IEqualityComparer<NodeBase>
 {
-    Vector3i WorldPos { get; }
     bool Tick(ulong delta);
     ulong NextTick { get; }
 }

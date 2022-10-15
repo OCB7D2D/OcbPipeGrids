@@ -5,41 +5,29 @@ using System.Collections.Generic;
 namespace NodeManager
 {
 
-    public interface IFarmLand : IEqualityComparer<NodeBase>
-    {
-        HashSet<IWell> Wells { get; }
-        HashSet<IComposter> Composters { get; }
-        public float WaterFactor { get; }
-        public float SoilFactor { get; }
-
-    }
-
     public partial class NodeManager
         : GlobalTicker, IPersistable
     {
 
-        public readonly KdTree<MetricChebyshev>.Vector3i<IFarmLand> FarmLands
-            = new KdTree<MetricChebyshev>.Vector3i<IFarmLand>();
+        public readonly KdTree<MetricChebyshev>.Vector3i<ISoil> FarmSoils
+            = new KdTree<MetricChebyshev>.Vector3i<ISoil>();
 
         public void AddFarmLand(PlantationFarmLand land)
         {
-            Log.Warning("Add Farm Land {0}", land);
-            FarmLands.Add(land.WorldPos, land);
-            System.Tuple<Vector3i, PipeWell>[] wells =
-                Wells.RadialSearch(land.WorldPos, 20);
-            foreach (var kv in wells)
-            {
-                if (!BlockHelper.IsInReach(
-                    land.WorldPos, kv.Item1,
-                    kv.Item2.BLOCK.BlockReach)) continue;
-                land.Wells.Add(kv.Item2);
-                kv.Item2.FarmLands.Add(land);
-            }
+            FarmSoils.Add(land.WorldPos, land);
+            ReachHelper.SearchLinks(land, Wells, WellToSoilReach);
+            ReachHelper.SearchLinks(land, Composters, ComposterToSoilReach);
         }
 
         public bool RemoveFarmLand(PlantationFarmLand land)
         {
-            return FarmLands.RemoveAt(land.WorldPos);
+            foreach (var node in land.Wells)
+                node.Soils.Remove(land);
+            foreach (var node in land.Composters)
+                node.Soils.Remove(land);
+            land.Wells.Clear();
+            land.Composters.Clear();
+            return FarmSoils.RemoveAt(land.WorldPos);
         }
 
     }

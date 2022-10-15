@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace NodeManager
 {
+
     class BlockHelper
     {
 
@@ -31,10 +32,13 @@ namespace NodeManager
             ScheduledTicksSorted = new HarmonyFieldProxy<SortedList>(
                 typeof(WorldBlockTicker), "scheduledTicksSorted");
 
-        internal static bool IsInReach(Vector3i a, Vector3i b, int dist)
-            => Math.Abs(a.x - b.x) <= dist
-            || Math.Abs(a.y - b.y) <= dist
-            || Math.Abs(a.z - b.z) <= dist;
+        internal static bool IsInReach<T>(Vector3i center, Tuple<Vector3i, T> kv) where T : IReacher
+            => IsInReach(center, kv.Item1, kv.Item2.BlockReach);
+        
+        internal static bool IsInReach(Vector3i center, Vector3i target, Vector3i dist)
+            => Math.Abs(center.x - target.x) <= dist.x
+            || Math.Abs(center.y - target.y) <= dist.y
+            || Math.Abs(center.z - target.z) <= dist.z;
 
         static readonly HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>
             ScheduledTicksDict = new HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>(
@@ -112,31 +116,47 @@ namespace NodeManager
         }
 
         internal static void UpdateBoundHelper(Vector3i pos,
-            BlockValue bv, Block block, Color color, int reach)
+            BlockValue bv, Block block, IReacherBlock reacher)
         {
             if (bv.ischild || bv.isair) return;
-            var helper = LandClaimBoundsHelper.GetBoundsHelper(pos);
+            Transform helper = BoundsHelper.GetBoundsHelper(pos, false);
+            Transform helper2 = BoundsHelper.GetBoundsHelper(pos, true);
+
             foreach (Renderer componentsInChild in helper.GetComponentsInChildren<Renderer>())
-                componentsInChild.material.SetColor("_Color", color);
-            Vector3 dim = block.multiBlockPos.dim.ToVector3();
+                componentsInChild.material.SetColor("_Color", reacher.BoundHelperColor * 0.5f);
+            foreach (Renderer componentsInChild in helper2.GetComponentsInChildren<Renderer>())
+                componentsInChild.material.SetColor("_Color", reacher.ReachHelperColor * 0.5f);
+
+            Vector3i dim = block.multiBlockPos.dim;
+
+            Log.Warning("!!!!!!!!!!????????????? ROtating well for rotation {0}", bv.rotation);
+            Vector3i rotated = FullRotation.Rotate(bv.rotation, dim);
+            Vector3i offsets = FullRotation.Rotate(bv.rotation, reacher.ReachOffset);
+            Vector3i reach = FullRotation.Rotate(bv.rotation, reacher.BlockReach);
+
             // float reach_x = (block.multiBlockPos.dim.x);
             // float reach_y = (block.multiBlockPos.dim.y);
             // float reach_z = (block.multiBlockPos.dim.z);
-            helper.localScale = (dim + Vector3.one * reach * 2) * 2.54f;
+            // helper.localScale = (dim + Vector3.one * reach * 2) * 2.54f;
 
-            Vector3 halfs = new Vector3(
-                dim.x % 2 == 0 ? 0.0f : 0.5f,
-                dim.y % 2 == 0 ? 0.0f : 0.5f,
-                dim.z % 2 == 0 ? 0.0f : 0.5f);
+            Vector3 shift = new Vector3(
+                rotated.x % 2 == 0 ? 0.0f : 0.5f,
+                rotated.y * 0.5f,
+                rotated.z % 2 == 0 ? 0.0f : 0.5f);
+
+            // Origin.Add(helper.transform, -1);
+            // Origin.Add(helper2.transform, -1);
 
 
-            Vector3 offset = new Vector3(
-                dim.x % 2 == 0 ? 0.0f : 0.5f,
-                dim.y / 2f, // Always at bottom
-                dim.z % 2 == 0 ? 0.0f : 0.5f);
+            helper.localScale = (rotated.ToVector3()) * 2.54f;
+            helper2.localScale = helper.localScale + reach * 5.08f;
 
-            helper.localPosition = pos - Origin.position + offset;
+            helper.localPosition = pos.ToVector3() - Origin.position + shift;
+            helper2.localPosition = helper.localPosition + offsets;
+
+
             helper.gameObject.SetActive((bv.meta2 & 1) != 0);
+            helper2.gameObject.SetActive((bv.meta2 & 1) != 0);
         }
 
         //########################################################

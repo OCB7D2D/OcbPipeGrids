@@ -10,6 +10,7 @@ namespace KdTree3
 
 		public interface INearestNeighbourList
 		{
+			Func<TItem, int, bool> Condition { get; }
 			bool Add(TItem item, int distance);
 			int FurtherestDistance { get; }
 			bool IsFull { get; }
@@ -18,6 +19,7 @@ namespace KdTree3
 		public class UnlimitedList : INearestNeighbourList
 		{
 			List<Tuple<TItem, int>> _items;
+			public Func<TItem, int, bool> Condition { get; set; }
 
 			public UnlimitedList() : this(DefaultCapacity) { }
 			public UnlimitedList(int capacity) => _items = new List<Tuple<TItem, int>>(capacity);
@@ -30,6 +32,8 @@ namespace KdTree3
 
 			public bool Add(TItem item, int distance)
 			{
+				// Check for optional condition attached to query (very convenient)
+				if (Condition != null && !Condition(item, distance)) return false;
 				_items.Add(new Tuple<TItem, int>(item, distance));
 				return true;
 			}
@@ -41,6 +45,7 @@ namespace KdTree3
 
 		public class List : INearestNeighbourList
 		{
+			public Func<TItem, int, bool> Condition { get; set; }
 			public List(int maxCount, int capacity)
 			{
 				MaxCount = maxCount;
@@ -57,6 +62,9 @@ namespace KdTree3
 
 			public bool Add(TItem item, int distance)
 			{
+				// Check for optional condition attached to query (very convenient)
+				if (Condition != null && !Condition(item, distance)) return false;
+
 				if (queue.Count >= MaxCount)
 				{
 					// If the distance of this item is less than the distance of the last item

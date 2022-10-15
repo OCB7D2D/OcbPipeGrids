@@ -8,7 +8,8 @@ namespace NodeManager
 {
     interface IBoundHelper
     {
-        int BlockReach { get; }
+        Vector3i BlockReach { get; }
+        Vector3i ReachOffset { get; }
     }
 
 }

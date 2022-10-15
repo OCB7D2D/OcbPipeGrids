@@ -6,15 +6,15 @@ namespace NodeManager
         : GlobalTicker, IPersistable
     {
 
-        public readonly KdTree<MetricChebyshev>.Vector3i<PipeIrrigation> Irrigators =
-            new KdTree<MetricChebyshev>.Vector3i<PipeIrrigation>(AddDuplicateBehavior.Update);
+        public readonly KdTree<MetricChebyshev>.Vector3i<IIrrigator> Irrigators =
+            new KdTree<MetricChebyshev>.Vector3i<IIrrigator>(AddDuplicateBehavior.Update);
 
         // private static readonly NearestNeighbourList<PipeWell> NbWellCache
         //     = new NearestNeighbourList<PipeWell>();
         // private static readonly NearestNeighbourList<PipeIrrigation> NbIrrigatorCache
         //     = new NearestNeighbourList<PipeIrrigation>();
 
-        internal void AddIrrigation(PipeIrrigation irrigation)
+        internal void AddIrrigation(IIrrigator irrigation)
         {
             Irrigators.Add(irrigation.WorldPos, irrigation);
             // Search for existing wells in reach
@@ -27,7 +27,7 @@ namespace NodeManager
             }
         }
 
-        internal void RemoveIrrigation(PipeIrrigation irrigation)
+        internal void RemoveIrrigation(IIrrigator irrigation)
         {
             foreach (var well in irrigation.Wells)
                 well.Irrigators.Remove(irrigation);

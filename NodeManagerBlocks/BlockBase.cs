@@ -12,9 +12,9 @@ namespace NodeManager
 		//     base.Init();
 		// }
 
-		Block IBlockNode.Block => this;
+		Block IBlockNode.BLK => this;
 
-        public override void OnBlockAdded(
+		public override void OnBlockAdded(
 			WorldBase world, Chunk chunk,
 			Vector3i pos, BlockValue bv)
 		{

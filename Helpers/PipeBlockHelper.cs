@@ -6,26 +6,26 @@ public static class PipeBlockHelper
 
 	static public void InitBlock(IBlockReservoir block)
 	{
-		if (block.Block.Properties.Contains("MaxFillState")) block.MaxFillState =
-			float.Parse(block.Block.Properties.GetString("MaxFillState"));
-		if (block.Block.Properties.Contains("FluidType")) block.FluidType =
-			ushort.Parse(block.Block.Properties.GetString("FluidType"));
+		if (block.BLK.Properties.Contains("MaxFillState")) block.MaxFillState =
+			float.Parse(block.BLK.Properties.GetString("MaxFillState"));
+		if (block.BLK.Properties.Contains("FluidType")) block.FluidType =
+			ushort.Parse(block.BLK.Properties.GetString("FluidType"));
 	}
 
 	static public void InitBlock(IBlockConnection block)
 	{
-		if (block.Block.Properties.Contains("MultiBlockPipe"))
+		if (block.BLK.Properties.Contains("MultiBlockPipe"))
 		{
-			block.MultiBlockPipe = block.Block
+			block.MultiBlockPipe = block.BLK
 				.Properties.GetBool("MultiBlockPipe");
 		}
-		if (block.Block.Properties.Contains("PipeDiameter")) block.PipeDiameter =
-			byte.Parse(block.Block.Properties.GetString("PipeDiameter"));
+		if (block.BLK.Properties.Contains("PipeDiameter")) block.PipeDiameter =
+			byte.Parse(block.BLK.Properties.GetString("PipeDiameter"));
 
-		if (block.Block.Properties.Contains("PipeConnectors"))
+		if (block.BLK.Properties.Contains("PipeConnectors"))
 		{
 			block.ConnectMask = 0; // Reset the mask first
-			string[] connectors = block.Block.Properties.GetString("PipeConnectors").ToLower()
+			string[] connectors = block.BLK.Properties.GetString("PipeConnectors").ToLower()
 				.Split(new[] { ',', ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
 			foreach (string connector in connectors)
 			{

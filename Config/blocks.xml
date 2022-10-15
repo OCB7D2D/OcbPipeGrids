@@ -238,7 +238,10 @@
 			<property name="FromSnowfall" value="0.4" />
 			<property name="FromRainfall" value="0.8" />
 			<property name="FromIrrigation" value="5" />
-			<property name="BlockReach" value="3" />
+
+			<property name="BlockReach" value="2,0,2" />
+			<property name="ReachOffset" value="0,-1,0" />
+			<property name="MultiBlockDim" value="3,3,3"/>
 
 			<property class="RepairItems">
 				<property name="resourceForgedSteel" value="40"/>
@@ -261,7 +264,6 @@
 			<property name="DisplayInfo" value="Custom" />
 
 			<property name="DisplayType" value="blockMulti"/>
-			<property name="MultiBlockDim" value="3,3,3"/>
 
 		</block>
 	</append>

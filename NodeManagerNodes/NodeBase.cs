@@ -76,7 +76,7 @@ namespace NodeManager
 
         public bool Equals(NodeBase x, NodeBase y)
         {
-            return x.WorldPos == y.WorldPos;
+            return x.WorldPos.Equals(y.WorldPos);
         }
 
         public int GetHashCode(NodeBase obj)

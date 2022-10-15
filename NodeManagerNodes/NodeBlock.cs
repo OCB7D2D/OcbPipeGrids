@@ -17,6 +17,8 @@ namespace NodeManager
 
         public readonly B BLOCK;
 
+        public IBlockNode IBLK => BLOCK;
+
         protected NodeBlock(BinaryReader br)
             : base(br)
         {

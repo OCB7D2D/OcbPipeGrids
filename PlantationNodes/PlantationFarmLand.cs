@@ -1,12 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 namespace NodeManager
 {
 
-    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, IFarmLand
+    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, ISoil, IWorldLink<IComposter>, IWorldLink<IWell>
     {
+
+        //########################################################
+        // Config settings (move to block)
+        //########################################################
+
+        public readonly float MaxWaterState = 2f;
+        public readonly float MinWaterState = 0.15f;
+
+        readonly float WaterImprovementFactor = 0.1f / 1000f;
+        readonly float WaterMaintenanceFactor = 0.01f / 1000f;
+        readonly float WaterMaintenanceExponent = 1.25f;
+
+        private readonly float MaxSoilState = 3f;
+        private readonly float MinSoilState = 0.25f;
+
+        readonly float SoilImprovementFactor = 0.1f / 1000f;
+        readonly float SoilMaintenanceFactor = 0.01f / 1000f;
+        readonly float SoilMaintenanceExponent = 1.25f;
 
         //########################################################
         // Setup for node manager implementation
@@ -17,14 +36,21 @@ namespace NodeManager
         public override uint StorageID => 8;
 
         //########################################################
+        //########################################################
+
+        public IPlant Plant { get; set;  } = null;
+
+        //########################################################
         // Custom Data Attributes for Node
         //########################################################
 
-        public float CurrentRain { get; set; }
+        public byte CurrentSunLight { get; set; } = 0;
 
-        public float WaterFactor { get; set; }
+        public float CurrentRain { get; set; } = 0;
 
-        public float SoilFactor { get; set; }
+        public float WaterState { get; set; } = 1;
+
+        public float SoilState { get; set; } = 1;
 
         //########################################################
         // Cross references setup by manager
@@ -33,8 +59,20 @@ namespace NodeManager
         public HashSet<IComposter> Composters { get; }
             = new HashSet<IComposter>();
 
+        public void AddLink(IComposter composter)
+        {
+            Composters.Add(composter);
+            composter.Soils.Add(this);
+        }
+
         public HashSet<IWell> Wells { get; }
             = new HashSet<IWell>();
+
+        public void AddLink(IWell well)
+        {
+            Wells.Add(well);
+            well.Soils.Add(this);
+        }
 
         //########################################################
         // Implementation for persistence and data exchange
@@ -44,16 +82,16 @@ namespace NodeManager
             : base(position, bv)
         {
             CurrentRain = 0f;
-            WaterFactor = 0.5f;
-            SoilFactor = 1.0f;
+            WaterState = 0.5f;
+            SoilState = 1.0f;
         }
 
         public PlantationFarmLand(BinaryReader br)
             : base(br)
         {
             CurrentRain = 0f; // Not saved
-            WaterFactor = br.ReadSingle();
-            SoilFactor = br.ReadSingle();
+            WaterState = br.ReadSingle();
+            SoilState = br.ReadSingle();
         }
 
         public override void Write(BinaryWriter bw)
@@ -61,8 +99,8 @@ namespace NodeManager
             // Write base data first
             base.Write(bw);
             // Store additional data
-            bw.Write(WaterFactor);
-            bw.Write(SoilFactor);
+            bw.Write(WaterState);
+            bw.Write(SoilState);
         }
 
         //########################################################
@@ -83,42 +121,56 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Soil: {0:.00}, Water: {1:.00}\nWells: {2}",
-                SoilFactor, WaterFactor, Wells.Count);
+            return string.Format("Soil: {0:.00}, Water: {1:.00}\nWells: {2}, Composts: {3}",
+                SoilState, WaterState, Wells.Count, Composters.Count);
         }
 
         //########################################################
+        // Tick only if no plant is yet attached
         //########################################################
 
         public override bool Tick(ulong delta)
         {
-           
-            var scale = NodeManager.TimeScale(delta);
-
-            // This gives a variation from 0.4 to 0.8
-            float want = Mathf.Pow(0.5f, 1f / Wells.Count) * 0.8f;
-            Log.Out("Wanting {0}", want);
-            if (WaterFactor > 0.5) want *= WaterFactor;
-            var taken = WellHelper.ConsumeFluids(Wells, want * scale);
-            Log.Out("Taken {0} , inv {1}", taken, taken / scale);
-            var score = taken / WaterFactor / scale * 3;
-
-            // Consume some rain (or maximal all of it)
-            //float rain = Mathf.Min(scale * 10f, 1f);
-            //taken += CurrentRain * scale * rain;
-            //CurrentRain -= CurrentRain * scale * rain;
-
-            WaterFactor = WellHelper.MaxFluids(
-                WaterFactor, score, delta, 12000);
-
-            // Enforce maximum and minimum values
-            if (WaterFactor > 2f) WaterFactor = 2f;
-            else if (WaterFactor < 0.03f) WaterFactor = 0.03f;
-
-
-            Log.Out("Tick Farm Land");
+            // Abort ticking if Manager is null
+            if (!base.Tick(delta)) return false;
+            // We are ticked by plants if any is there
+            // Otherwise tick ourself to fill slowly
+            if (Plant == null)
+            {
+                Log.Out("Ticking water for soil only");
+                // Consume water to keep and improve water state
+                TickWater(delta, WaterImprovementFactor,
+                    WaterMaintenanceFactor, WaterMaintenanceExponent);
+                // Consume compost to keep and improve soil state
+                TickSoil(delta, SoilImprovementFactor,
+                    SoilMaintenanceFactor, SoilMaintenanceExponent);
+            }
+            // Keep ticking
             return true;
         }
+
+        public void TickWater(ulong delta,
+            float ImprovementFactor,
+            float MaintenanceFactor,
+            float MaintenanceExponent)
+        {
+            WaterState = PlantHelper.TickFactor(delta, Wells,
+                ImprovementFactor, MaintenanceFactor, MaintenanceExponent,
+                MinWaterState, MaxWaterState, WaterState);
+        }
+
+        public void TickSoil(ulong delta,
+            float ImprovementFactor,
+            float MaintenanceFactor,
+            float MaintenanceExponent)
+        {
+            SoilState = PlantHelper.TickFactor(delta, Composters,
+                ImprovementFactor, MaintenanceFactor, MaintenanceExponent,
+                MinSoilState, MaxSoilState, SoilState);
+        }
+
+        //########################################################
+        //########################################################
 
     }
 }

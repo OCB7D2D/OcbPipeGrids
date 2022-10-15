@@ -57,7 +57,12 @@ namespace KdTree3
 					return sb.ToString();
 				}
 			}
-		}
+
+            internal object RadialSearch(Vector3i worldPos, object rotatedReach)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
 	}
 }

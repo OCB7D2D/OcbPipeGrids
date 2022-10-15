@@ -57,7 +57,7 @@
         // Specialized setup instructions
         public override void Setup(Vector3i position, BlockValue bv)
         {
-            base.Setup(position);
+            base.Setup(position, bv);
             World world = GameManager.Instance.World;
             if (world.GetTileEntity(0, position) is
                 TileEntityLootContainer container)

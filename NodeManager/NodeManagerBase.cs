@@ -152,6 +152,7 @@ namespace NodeManager
                 if (kv.Value is IPoweredNode powered)
                     bw.Write(powered.IsPowered);
             }
+            WriteChests(bw);
         }
 
         public virtual void Read(BinaryReader br)
@@ -171,6 +172,7 @@ namespace NodeManager
                     powered.IsPowered = br.ReadBoolean();
                 }
             }
+            ReadChests(br);
             foreach (var node in Nodes)
                 node.Value.OnAfterLoad();
 

@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper
+public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper, IReacherBlock
 {
 
 	//########################################################
@@ -18,9 +18,17 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper
 	public float FromIrrigation = 5f / 1000f;
 	public float MaxWaterLevel = 150f;
 
-//	public int BlockReach = 2;
+	//	public int BlockReach = 2;
 
-	public int BlockReach { get; protected set; }
+	public Vector3i BlockReach { get; set; } = Vector3i.zero;
+	public Vector3i ReachOffset { get; set; } = Vector3i.zero;
+	public Color BoundHelperColor { get; set; } = Color.green;
+	public Color ReachHelperColor { get; set; } = Color.blue;
+
+    public IBlockNode IBLK => this;
+
+    public Vector3i RotatedReach(byte rotation)
+		=> FullRotation.Rotate(rotation, BlockReach);
 
 	// public override bool AllowBlockTriggers => true;
 
@@ -28,8 +36,7 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper
 	{
 		base.Init();
 		// Parse optional block XML setting properties
-		if (Properties.Contains("BlockReach")) BlockReach =
-			int.Parse(Properties.GetString("BlockReach"));
+		ReachHelper.InitBlock(this);
 		if (Properties.Contains("FromGround")) FromGround =
 			float.Parse(Properties.GetString("FromGround")) / 1000f;
 		if (Properties.Contains("FromFreeSky")) FromFreeSky =
@@ -110,27 +117,23 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper
 		return true;
 	}
 
-	private Color BoundHelperColor = Color.blue;
-
 	public void UpdateBoundHelper(Vector3i pos, BlockValue bv)
     {
-		BlockHelper.UpdateBoundHelper(pos, bv,
-			this, BoundHelperColor, BlockReach);
+		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
 	}
 
 	public override void OnBlockValueChanged(WorldBase world, Chunk chunk,
 		int clrIdx, Vector3i pos, BlockValue bv_old, BlockValue bv_new)
     {
 		base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
-		BlockHelper.UpdateBoundHelper(pos, bv_new,
-			this, BoundHelperColor, BlockReach);
+		UpdateBoundHelper(pos, bv_new);
 	}
 
-	public override void OnBlockLoaded(WorldBase _world, int _clrIdx, Vector3i _blockPos, BlockValue _blockValue)
+	public override void OnBlockLoaded(WorldBase world,
+		int clrIdx, Vector3i pos, BlockValue bv)
     {
-        base.OnBlockLoaded(_world, _clrIdx, _blockPos, _blockValue);
-		BlockHelper.UpdateBoundHelper(_blockPos, _blockValue,
-			this, BoundHelperColor, BlockReach);
+        base.OnBlockLoaded(world, clrIdx, pos, bv);
+		UpdateBoundHelper(pos, bv);
 	}
 
 	//########################################################
@@ -211,7 +214,12 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper
 	{
 		base.OnBlockRemoved(world, chunk, pos, bv);
 		if (bv.isair || bv.ischild) return;
-		LandClaimBoundsHelper.RemoveBoundsHelper(pos);
+		RemoveBoundHelper(pos);
+	}
+
+    private void RemoveBoundHelper(Vector3i pos)
+    {
+		BoundsHelper.RemoveBoundsHelper(pos);
 	}
 
 	double RefreshRate = 0.005;

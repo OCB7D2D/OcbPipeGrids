@@ -9,7 +9,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 	// Implementation for block specialization
 	//########################################################
 
-	Block IBlockNode.Block => this;
+	Block IBlockNode.BLK => this;
 
 	public BlockPlantationGrowing()
     {
@@ -63,7 +63,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (bv.isair || bv.ischild) return true;
 		world.GetWBT().AddScheduledBlockUpdate(
 			clrIdx, pos, blockID, GetTickRate());
-		var chunk = world.GetChunkFromWorldPos(pos);
+		//var chunk = world.GetChunkFromWorldPos(pos);
 		//UpdateParticleEffect(world, chunk, pos, bv);
 		return true;
     }
@@ -119,7 +119,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (bv.isair || bv.ischild) return;
 		world.GetWBT().AddScheduledBlockUpdate(
 			clrIdx, pos, blockID, GetTickRate());
-		var chunk = world.GetChunkFromWorldPos(pos);
+		// var chunk = world.GetChunkFromWorldPos(pos);
 		UpdateParticleEffect(pos, bv);
 	}
 
@@ -171,6 +171,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		if (!checks.TryGetValue(pos,
 			out GameObject go))
         {
+			Log.Warning("Load Fly particle effect again");
 			var effect = DataLoader.LoadAsset<GameObject>(IllnessEffect);
 			if (effect == null) return;
 			go = Object.Instantiate(effect);
@@ -184,16 +185,16 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		go.transform.localPosition = pos
 			+ Vector3.one / 2f
 			- Origin.position;
+		var illness = BlockHelper.GetIllness(bv);
 		foreach (var particles in go.transform.GetComponentsInChildren<ParticleSystem>())
         {
 			var qwe = particles.main;
-			qwe.maxParticles = BlockHelper.GetIllness(bv);
+			qwe.maxParticles = illness;
 			Log.Out("Changes particles to {0}", qwe.maxParticles);
 
 		}
-
 		// Check if plant is actually sick
-		go.SetActive((bv.meta2 & 2) == 2);
+		go.SetActive(illness > 0);
 	}
 
 }

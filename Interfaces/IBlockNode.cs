@@ -1,7 +1,7 @@
 ﻿public interface IBlockNode
 {
 
-    Block Block { get; }
+    Block BLK { get; }
 
     void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
 

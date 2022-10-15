@@ -4,14 +4,6 @@ using System.Collections.Generic;
 namespace NodeManager
 {
 
-    public interface IComposter
-    {
-        HashSet<IPlant> Plants { get; }
-
-        float GrowProgress { get; set; }
-
-    }
-
     public partial class NodeManager
         : GlobalTicker, IPersistable
     {
@@ -19,26 +11,23 @@ namespace NodeManager
         public readonly KdTree<MetricChebyshev>.Vector3i<IComposter> Composters
             = new KdTree<MetricChebyshev>.Vector3i<IComposter>();
 
-        
-
-        public void AddComposter(PlantationComposter composter)
+        // Invoked when new manager is attached
+        public void AddComposter(IComposter composter)
         {
-            Log.Warning("Add composter {0}", composter);
             Composters.Add(composter.WorldPos, composter);
-
-            var plants = Plants.RadialSearch(composter.WorldPos,
-                            3); // BlockReach
-
-            foreach (var kv in plants)
-            {
-                composter.Plants.Add(kv.Item2);
-                kv.Item2.Composters.Add(composter);
-            }
+            ReachHelper.QueryLinks(composter, FarmSoils);
         }
 
-        public bool RemoveComposter(PlantationComposter plant)
+        // Invoked when manager is set to `null`
+        public bool RemoveComposter(IComposter composter)
         {
-            return Composters.RemoveAt(plant.WorldPos);
+            // Make sure to unregister us from links
+            foreach (var other in composter.Soils)
+                other.Composters.Remove(composter);
+            // Clear our links
+            composter.Soils.Clear();
+            // Remove from tree and dictionary
+            return Composters.RemoveAt(composter.WorldPos);
         }
 
     }

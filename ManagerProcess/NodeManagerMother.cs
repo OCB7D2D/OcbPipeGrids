@@ -59,7 +59,8 @@ namespace NodeManager
 
         public bool HasPendingCanConnect(Vector3i position)
         {
-            return AcquiredCanConnect?.Position != position;
+            return AcquiredCanConnect?.Position != position
+                && RequestedCustomDesc == position;
         }
 
         public void OnConnectResponse(MsgConnectorResponse msg)

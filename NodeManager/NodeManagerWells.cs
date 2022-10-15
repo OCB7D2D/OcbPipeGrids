@@ -6,57 +6,43 @@ namespace NodeManager
         : GlobalTicker, IPersistable
     {
 
-        int WellToPlantReach = 8;
+        int WellToSoilReach = 4;
+        int ComposterToSoilReach = 3;
         int IrrigatorToWellReach = 20;
 
-        public readonly KdTree<MetricChebyshev>.Vector3i<PipeWell> Wells =
-            new KdTree<MetricChebyshev>.Vector3i<PipeWell>(AddDuplicateBehavior.Update);
+        public readonly KdTree<MetricChebyshev>.Vector3i<IWell> Wells =
+            new KdTree<MetricChebyshev>.Vector3i<IWell>(AddDuplicateBehavior.Update);
 
         public PipeWell AddWell(PipeWell well)
         {
-            Log.Warning("========= ADDWELL");
             Wells.Add(well.WorldPos, well);
-            // Search for output to fill up the well
+            ReachHelper.QueryLinks(well, FarmSoils);
+            ReachHelper.SearchLinks(well, Irrigators,
+                IrrigatorToWellReach);
+            // Search for irrigation to fill up the well
             var wells = Irrigators.RadialSearch(
                 well.WorldPos, IrrigatorToWellReach);
-
             for (int i = 0; i < wells.Length; i += 1)
             {
                 well.Irrigators.Add(wells[i].Item2);
                 wells[i].Item2.Wells.Add(well);
-
-            }
-            // Search for farm plots we will server
-            var lands = FarmLands.RadialSearch(
-                well.WorldPos, well.BLOCK.BlockReach);
-            for (int i = 0; i < lands.Length; i += 1)
-            {
-                well.FarmLands.Add(lands[i].Item2);
-                lands[i].Item2.Wells.Add(well);
             }
 
-            // Search for plants this well will serve
-            var plants = PlantGrowings.RadialSearch(
-                well.WorldPos, WellToPlantReach);
-            for (int i = 0; i < plants.Length; i += 1)
-            {
-                well.Plants.Add(plants[i].Item2);
-                plants[i].Item2.Wells.Add(well);
-            }
             return well;
         }
 
-        public void RemoveWell(PipeWell well)
+        public bool RemoveWell(PipeWell well)
         {
-            foreach (var node in well.Plants)
-                node.Wells.Remove(well);
+            // Make sure to unregister us from links
             foreach (var node in well.Irrigators)
                 node.Wells.Remove(well);
-            foreach (var node in well.FarmLands)
+            foreach (var node in well.Soils)
                 node.Wells.Remove(well);
-            well.Plants.Clear();
+            // Clear our links
             well.Irrigators.Clear();
-            Wells.RemoveAt(well.WorldPos);
+            well.Soils.Clear();
+            // Remove from KD tree
+            return Wells.RemoveAt(well.WorldPos);
         }
 
     }

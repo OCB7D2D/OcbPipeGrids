@@ -7,7 +7,7 @@ namespace NodeManager
     public abstract class PoweredBase : BlockPowered, IBlockNode
     {
 
-		Block IBlockNode.Block => this;
+		Block IBlockNode.BLK => this;
 
 		public override void OnBlockAdded(
 			WorldBase world, Chunk chunk,
