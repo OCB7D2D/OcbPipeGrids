@@ -41,6 +41,13 @@ namespace NodeManager
         Color ReachHelperColor { get; set; }
     }
 
+    public interface IFarmPlot : ISoil
+    {
+        // float WaterState { get; }
+        // float SoilState { get; }
+
+    }
+
 
     public interface IFilled
     {
@@ -50,23 +57,26 @@ namespace NodeManager
     public interface IHasPlant { IPlant Plant { get; set; } }
     public interface IHasPower { bool IsPowered { get; set; } }
     public interface IHasWells : IWorldLink<IWell> { HashSet<IWell> Wells { get; } }
-    public interface IHasSoils : IWorldLink<ISoil> { HashSet<ISoil> Soils { get; } }
     public interface IHasPlants : IWorldLink<IPlant> { HashSet<IPlant> Plants { get; } }
     public interface IHasIrrigator : IWorldLink<IIrrigator> { HashSet<IIrrigator> Irrigators { get; } }
     public interface IHasComposters : IWorldLink<IComposter> { HashSet<IComposter> Composters { get; } }
+    public interface IHasFarmLands : IWorldLink<IFarmLand> { HashSet<IFarmLand> FarmLands { get; } }
+    public interface IHasFarmPlots : IWorldLink<IFarmPlot> { HashSet<IFarmPlot> FarmPlots { get; } }
 
     // The composter has soils linked that will use compost from it
 
-    public interface IComposter : IHasSoils, IFilled, IReacher, IEqualityComparer<NodeBase> {}
+    public interface IComposter : IHasFarmLands, IHasFarmPlots, IFilled, IReacher, IEqualityComparer<NodeBase> {}
 
 
     // So far a well is pretty much the same interface as the composter, so use it
     // It additionally has the SunLight and the linked irrigators we consume from
-    public interface IWell : IHasIrrigator, IComposter, ISunLight, IEqualityComparer<NodeBase>
+    public interface IWell : IHasIrrigator, IHasFarmLands, IFilled, IReacher, ISunLight, IEqualityComparer<NodeBase>
     {
     }
 
-    public interface ISoil : IHasPlant, IHasWells, IHasComposters,
+    public interface IFarmLand : ISoil, IHasWells { }
+
+    public interface ISoil : IHasPlant, IHasComposters,
         ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
     {
         float WaterState { get; }

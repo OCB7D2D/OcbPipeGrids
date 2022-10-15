@@ -6,7 +6,7 @@ using UnityEngine;
 namespace NodeManager
 {
 
-    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, ISoil, IWorldLink<IComposter>, IWorldLink<IWell>
+    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, IFarmLand, IWorldLink<IComposter>, IWorldLink<IWell>
     {
 
         //########################################################
@@ -62,7 +62,7 @@ namespace NodeManager
         public void AddLink(IComposter composter)
         {
             Composters.Add(composter);
-            composter.Soils.Add(this);
+            composter.FarmLands.Add(this);
         }
 
         public HashSet<IWell> Wells { get; }
@@ -71,7 +71,7 @@ namespace NodeManager
         public void AddLink(IWell well)
         {
             Wells.Add(well);
-            well.Soils.Add(this);
+            well.FarmLands.Add(this);
         }
 
         //########################################################

@@ -7,8 +7,12 @@ namespace NodeManager
     public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
     {
 
-        public bool IsInReach(Vector3i target)
-            => ReachHelper.IsInReach(this, target);
+        //########################################################
+        // Implementation for `IFilled` interface
+        //########################################################
+
+        public float FillState { get; set; } = 0;
+        public float MaxFillState { get; set; } = 5;
 
         //########################################################
         // Config settings (move to block)
@@ -18,14 +22,10 @@ namespace NodeManager
         public Vector3i ReachOffset { get => BLOCK.ReachOffset; set => BLOCK.ReachOffset = value; }
         public Color BoundHelperColor { get => BLOCK.BoundHelperColor; set => BLOCK.BoundHelperColor = value; }
         public Color ReachHelperColor { get => BLOCK.ReachHelperColor; set => BLOCK.ReachHelperColor = value; }
-
         public Vector3i RotatedReach => FullRotation.Rotate(Rotation, BLOCK.BlockReach);
-        public Vector3i RotatedOffset { get {
-                Log.Warning("Get rotated offset {0} {1}", BV.type, BLOCK);
-                return FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
-            } }
-
+        public Vector3i RotatedOffset => FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
         public Vector3i Dimensions => BLOCK.multiBlockPos?.dim ?? Vector3i.one;
+        public bool IsInReach(Vector3i target) => ReachHelper.IsInReach(this, target);
 
         //########################################################
         // Setup for node manager implementation
@@ -35,14 +35,27 @@ namespace NodeManager
 
         public override uint StorageID => 12;
 
-        public float FillState { get; set; } = 0;
-        public float MaxFillState { get; set; } = 5;
-
         //########################################################
         // Cross references setup by manager
         //########################################################
 
-        public HashSet<ISoil> Soils { get; } = new HashSet<ISoil>();
+        public HashSet<IFarmLand> FarmLands
+            { get; } = new HashSet<IFarmLand>();
+
+        public void AddLink(IFarmLand soil)
+        {
+            FarmLands.Add(soil);
+            soil.Composters.Add(this);
+        }
+
+        public HashSet<IFarmPlot> FarmPlots
+        { get; } = new HashSet<IFarmPlot>();
+
+        public void AddLink(IFarmPlot soil)
+        {
+            FarmPlots.Add(soil);
+            soil.Composters.Add(this);
+        }
 
         //########################################################
         // Implementation for persistence and data exchange
@@ -86,7 +99,7 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Composter {0} for {1}", FillState, Soils.Count);
+            return string.Format("Composter {0} for {1}", FillState, FarmLands.Count + FarmPlots.Count);
         }
 
         //########################################################
@@ -144,9 +157,5 @@ namespace NodeManager
             return true;
         }
 
-        public void AddLink(ISoil soil)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

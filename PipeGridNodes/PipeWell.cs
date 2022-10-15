@@ -56,12 +56,12 @@ namespace NodeManager
         }
 
         // Keep a list of plants that get water from us.
-        public HashSet<ISoil> Soils
-            { get; } = new HashSet<ISoil>();
+        public HashSet<IFarmLand> FarmLands
+            { get; } = new HashSet<IFarmLand>();
 
-        public void AddLink(ISoil soil)
+        public void AddLink(IFarmLand soil)
         {
-            Soils.Add(soil);
+            FarmLands.Add(soil);
             soil.Wells.Add(this);
         }
 
@@ -90,7 +90,7 @@ namespace NodeManager
         public override string GetCustomDescription()
         {
             return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Soils: {5}",
-                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, Soils.Count);
+                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, FarmLands.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)

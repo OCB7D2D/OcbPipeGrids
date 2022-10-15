@@ -1,6 +1,4 @@
 ﻿using KdTree3;
-using System;
-using System.Collections.Generic;
 
 namespace NodeManager
 {
@@ -9,25 +7,32 @@ namespace NodeManager
         : GlobalTicker, IPersistable
     {
 
-        public readonly KdTree<MetricChebyshev>.Vector3i<ISoil> FarmSoils
-            = new KdTree<MetricChebyshev>.Vector3i<ISoil>();
+        public readonly KdTree<MetricChebyshev>.Vector3i<IFarmLand> FarmLands
+            = new KdTree<MetricChebyshev>.Vector3i<IFarmLand>();
 
-        public void AddFarmLand(PlantationFarmLand land)
+        // Invoked when new manager is attached
+        public void AddFarmLand(IFarmLand land)
         {
-            FarmSoils.Add(land.WorldPos, land);
-            ReachHelper.SearchLinks(land, Wells, WellToSoilReach);
-            ReachHelper.SearchLinks(land, Composters, ComposterToSoilReach);
+            FarmLands.Add(land.WorldPos, land);
+            ReachHelper.SearchLinks(land, Wells,
+                WellToSoilReach);
+            ReachHelper.SearchLinks(land, Composters,
+                ComposterToSoilReach);
         }
 
-        public bool RemoveFarmLand(PlantationFarmLand land)
+        // Invoked when manager is set to `null`
+        public bool RemoveFarmLand(IFarmLand land)
         {
+            // Make sure to unregister us from links
             foreach (var node in land.Wells)
-                node.Soils.Remove(land);
+                node.FarmLands.Remove(land);
             foreach (var node in land.Composters)
-                node.Soils.Remove(land);
+                node.FarmLands.Remove(land);
+            // Clear our links
             land.Wells.Clear();
             land.Composters.Clear();
-            return FarmSoils.RemoveAt(land.WorldPos);
+            // Remove from KD tree
+            return FarmLands.RemoveAt(land.WorldPos);
         }
 
     }

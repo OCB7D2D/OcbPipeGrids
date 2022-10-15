@@ -1,5 +1,4 @@
 ﻿using KdTree3;
-using System.Collections.Generic;
 
 namespace NodeManager
 {
@@ -15,17 +14,21 @@ namespace NodeManager
         public void AddComposter(IComposter composter)
         {
             Composters.Add(composter.WorldPos, composter);
-            ReachHelper.QueryLinks(composter, FarmSoils);
+            ReachHelper.QueryLinks(composter, FarmLands);
+            ReachHelper.QueryLinks(composter, FarmPlots);
         }
 
         // Invoked when manager is set to `null`
         public bool RemoveComposter(IComposter composter)
         {
             // Make sure to unregister us from links
-            foreach (var other in composter.Soils)
+            foreach (var other in composter.FarmLands)
+                other.Composters.Remove(composter);
+            foreach (var other in composter.FarmPlots)
                 other.Composters.Remove(composter);
             // Clear our links
-            composter.Soils.Clear();
+            composter.FarmLands.Clear();
+            composter.FarmPlots.Clear();
             // Remove from tree and dictionary
             return Composters.RemoveAt(composter.WorldPos);
         }

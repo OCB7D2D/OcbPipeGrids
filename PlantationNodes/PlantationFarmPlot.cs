@@ -8,17 +8,25 @@ namespace NodeManager
     public class PlantationFarmPlot : PipeReservoir, IFarmPlot
     {
 
+        public IPlant Plant { get; set; } = null;
+        public byte CurrentSunLight { get; set; } = 0;
+
         public override ulong NextTick => 5;
 
         public override uint StorageID => 10;
 
         public float CurrentRain { get; set; } = 0;
 
-        public float WaterFactor { get; set; } = 0.5f;
+        public float WaterState { get; set; } = 0.5f;
 
-        public float SoilFactor { get; set; } = 1f;
+        public float SoilState { get; set; } = 1f;
 
         public HashSet<IComposter> Composters { get; } = new HashSet<IComposter>();
+
+        public void AddLink(IComposter composter)
+        {
+            composter.FarmPlots.Add(this);
+        }
 
         public PlantationFarmPlot(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -28,8 +36,8 @@ namespace NodeManager
         public PlantationFarmPlot(BinaryReader br)
             : base(br)
         {
-            WaterFactor = br.ReadSingle();
-            SoilFactor = br.ReadSingle();
+            WaterState = br.ReadSingle();
+            SoilState = br.ReadSingle();
         }
 
         public override void Write(BinaryWriter bw)
@@ -37,14 +45,14 @@ namespace NodeManager
             // Write base data first
             base.Write(bw);
             // Store additional data
-            bw.Write(WaterFactor);
-            bw.Write(SoilFactor);
+            bw.Write(WaterState);
+            bw.Write(SoilState);
         }
 
         public override string GetCustomDescription()
         {
             return string.Format("Soil: {0:.00}, Water: {1:.00}\n{2}",
-                SoilFactor, WaterFactor, base.GetCustomDescription());
+                SoilState, WaterState, base.GetCustomDescription());
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -90,7 +98,6 @@ namespace NodeManager
             Manager.ToMainThread.Enqueue(action);
             return true;
         }
-
 
     }
 }

@@ -4,14 +4,6 @@ using System.Collections.Generic;
 namespace NodeManager
 {
 
-    public interface IFarmPlot
-    {
-        HashSet<IComposter> Composters { get; }
-        float WaterFactor { get; }
-        float SoilFactor { get; }
-
-    }
-
     public partial class NodeManager
         : GlobalTicker, IPersistable
     {

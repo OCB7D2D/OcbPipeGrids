@@ -16,7 +16,7 @@ namespace NodeManager
         public PipeWell AddWell(PipeWell well)
         {
             Wells.Add(well.WorldPos, well);
-            ReachHelper.QueryLinks(well, FarmSoils);
+            ReachHelper.QueryLinks(well, FarmLands);
             ReachHelper.SearchLinks(well, Irrigators,
                 IrrigatorToWellReach);
             // Search for irrigation to fill up the well
@@ -36,11 +36,11 @@ namespace NodeManager
             // Make sure to unregister us from links
             foreach (var node in well.Irrigators)
                 node.Wells.Remove(well);
-            foreach (var node in well.Soils)
+            foreach (var node in well.FarmLands)
                 node.Wells.Remove(well);
             // Clear our links
             well.Irrigators.Clear();
-            well.Soils.Clear();
+            well.FarmLands.Clear();
             // Remove from KD tree
             return Wells.RemoveAt(well.WorldPos);
         }
