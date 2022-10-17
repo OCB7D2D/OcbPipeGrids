@@ -122,7 +122,7 @@
 
 			<property name="CreativeMode" value="Player"/>
 			<!--<property name="Tags" value="safes,hardenedSafe"/>-->
-			<property name="Class" value="PipeReservoir, PipeGrids"/>
+			<property name="Class" value="PlantationSprinkler, PipeGrids"/>
 			<property name="PipeConnectors" value="down" />
 			
 			<!--
