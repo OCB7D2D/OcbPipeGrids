@@ -1,7 +1,7 @@
 ﻿namespace NodeManager
 {
 
-    public class NetPkgActionAddBlock2 : NetPkgWorkerAction<ActionAddBlock2> { }
+    public class NetPkgActionAddBlock2 : NetPkgWorkerAction<ActionAddBlock> { }
     // public class NetPkgActionRemoveBlock2 : NetPkgWorkerAction<ActionRemoveBlock> { }
 
     /*

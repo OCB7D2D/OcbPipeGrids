@@ -179,8 +179,6 @@
     <Compile Include="PlantationMessages\ExecuteChestModification.cs" />
     <Compile Include="PlantationMessages\ExecuteModifyChest.cs" />
     <Compile Include="PlantationMessages\ExecuteBlockChange.cs" />
-    <Compile Include="PlantationMessages\ActionAddBlock.cs" />
-    <Compile Include="PlantationMessages\ActionRemoveBlock.cs" />
     <Compile Include="PlantationMessages\ActionUpdatePlantStats.cs" />
     <Compile Include="PlantationNetPackages\PlantationPackages.cs" />
     <Compile Include="PlantationNodes\ExtensionMethods.cs" />

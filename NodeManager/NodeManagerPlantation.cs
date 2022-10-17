@@ -8,6 +8,7 @@ namespace NodeManager
     {
 
         private const int PlantToPlantReach = 3;
+        private const int SprinklerToPlantReach = 20;
 
         // Store all plants in a dictionary to update state
         public readonly Dictionary<Vector3i, IPlant> PlantsDict
@@ -21,6 +22,8 @@ namespace NodeManager
         {
             ReachHelper.AddLinks(plant, PlantsTree,
                 PlantToPlantReach);
+            ReachHelper.SearchLinks(plant, Sprinklers,
+                SprinklerToPlantReach);
             PlantsDict.Add(plant.WorldPos, plant);
             PlantsTree.Add(plant.WorldPos, plant);
         }
@@ -28,6 +31,8 @@ namespace NodeManager
         public void RemovePlantGrowing(IPlant plant)
         {
             // Make sure to unregister us from links
+            foreach (var other in plant.Sprinklers)
+                other.Plants.Remove(plant);
             foreach (var other in plant.Plants)
             {
                 if (other == plant) continue;
@@ -35,6 +40,7 @@ namespace NodeManager
             }
             // Clear our links
             plant.Plants.Clear();
+            plant.Sprinklers.Clear();
             // Remove from tree and dictionary
             PlantsTree.RemoveAt(plant.WorldPos);
             PlantsDict.Remove(plant.WorldPos);

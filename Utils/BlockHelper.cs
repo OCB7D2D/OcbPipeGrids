@@ -133,7 +133,7 @@ namespace NodeManager
             foreach (Renderer componentsInChild in helper2.GetComponentsInChildren<Renderer>())
                 componentsInChild.material.SetColor("_Color", reacher.ReachHelperColor * 0.5f);
 
-            Vector3i dim = block.multiBlockPos.dim;
+            Vector3i dim = block.multiBlockPos != null ? block.multiBlockPos.dim : Vector3i.one;
 
             Log.Warning("!!!!!!!!!!????????????? ROtating well for rotation {0}", bv.rotation);
             Vector3i rotated = FullRotation.Rotate(bv.rotation, dim);

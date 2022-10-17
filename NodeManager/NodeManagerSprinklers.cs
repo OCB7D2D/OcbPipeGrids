@@ -14,8 +14,7 @@ namespace NodeManager
         public void AddSprinkler(ISprinkler sprinkler)
         {
             Sprinklers.Add(sprinkler.WorldPos, sprinkler);
-            // ReachHelper.QueryLinks(composter, FarmLands);
-            // ReachHelper.QueryLinks(composter, FarmPlots);
+            ReachHelper.QueryLinks(sprinkler, PlantsTree);
         }
 
         // Invoked when manager is set to `null`

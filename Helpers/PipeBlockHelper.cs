@@ -22,7 +22,7 @@ public static class PipeBlockHelper
 		// Only process main block nodes?
 		if (masterOnly && bv.ischild) return;
 		// Dispatch to virtual implementation
-		var action = new ActionAddBlock2();
+		var action = new ActionAddBlock();
 		action.Setup(block.NodeType, pos, bv);
 		NodeManagerInterface.SendToServer(action);
 	}
@@ -33,7 +33,7 @@ public static class PipeBlockHelper
 		// Only process main block nodes?
 		if (masterOnly && bv.ischild) return;
 		// Dispatch to virtual implementation
-		var action = new ActionRemoveBlock2();
+		var action = new ActionRemoveBlock();
 		action.Setup(block.NodeType, pos);
 		NodeManagerInterface.SendToServer(action);
 	}

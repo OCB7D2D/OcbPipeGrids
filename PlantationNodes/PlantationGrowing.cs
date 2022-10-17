@@ -200,8 +200,8 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0:0.00}/{5:0.00}h\nWater: {1:0.00}, Soil: {2:0.00}\nGrowth: {6:0.00}, Health: {4:0.00}\nPlants: {3}",
-                GrowProgress, WaterState, SoilState, Plants.Count, HealthFactor, Alive / 3000f, GrowFactor);
+            return string.Format("Plant Growing {0:0.00}/{5:0.00}h\nWater: {1:0.00}, Soil: {2:0.00}\nGrowth: {6:0.00}, Health: {4:0.00}\nPlants: {3}, Sprinklers: {7}",
+                GrowProgress, WaterState, SoilState, Plants.Count, HealthFactor, Alive / 3000f, GrowFactor, Sprinklers.Count);
         }
 
         protected override void OnManagerAttached(NodeManager manager)

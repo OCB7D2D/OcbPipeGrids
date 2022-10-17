@@ -115,6 +115,9 @@
 
 		<block name="OcbWaterSprinkler">
 
+			<property name="BlockReach" value="16,2,16" />
+			<property name="ReachOffset" value="0,-1,0" />
+
 			<property name="DisplayInfo" value="Custom" />
 			<property name="IsPowered" value="True" />
 

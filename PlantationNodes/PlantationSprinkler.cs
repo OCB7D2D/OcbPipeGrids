@@ -46,10 +46,10 @@ namespace NodeManager
             base.ParseBlockConfig();
         }
 
-        public void AddLink(IPlant soil)
+        public void AddLink(IPlant plant)
         {
-            Plants.Add(soil);
-            //soil.Sprinkler.Add(this);
+            Plants.Add(plant);
+            plant.Sprinklers.Add(this);
         }
 
         //########################################################
@@ -89,7 +89,8 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Sprinkler {0}", FillState);
+            return string.Format("Sprinkler {0} => {1}",
+                FillState, Plants.Count);
         }
 
         //########################################################
