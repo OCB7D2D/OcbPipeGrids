@@ -6,6 +6,14 @@ using UnityEngine;
 public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 {
 
+	//########################################################
+	//########################################################
+
+	public override TYPES NodeType => TYPES.PipeFluidInjector;
+
+	//########################################################
+	//########################################################
+	
 	// *******************************************************
 	// IBlockReservoir
 	// *******************************************************
@@ -86,20 +94,20 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 	//########################################################
 
 
-	public override void CreateGridItem(Vector3i position, BlockValue bv)
-	{
-		var action = new ActionAddFluidInjector();
-		action.Setup(position, bv);
-		Log.Warning("Creating new composter {0}", bv.type);
-		NodeManagerInterface.SendToServer(action);
-	}
-
-	public override void RemoveGridItem(Vector3i position)
-	{
-		var action = new ActionRemoveFluidInjector();
-		action.Setup(position);
-		NodeManagerInterface.SendToServer(action);
-	}
+	// public override void CreateGridItem(Vector3i position, BlockValue bv)
+	// {
+	// 	var action = new ActionAddFluidInjector();
+	// 	action.Setup(position, bv);
+	// 	Log.Warning("Creating new composter {0}", bv.type);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
+	// 
+	// public override void RemoveGridItem(Vector3i position)
+	// {
+	// 	var action = new ActionRemoveFluidInjector();
+	// 	action.Setup(position);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
 
 	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 

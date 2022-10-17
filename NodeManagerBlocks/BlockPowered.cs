@@ -9,7 +9,9 @@ namespace NodeManager
 
 		Block IBlockNode.BLK => this;
 
-		public override void OnBlockAdded(
+        public abstract TYPES NodeType { get; }
+
+        public override void OnBlockAdded(
 			WorldBase world, Chunk chunk,
 			Vector3i pos, BlockValue bv)
 		{

@@ -1,6 +1,6 @@
 ﻿namespace NodeManager
 {
-
+    /*
     public class ActionRemoveFarmLand : BaseActionRemoveBlock<NetPkgActionRemoveFarmLand>
     {
         protected override void SetupNetPkg(NetPkgActionRemoveFarmLand pkg) => pkg.Setup(this);
@@ -26,5 +26,6 @@
         protected override void SetupNetPkg(NetPkgActionRemoveComposter pkg) => pkg.Setup(this);
     }
 
+    */
 
 }

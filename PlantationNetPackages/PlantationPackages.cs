@@ -1,6 +1,10 @@
 ﻿namespace NodeManager
 {
 
+    public class NetPkgActionAddBlock2 : NetPkgWorkerAction<ActionAddBlock2> { }
+    // public class NetPkgActionRemoveBlock2 : NetPkgWorkerAction<ActionRemoveBlock> { }
+
+    /*
     public class NetPkgActionAddFarmLand : NetPkgWorkerAction<ActionAddFarmLand> { }
     public class NetPkgActionRemoveFarmLand : NetPkgWorkerAction<ActionRemoveFarmLand> { }
 
@@ -16,6 +20,6 @@
     public class NetPkgActionAddSprinkler : NetPkgWorkerAction<ActionAddSprinkler> { }
     public class NetPkgActionRemoveSprinkler : NetPkgWorkerAction<ActionRemoveSprinkler> { }
 
+    */
     public class NetPkgRemotePlantInteraction : NetPkgWorkerAction<MsgPlantInteraction> { }
-
 }

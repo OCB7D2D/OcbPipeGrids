@@ -8,9 +8,10 @@ namespace NodeManager
     public class PipeFluidConverter : PipePump, IPoweredNode
     {
 
-        public override ulong NextTick => 30;
+        public static new TYPES NodeType = TYPES.PipeFluidConverter;
+        public override uint StorageID => (uint)TYPES.PipeFluidConverter;
 
-        public override uint StorageID => 6;
+        public override ulong NextTick => 30;
 
         public PipeFluidConverter(Vector3i position, BlockValue bv)
             : base(position, bv)

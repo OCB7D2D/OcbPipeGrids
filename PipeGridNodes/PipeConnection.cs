@@ -7,7 +7,9 @@ namespace NodeManager
 
     public class PipeConnection : NodeBlock<IBlockConnection>
     {
-        public override uint StorageID => 1;
+
+        public static TYPES NodeType = TYPES.PipeConnection;
+        public override uint StorageID => (uint)TYPES.PipeConnection;
 
         public byte ConnectMask => BLOCK?.ConnectMask ?? 63;
         public uint SideMask => BLOCK?.SideMask ?? 0;

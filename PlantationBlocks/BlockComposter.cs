@@ -7,6 +7,14 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 {
 
 	//########################################################
+	//########################################################
+
+	public override TYPES NodeType => TYPES.PlantationComposter;
+
+	//########################################################
+	//########################################################
+
+	//########################################################
 	// Implementation for block specialization
 	//########################################################
 
@@ -107,20 +115,20 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 	//########################################################
 
 
-	public override void CreateGridItem(Vector3i position, BlockValue bv)
-	{
-		var action = new ActionAddComposter();
-		action.Setup(position, bv);
-		Log.Warning("Creating new composter {0}", bv.type);
-		NodeManagerInterface.SendToServer(action);
-	}
-
-	public override void RemoveGridItem(Vector3i position)
-	{
-		var action = new ActionRemoveComposter();
-		action.Setup(position);
-		NodeManagerInterface.SendToServer(action);
-	}
+	// public override void CreateGridItem(Vector3i position, BlockValue bv)
+	// {
+	// 	var action = new ActionAddComposter();
+	// 	action.Setup(position, bv);
+	// 	Log.Warning("Creating new composter {0}", bv.type);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
+	// 
+	// public override void RemoveGridItem(Vector3i position)
+	// {
+	// 	var action = new ActionRemoveComposter();
+	// 	action.Setup(position);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
 
 	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 

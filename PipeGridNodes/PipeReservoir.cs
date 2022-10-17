@@ -7,6 +7,10 @@ namespace NodeManager
 {
     public class PipeReservoir : PipeConnection, IPoweredNode
     {
+
+        public static new TYPES NodeType = TYPES.PipeReservoir;
+        public override uint StorageID => (uint)TYPES.PipeReservoir;
+
         public float MaxFillState = 150f;
 
         public float FillState { get; set; } = 0f;
@@ -14,8 +18,6 @@ namespace NodeManager
         public ushort FluidType { get; protected set; } = 0;
 
         public override ulong NextTick => 60;
-
-        public override uint StorageID => 7;
 
         // public override bool BreakDistance => true;
 

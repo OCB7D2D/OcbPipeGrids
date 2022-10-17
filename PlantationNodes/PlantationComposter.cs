@@ -7,6 +7,9 @@ namespace NodeManager
     public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
     {
 
+        public static TYPES NodeType = TYPES.PlantationComposter;
+        public override uint StorageID => (uint)TYPES.PlantationComposter;
+
         public IReacherBlock RBLK => BLOCK;
 
         //########################################################
@@ -32,8 +35,6 @@ namespace NodeManager
         //########################################################
         // Setup for node manager implementation
         //########################################################
-
-        public override uint StorageID => 12;
 
         public override ulong NextTick =>
             (ulong)Random.Range(300, 400);

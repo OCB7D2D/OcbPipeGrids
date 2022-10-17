@@ -23,6 +23,16 @@ namespace NodeManager
 				+ "\n" + GetCustomDescription(pos, bv);
 		}
 
-	}
+        public override void CreateGridItem(Vector3i blockPos, BlockValue blockValue)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void RemoveGridItem(Vector3i blockPos)
+        {
+            throw new System.NotImplementedException();
+        }
+
+    }
 
 }

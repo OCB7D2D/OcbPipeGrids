@@ -7,6 +7,9 @@ namespace NodeManager
     public class PlantationSprinkler : PipeReservoir, ISprinkler
     {
 
+        public static new TYPES NodeType = TYPES.PlantationSprinkler;
+        public override uint StorageID => (uint)TYPES.PlantationSprinkler;
+
         public new BlockPlantationSprinkler BLOCK = null;
         public IReacherBlock RBLK => BLOCK;
 
@@ -26,8 +29,6 @@ namespace NodeManager
         //########################################################
         // Setup for node manager implementation
         //########################################################
-
-        public override uint StorageID => (uint)TYPES.Sprinkler;
 
         public override ulong NextTick =>
             (ulong)Random.Range(300, 400);

@@ -6,13 +6,14 @@ namespace NodeManager
 
     public abstract class BlockBase : Block, IBlockNode
     {
+        // public override void Init()
+        // {
+        //     base.Init();
+        // }
 
-		// public override void Init()
-		// {
-		//     base.Init();
-		// }
-
-		Block IBlockNode.BLK => this;
+        Block IBlockNode.BLK => this;
+		// public abstract ushort StorageID { get; }
+		public abstract TYPES NodeType { get; }
 
 		public override void OnBlockAdded(
 			WorldBase world, Chunk chunk,
@@ -32,9 +33,9 @@ namespace NodeManager
 			PipeBlockHelper.OnBlockRemoved(this, pos, bv);
 		}
 
-		public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
+		// public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
 
-		public abstract void RemoveGridItem(Vector3i blockPos);
+		// public abstract void RemoveGridItem(Vector3i blockPos);
 
 	}
 

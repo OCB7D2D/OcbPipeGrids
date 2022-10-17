@@ -1,11 +1,15 @@
-﻿public interface IBlockNode
+﻿using NodeManager;
+
+public interface IBlockNode
 {
 
     Block BLK { get; }
 
-    void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
+    TYPES NodeType { get; }
 
-    void RemoveGridItem(Vector3i blockPos);
+    // void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
+
+    // void RemoveGridItem(Vector3i blockPos);
 
     //#####################################################
     // Some base implementations each Block must have

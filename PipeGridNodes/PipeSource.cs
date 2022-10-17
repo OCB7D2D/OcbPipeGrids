@@ -5,7 +5,8 @@ namespace NodeManager
 {
     public class PipeSource : PipePump, IPoweredNode
     {
-        public override uint StorageID => 4;
+        public static new TYPES NodeType = TYPES.PipeSouce;
+        public override uint StorageID => (uint)TYPES.PipeSouce;
 
         public override ulong NextTick => 10;
 

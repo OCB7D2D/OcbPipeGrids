@@ -5,6 +5,7 @@
         public Vector3i Position { get; private set; } = Vector3i.zero;
 
         // Used to setup incoming from interface
+        // ToDo: make protected
         public virtual void Setup(Vector3i position)
         {
             Position = position;

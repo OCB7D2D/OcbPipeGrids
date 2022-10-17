@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NodeManager;
+using System;
 using XMLData.Parsers;
 
 public static class PipeBlockHelper
@@ -21,7 +22,9 @@ public static class PipeBlockHelper
 		// Only process main block nodes?
 		if (masterOnly && bv.ischild) return;
 		// Dispatch to virtual implementation
-		block.CreateGridItem(pos, bv);
+		var action = new ActionAddBlock2();
+		action.Setup(block.NodeType, pos, bv);
+		NodeManagerInterface.SendToServer(action);
 	}
 
     public static void OnBlockRemoved(IBlockNode block,
@@ -30,7 +33,9 @@ public static class PipeBlockHelper
 		// Only process main block nodes?
 		if (masterOnly && bv.ischild) return;
 		// Dispatch to virtual implementation
-		block.RemoveGridItem(pos);
+		var action = new ActionRemoveBlock2();
+		action.Setup(block.NodeType, pos);
+		NodeManagerInterface.SendToServer(action);
 	}
 
 

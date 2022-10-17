@@ -8,9 +8,10 @@ namespace NodeManager
     public class PipeWaterBoiler : NodeBlock<BlockWaterBoiler>, IPoweredNode
     {
 
-        public override ulong NextTick => 30;
+        public static TYPES NodeType = TYPES.PipeWaterBoiler;
+        public override uint StorageID => (uint)TYPES.PipeWaterBoiler;
 
-        public override uint StorageID => 5;
+        public override ulong NextTick => 30;
 
         public bool IsPowered { get; set; }
 

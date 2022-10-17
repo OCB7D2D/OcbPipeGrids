@@ -9,7 +9,8 @@ namespace NodeManager
 {
     class PipeFluidInjector : PipeReservoir
     {
-        public override uint StorageID => 13;
+        public static new TYPES NodeType = TYPES.PipeFluidInjector;
+        public override uint StorageID => (uint)TYPES.PipeFluidInjector;
 
         public PipeFluidInjector(BinaryReader br) : base(br)
         {

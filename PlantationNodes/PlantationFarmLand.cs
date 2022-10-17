@@ -8,6 +8,9 @@ namespace NodeManager
     public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, IFarmLand
     {
 
+        public static TYPES NodeType = TYPES.PlantationFarmLand;
+        public override uint StorageID => (uint)TYPES.PlantationFarmLand;
+
         //########################################################
         // Config settings (move to block)
         //########################################################
@@ -21,8 +24,6 @@ namespace NodeManager
         //########################################################
         // Setup for node manager implementation
         //########################################################
-
-        public override uint StorageID => 8;
 
         public override ulong NextTick => 40;
 

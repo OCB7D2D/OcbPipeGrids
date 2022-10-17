@@ -13,6 +13,7 @@ namespace NodeManager
     public abstract class PlantationBase : NodeBlock<BlockPlantationGrowing>, IPlant
     {
 
+
         public float HealthFactor { get; set; } = 6.75f;
 
         public byte CurrentSunLight { get; set; } = 0;
@@ -78,11 +79,12 @@ namespace NodeManager
     {
 
 
+        public static TYPES NodeType = TYPES.PlantationGrowing;
+        public override uint StorageID => (uint)TYPES.PlantationGrowing;
+
         public ulong Alive = 0;
 
         public override ulong NextTick => 50;
-
-        public override uint StorageID => 11;
 
         public byte CurrentFertility { get; set; } = 0;
 

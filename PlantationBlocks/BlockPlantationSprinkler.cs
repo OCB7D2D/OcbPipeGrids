@@ -7,6 +7,14 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
     //########################################################
     //########################################################
 
+    public override TYPES NodeType => TYPES.PlantationSprinkler;
+
+    //########################################################
+    //########################################################
+
+    //########################################################
+    //########################################################
+
     public Vector3i BlockReach { get; set; } = Vector3i.zero;
     public Vector3i ReachOffset { get; set; } = Vector3i.zero;
     public Color BoundHelperColor { get; set; } = new Color32(160, 82, 45, 255);

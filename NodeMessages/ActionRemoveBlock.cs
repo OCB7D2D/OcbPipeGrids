@@ -1,6 +1,6 @@
 ﻿namespace NodeManager
 {
-
+    /*
     public class ActionRemoveBlock : BaseActionRemoveBlock<NetPkgActionRemoveBlock>
     {
         protected override void SetupNetPkg(NetPkgActionRemoveBlock pkg) => pkg.Setup(this);
@@ -50,6 +50,7 @@
     {
         protected override void SetupNetPkg(NetPkgActionRemoveFluidInjector pkg) => pkg.Setup(this);
     }
+    */
 
     public abstract class BaseActionRemoveChest<N> : BaseActionRemoveBlock<N>
         where N : NetPackage

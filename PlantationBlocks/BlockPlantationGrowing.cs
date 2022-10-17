@@ -7,6 +7,14 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 
 	//########################################################
 	//########################################################
+
+	public TYPES NodeType => TYPES.PlantationGrowing;
+
+	//########################################################
+	//########################################################
+
+	//########################################################
+	//########################################################
 	Block IBlockNode.BLK => this;
 	public MaintenanceOptions SoilMaintenance { get; set; } =
 		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
@@ -19,11 +27,11 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 
 	public float GrowthRate => 1f / (12f * GetGrowthRate());
 
-	//########################################################
-	// Implementation for block specialization
-	//########################################################
+    //########################################################
+    // Implementation for block specialization
+    //########################################################
 
-	
+
 
     public BlockPlantationGrowing()
     {
@@ -37,21 +45,21 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 		BlockConfig.InitPlant(this);
 	}
 
-	public virtual void CreateGridItem(Vector3i position, BlockValue bv)
-	{
-		Log.Out("Delegate tot Create Plant");
-		var action = new ActionAddPlantGrowing();
-		action.Setup(position, bv);
-		NodeManagerInterface.SendToServer(action);
-	}
-
-	public virtual void RemoveGridItem(Vector3i position)
-	{
-		Log.Out("Delegate tot Delete Plant");
-		var action = new ActionRemovePlantGrowing();
-		action.Setup(position);
-		NodeManagerInterface.SendToServer(action);
-	}
+	// public virtual void CreateGridItem(Vector3i position, BlockValue bv)
+	// {
+	// 	Log.Out("Delegate tot Create Plant");
+	// 	var action = new ActionAddPlantGrowing();
+	// 	action.Setup(position, bv);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
+	// 
+	// public virtual void RemoveGridItem(Vector3i position)
+	// {
+	// 	Log.Out("Delegate tot Delete Plant");
+	// 	var action = new ActionRemovePlantGrowing();
+	// 	action.Setup(position);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
 
 	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 

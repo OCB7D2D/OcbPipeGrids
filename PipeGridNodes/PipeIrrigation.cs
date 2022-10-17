@@ -11,6 +11,9 @@ namespace NodeManager
 
         public IReacherBlock RBLK => BLOCK;
 
+        public static new TYPES NodeType = TYPES.PipeIrrigation;
+        public override uint StorageID => (uint)TYPES.PipeIrrigation;
+
         //########################################################
         // Config settings from block
         //########################################################
@@ -33,8 +36,6 @@ namespace NodeManager
         //########################################################
 
         public override ulong NextTick => 30;
-
-        public override uint StorageID => 3;
 
         //########################################################
         // Cross references setup by manager

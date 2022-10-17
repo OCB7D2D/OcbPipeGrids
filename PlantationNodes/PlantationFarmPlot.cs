@@ -8,6 +8,9 @@ namespace NodeManager
     public class PlantationFarmPlot : PipeReservoir, IFarmPlot
     {
 
+        public static new TYPES NodeType = TYPES.PlantationFarmPlot;
+        public override uint StorageID => (uint)TYPES.PlantationFarmPlot;
+
         //########################################################
         // Config settings (move to block)
         //########################################################
@@ -21,8 +24,6 @@ namespace NodeManager
         //########################################################
 
         public override ulong NextTick => 5;
-
-        public override uint StorageID => 10;
 
         //########################################################
         // Custom Data Attributes for Node

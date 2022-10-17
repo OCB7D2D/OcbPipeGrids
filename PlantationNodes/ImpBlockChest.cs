@@ -8,19 +8,22 @@ public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityCh
 
 	Block IBlockNode.BLK => this;
 
-	//########################################################
-	// Abstract implementation for `BlockNode`
-	// Must specialize these for specific types
-	//########################################################
+    public abstract TYPES NodeType { get; }
 
-	public abstract void CreateGridItem(Vector3i pos, BlockValue bv);
 
-	public abstract void RemoveGridItem(Vector3i pos);
+    //########################################################
+    // Abstract implementation for `BlockNode`
+    // Must specialize these for specific types
+    //########################################################
 
-	//########################################################
-	//########################################################
+    // public abstract void CreateGridItem(Vector3i pos, BlockValue bv);
 
-	public override void OnBlockAdded(
+    // public abstract void RemoveGridItem(Vector3i pos);
+
+    //########################################################
+    //########################################################
+
+    public override void OnBlockAdded(
 		WorldBase world, Chunk chunk,
 		Vector3i pos, BlockValue bv)
 	{
@@ -84,6 +87,10 @@ public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityCh
 		action.Setup(te.ToWorldPos(), container.GetItems());
 		NodeManagerInterface.Instance.ToWorker.Enqueue(action);
 	}
+
+	//########################################################
+	//########################################################
+
 
 	//########################################################
 	//########################################################

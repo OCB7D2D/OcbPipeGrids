@@ -10,6 +10,9 @@ namespace NodeManager
     {
         public IReacherBlock RBLK => BLOCK;
 
+        public static TYPES NodeType = TYPES.PipeWell;
+        public override uint StorageID => (uint)TYPES.PipeWell;
+
         //########################################################
         // Settings for Well (from block)
         //########################################################
@@ -47,8 +50,6 @@ namespace NodeManager
         //########################################################
         
         public override ulong NextTick => 30;
-
-        public override uint StorageID => 9;
 
         //########################################################
         // Cross references setup by manager

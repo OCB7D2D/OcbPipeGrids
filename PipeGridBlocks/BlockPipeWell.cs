@@ -6,6 +6,14 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper, IReac
 {
 
 	//########################################################
+	//########################################################
+
+	public override TYPES NodeType => TYPES.PipeWell;
+
+	//########################################################
+	//########################################################
+
+	//########################################################
 	// Implementation for block specialization
 	//########################################################
 
@@ -163,20 +171,20 @@ public class BlockPipeWell : ImpBlockPipeReservoirUnpowered, IBoundHelper, IReac
 		}
 	}
 
-	public override void CreateGridItem(Vector3i position, BlockValue bv)
-	{
-		Log.Out("Create Well item");
-		var action = new ActionAddWell();
-		action.Setup(position, bv);
-		NodeManagerInterface.SendToServer(action);
-	}
-
-	public override void RemoveGridItem(Vector3i position)
-	{
-		var action = new ActionRemoveWell();
-		action.Setup(position);
-		NodeManagerInterface.SendToServer(action);
-	}
+	// public override void CreateGridItem(Vector3i position, BlockValue bv)
+	// {
+	// 	Log.Out("Create Well item");
+	// 	var action = new ActionAddWell();
+	// 	action.Setup(position, bv);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
+	// 
+	// public override void RemoveGridItem(Vector3i position)
+	// {
+	// 	var action = new ActionRemoveWell();
+	// 	action.Setup(position);
+	// 	NodeManagerInterface.SendToServer(action);
+	// }
 
 
 	public override void OnBlockAdded(
