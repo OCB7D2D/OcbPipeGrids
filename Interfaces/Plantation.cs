@@ -137,12 +137,15 @@ namespace NodeManager
     public interface IHasPower { bool IsPowered { get; set; } }
     public interface IHasWells : IWorldLink<IWell> { HashSet<IWell> Wells { get; } }
     public interface IHasPlants : IWorldLink<IPlant> { HashSet<IPlant> Plants { get; } }
+    public interface IHasSprinklers : IWorldLink<ISprinkler> { HashSet<ISprinkler> Sprinklers { get; } }
     public interface IHasIrrigator : IWorldLink<IIrrigator> { HashSet<IIrrigator> Irrigators { get; } }
     public interface IHasComposters : IWorldLink<IComposter> { HashSet<IComposter> Composters { get; } }
     public interface IHasFarmLands : IWorldLink<IFarmLand> { HashSet<IFarmLand> FarmLands { get; } }
     public interface IHasFarmPlots : IWorldLink<IFarmPlot> { HashSet<IFarmPlot> FarmPlots { get; } }
 
     // The composter has soils linked that will use compost from it
+
+    public interface ISprinkler : IHasPlants, IFilled, IReacher, IEqualityComparer<NodeBase> { }
 
     public interface IComposter : IHasFarmLands, IHasFarmPlots, IFilled, IReacher, IEqualityComparer<NodeBase> {}
 
@@ -164,7 +167,7 @@ namespace NodeManager
 
 
 
-    public interface IPlant : IHasPlants, ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
+    public interface IPlant : IHasPlants, IHasSprinklers, ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
     {
         int Illness { get; }
         float HealthFactor { get; }

@@ -27,5 +27,7 @@
     public class NetPkgActionRemoveFluidConverter : NetPkgWorkerAction<ActionRemoveFluidConverter> { }
     public class NetPkgActionAddWaterBoiler : NetPkgWorkerAction<ActionAddWaterBoiler> { }
     public class NetPkgActionRemoveWaterBoiler : NetPkgWorkerAction<ActionRemoveWaterBoiler> { }
+    public class NetPkgActionAddFluidInjector : NetPkgWorkerAction<ActionAddFluidInjector> { }
+    public class NetPkgActionRemoveFluidInjector : NetPkgWorkerAction<ActionRemoveFluidInjector> { }
 
 }

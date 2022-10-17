@@ -4,17 +4,11 @@ using UnityEngine;
 
 namespace NodeManager
 {
-    public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
+    public class PlantationSprinkler : PipeReservoir, ISprinkler
     {
 
+        public new BlockPlantationSprinkler BLOCK = null;
         public IReacherBlock RBLK => BLOCK;
-
-        //########################################################
-        // Implementation for `IFilled` interface
-        //########################################################
-
-        public float FillState { get; set; } = 0;
-        public float MaxFillState { get; set; } = 5;
 
         //########################################################
         // Implementation for `IReachable` (redirect to block)
@@ -42,44 +36,38 @@ namespace NodeManager
         // Cross references setup by manager
         //########################################################
 
-        public HashSet<IFarmLand> FarmLands { get; }
-            = new HashSet<IFarmLand>();
+        public HashSet<IPlant> Plants { get; }
+            = new HashSet<IPlant>();
 
-        public void AddLink(IFarmLand soil)
+        public override void ParseBlockConfig()
         {
-            FarmLands.Add(soil);
-            soil.Composters.Add(this);
+            GetBlock(out BLOCK);
+            base.ParseBlockConfig();
         }
 
-        public HashSet<IFarmPlot> FarmPlots { get; }
-            = new HashSet<IFarmPlot>();
-
-        public void AddLink(IFarmPlot soil)
+        public void AddLink(IPlant soil)
         {
-            FarmPlots.Add(soil);
-            soil.Composters.Add(this);
+            Plants.Add(soil);
+            //soil.Sprinkler.Add(this);
         }
 
         //########################################################
         // Implementation for persistence and data exchange
         //########################################################
 
-        public PlantationComposter(Vector3i position, BlockValue bv)
+        public PlantationSprinkler(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
-            FillState = 2;
         }
 
-        public PlantationComposter(BinaryReader br)
+        public PlantationSprinkler(BinaryReader br)
             : base(br)
         {
-            FillState = br.ReadSingle();
         }
 
         public override void Write(BinaryWriter bw)
         {
             base.Write(bw);
-            bw.Write(FillState);
         }
 
         //########################################################
@@ -91,8 +79,8 @@ namespace NodeManager
         {
             if (Manager == manager) return;
             base.OnManagerAttached(manager);
-            Manager?.RemoveComposter(this);
-            manager?.AddComposter(this);
+            Manager?.RemoveSprinkler(this);
+            manager?.AddSprinkler(this);
         }
 
         //########################################################
@@ -100,8 +88,7 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Composter {0} for {1}",
-                FillState, FarmLands.Count + FarmPlots.Count);
+            return string.Format("Sprinkler {0}", FillState);
         }
 
         //########################################################
@@ -112,34 +99,7 @@ namespace NodeManager
             // Log.Out("Tick Composter {0}", delta);
             // Abort ticking if Manager is null
             if (!base.Tick(delta)) return false;
-            // Skip if FillState is still at Maximum
-            if (FillState > MaxFillState - 1) return true;
-            // Try to get (cached) chest from Manager
-            // Will sync automatically behind the scenes
-            if (Manager.GetChest(WorldPos) is ItemStack[] inv)
-            {
-                var action = new ExecuteChestModification();
-                // Log.Out("Inventory {0}", inv.Length);
-                for (int i = 0; i < inv.Length; i++)
-                {
-                    if (inv[i].count <= 0) continue;
-                    ItemClass ic = inv[i]?.itemValue?.ItemClass;
-                    Log.Warning("check material {0}, {1} => {2}",
-                        inv[i]?.itemValue, ic, ic?.MadeOfMaterial);
-                    if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
-                    {
-                        FillState += 1f; // constant exchange factor
-                        Log.Warning("Added Fill");
-                        inv[i].count -= 1;
-                        action.AddChange(inv[i]?.itemValue, -1);
-                    }
-                }
-                if (action.Changes.Count > 0)
-                {
-                    action.Setup(WorldPos);
-                    Manager.ToMainThread.Enqueue(action);
-                }
-            }
+            // Keep ticking
             return true;
         }
 

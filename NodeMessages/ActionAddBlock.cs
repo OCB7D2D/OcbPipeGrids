@@ -48,6 +48,12 @@
         protected override void SetupNetPkg(NetPkgActionAddWaterBoiler pkg) => pkg.Setup(this);
     }
 
+    public class ActionAddFluidInjector : BaseActionAddBlock<NetPkgActionAddFluidInjector>
+    {
+        public override NodeBase CreateNode() => new PipeFluidInjector(Position, BV);
+        protected override void SetupNetPkg(NetPkgActionAddFluidInjector pkg) => pkg.Setup(this);
+    }
+
     public abstract class BaseActionAddChest<N> : BaseActionAddBlock<N> where N : NetPackage
     {
 

@@ -35,6 +35,7 @@ public class OcbPipeGrids : IModApi
 		NodeManager.NodeManager.RegisterFactory(6, (br) => new PipeFluidConverter(br));
 		NodeManager.NodeManager.RegisterFactory(7, (br) => new PipeReservoir(br));
 
+		NodeManager.NodeManager.RegisterFactory(13, (br) => new PipeFluidInjector(br));
 
 		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
 

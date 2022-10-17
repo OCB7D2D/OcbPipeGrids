@@ -12,7 +12,7 @@ public class BlockPipeReservoir : ImpBlockPipeReservoirUnpowered, IRotationLimit
 
 	public override void RemoveGridItem(Vector3i position)
 	{
-		var action = new ActionRemovePump();
+		var action = new ActionRemoveReservoir();
 		action.Setup(position);
 		NodeManagerInterface.SendToServer(action);
 	}

@@ -51,6 +51,15 @@ namespace NodeManager
             plant.Plants.Add(this);
         }
 
+        public HashSet<ISprinkler> Sprinklers { get; }
+            = new HashSet<ISprinkler>();
+
+        public void AddLink(ISprinkler sprinkler)
+        {
+            Sprinklers.Add(sprinkler);
+            sprinkler.Plants.Add(this);
+        }
+
         //########################################################
         // Implementation for persistence and data exchange
         //########################################################

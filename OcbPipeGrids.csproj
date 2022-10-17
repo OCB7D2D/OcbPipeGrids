@@ -89,9 +89,14 @@
     <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />
     <Compile Include="Harmony\TerrainTest.cs" />
     <Compile Include="Interfaces\Plantation.cs" />
+    <Compile Include="NodeManager\NodeManagerSprinklers.cs" />
+    <Compile Include="PipeGridBlocks\BlockFluidInjector.cs" />
+    <Compile Include="PipeGridNodes\PipeFluidInjector.cs" />
+    <Compile Include="PlantationBlocks\BlockPlantationSprinkler.cs" />
     <Compile Include="PlantationMessages\MsgPlantInteraction.cs" />
     <Compile Include="PlantationNodes\ImpBlockChest.cs" />
     <Content Include="PlantationNodes\PlantationGrowing - Copy.css" />
+    <Compile Include="PlantationNodes\PlantationSprinkler.cs" />
     <Compile Include="Utils\asd.cs" />
     <Compile Include="Utils\BlockConfig.cs" />
     <Compile Include="Utils\EasingFunctions.cs" />

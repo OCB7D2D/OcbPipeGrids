@@ -13,6 +13,9 @@
     public class NetPkgActionAddComposter : NetPkgWorkerAction<ActionAddComposter> { }
     public class NetPkgActionRemoveComposter : NetPkgWorkerAction<ActionRemoveComposter> { }
 
+    public class NetPkgActionAddSprinkler : NetPkgWorkerAction<ActionAddSprinkler> { }
+    public class NetPkgActionRemoveSprinkler : NetPkgWorkerAction<ActionRemoveSprinkler> { }
+
     public class NetPkgRemotePlantInteraction : NetPkgWorkerAction<MsgPlantInteraction> { }
 
 }
