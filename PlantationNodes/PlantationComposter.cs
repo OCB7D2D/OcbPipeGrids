@@ -7,6 +7,8 @@ namespace NodeManager
     public class PlantationComposter : LootBlock<BlockComposter>, IComposter, ILootChest
     {
 
+        public IReacherBlock RBLK => BLOCK;
+
         //########################################################
         // Implementation for `IFilled` interface
         //########################################################
@@ -15,7 +17,7 @@ namespace NodeManager
         public float MaxFillState { get; set; } = 5;
 
         //########################################################
-        // Config settings (move to block)
+        // Implementation for `IReachable` (redirect to block)
         //########################################################
 
         public Vector3i BlockReach { get => BLOCK.BlockReach; set => BLOCK.BlockReach = value; }
@@ -31,16 +33,17 @@ namespace NodeManager
         // Setup for node manager implementation
         //########################################################
 
-        public override ulong NextTick => 5;
-
         public override uint StorageID => 12;
+
+        public override ulong NextTick =>
+            (ulong)Random.Range(300, 400);
 
         //########################################################
         // Cross references setup by manager
         //########################################################
 
-        public HashSet<IFarmLand> FarmLands
-            { get; } = new HashSet<IFarmLand>();
+        public HashSet<IFarmLand> FarmLands { get; }
+            = new HashSet<IFarmLand>();
 
         public void AddLink(IFarmLand soil)
         {
@@ -48,8 +51,8 @@ namespace NodeManager
             soil.Composters.Add(this);
         }
 
-        public HashSet<IFarmPlot> FarmPlots
-        { get; } = new HashSet<IFarmPlot>();
+        public HashSet<IFarmPlot> FarmPlots { get; }
+            = new HashSet<IFarmPlot>();
 
         public void AddLink(IFarmPlot soil)
         {
@@ -75,9 +78,7 @@ namespace NodeManager
 
         public override void Write(BinaryWriter bw)
         {
-            // Write base data first
             base.Write(bw);
-            // Store additional data
             bw.Write(FillState);
         }
 
@@ -99,63 +100,49 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Composter {0} for {1}", FillState, FarmLands.Count + FarmPlots.Count);
+            return string.Format("Composter {0} for {1}",
+                FillState, FarmLands.Count + FarmPlots.Count);
         }
 
         //########################################################
-        // Tick to check if more compost is due
         //########################################################
 
         public override bool Tick(ulong delta)
         {
-
-            // Log.Warning("Tick composter");
-
-            if (Manager == null)
+            // Log.Out("Tick Composter {0}", delta);
+            // Abort ticking if Manager is null
+            if (!base.Tick(delta)) return false;
+            // Skip if FillState is still at Maximum
+            if (FillState > MaxFillState - 1) return true;
+            // Try to get (cached) chest from Manager
+            // Will sync automatically behind the scenes
+            if (Manager.GetChest(WorldPos) is ItemStack[] inv)
             {
-                Log.Out("No manager");
-                // base.Tick does check
-            }
-            if (!base.Tick(delta))
-                return false;
-
-
-
-            if (FillState > MaxFillState - 1)
-            {
-                //Log.Out("Still enough fill material {0} vs {1}",
-                //    FillState, MaxFillState);
-                return true;
-            }
-
-            var inv = Manager.GetChest(WorldPos);
-            if (inv == null)
-            {
-                Log.Out("Inventory not found!?");
-                return true;
-            }
-            var action = new ExecuteChestModification();
-            //Log.Out("Inventory {0}", inv.Length);
-            for (int i = 0; i < inv.Length; i++)
-            {
-                if (inv[i].count <= 0) continue;
-                ItemClass ic = inv[i]?.itemValue?.ItemClass;
-                Log.Warning("check material {0}, {1} => {2}",
-                    inv[i]?.itemValue, ic, ic?.MadeOfMaterial);
-                if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
+                var action = new ExecuteChestModification();
+                // Log.Out("Inventory {0}", inv.Length);
+                for (int i = 0; i < inv.Length; i++)
                 {
-                    FillState += 1f; // constant exchange factor
-                    Log.Warning("Added Fill");
-                    action.AddChange(inv[i]?.itemValue, -1);
+                    if (inv[i].count <= 0) continue;
+                    ItemClass ic = inv[i]?.itemValue?.ItemClass;
+                    Log.Warning("check material {0}, {1} => {2}",
+                        inv[i]?.itemValue, ic, ic?.MadeOfMaterial);
+                    if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
+                    {
+                        FillState += 1f; // constant exchange factor
+                        Log.Warning("Added Fill");
+                        action.AddChange(inv[i]?.itemValue, -1);
+                    }
                 }
-            }
-            if (action.Changes.Count > 0)
-            {
-                action.Setup(WorldPos);
-                Manager.ToMainThread.Enqueue(action);
+                if (action.Changes.Count > 0)
+                {
+                    action.Setup(WorldPos);
+                    Manager.ToMainThread.Enqueue(action);
+                }
             }
             return true;
         }
 
+        //########################################################
+        //########################################################
     }
 }

@@ -21,7 +21,7 @@ namespace NodeManager
         }
 
         // Invoked when manager is set to `null`
-        public bool RemoveFarmLand(IFarmLand land)
+        public void RemoveFarmLand(IFarmLand land)
         {
             // Make sure to unregister us from links
             foreach (var node in land.Wells)
@@ -32,7 +32,7 @@ namespace NodeManager
             land.Wells.Clear();
             land.Composters.Clear();
             // Remove from KD tree
-            return FarmLands.RemoveAt(land.WorldPos);
+            FarmLands.RemoveAt(land.WorldPos);
         }
 
     }

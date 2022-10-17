@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace NodeManager
@@ -12,40 +8,52 @@ namespace NodeManager
 
     public class PipeWell : NodeBlock<BlockPipeWell>, IWell //, IWorldLink<PipeIrrigation>
     {
-        public bool IsInReach(Vector3i target)
-            => ReachHelper.IsInReach(this, target);
+        public IReacherBlock RBLK => BLOCK;
 
-        public Vector3i RotatedOffset => FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
-        public Vector3i RotatedReach => FullRotation.Rotate(Rotation, BLOCK.BlockReach);
-        public Vector3i Dimensions => BLOCK.multiBlockPos?.dim ?? Vector3i.one;
-        public Vector3i BlockReach { get => BLOCK.BlockReach; set => BLOCK.BlockReach = value; }
-        public Vector3i ReachOffset { get => BLOCK.ReachOffset; set => BLOCK.ReachOffset = value; }
-        public Color BoundHelperColor { get => BLOCK.BoundHelperColor; set => BLOCK.BoundHelperColor = value; }
-        public Color ReachHelperColor { get => BLOCK.ReachHelperColor; set => BLOCK.ReachHelperColor = value; }
-
-        public override ulong NextTick => 30;
-
-        public override uint StorageID => 9;
-
-        public byte CurrentSunLight { get; set; } = 0;
-
-        public float FillState { get; set; } = 0;
-
-        public float AddWater = 0;
+        //########################################################
+        // Settings for Well (from block)
+        //########################################################
 
         public float FromGround => BLOCK != null ? BLOCK.FromGround : 0.08f / 1000f;
         public float FromFreeSky => BLOCK != null ? BLOCK.FromFreeSky : 0.25f / 1000f;
         public float FromWetSurface => BLOCK != null ? BLOCK.FromWetSurface : 0.15f / 1000f;
         public float FromSnowfall => BLOCK != null ? BLOCK.FromSnowfall : 0.4f / 1000f;
         public float FromRainfall => BLOCK != null ? BLOCK.FromRainfall : 0.8f / 1000f;
-
         public float FromIrrigation => BLOCK != null ? BLOCK.FromIrrigation : 5f / 1000f;
         public float MaxWaterLevel => BLOCK != null ? BLOCK.MaxWaterLevel : 150f;
 
+        //########################################################
+        // Implementation for `IFilled` interface
+        //########################################################
 
+        public float FillState { get; set; } = 0;
+        public byte CurrentSunLight { get; set; } = 0;
 
-        // Keep a list of pumps to get water from?
-        // Add pumps from different grids (sources)?
+        //########################################################
+        // Implementation for `IReachable` (redirect to block)
+        //########################################################
+
+        public Vector3i BlockReach { get => BLOCK.BlockReach; set => BLOCK.BlockReach = value; }
+        public Vector3i ReachOffset { get => BLOCK.ReachOffset; set => BLOCK.ReachOffset = value; }
+        public Color BoundHelperColor { get => BLOCK.BoundHelperColor; set => BLOCK.BoundHelperColor = value; }
+        public Color ReachHelperColor { get => BLOCK.ReachHelperColor; set => BLOCK.ReachHelperColor = value; }
+        public Vector3i RotatedReach => FullRotation.Rotate(Rotation, BLOCK.BlockReach);
+        public Vector3i RotatedOffset => FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
+        public Vector3i Dimensions => BLOCK.multiBlockPos?.dim ?? Vector3i.one;
+        public bool IsInReach(Vector3i target) => ReachHelper.IsInReach(this, target);
+
+        //########################################################
+        // Setup for node manager implementation
+        //########################################################
+        
+        public override ulong NextTick => 30;
+
+        public override uint StorageID => 9;
+
+        //########################################################
+        // Cross references setup by manager
+        //########################################################
+
         public HashSet<IIrrigator> Irrigators { get; }
             = new HashSet<IIrrigator>();
 
@@ -55,15 +63,18 @@ namespace NodeManager
             irrigator.Wells.Add(this);
         }
 
-        // Keep a list of plants that get water from us.
-        public HashSet<IFarmLand> FarmLands
-            { get; } = new HashSet<IFarmLand>();
+        public HashSet<IFarmLand> FarmLands { get; }
+            = new HashSet<IFarmLand>();
 
         public void AddLink(IFarmLand soil)
         {
             FarmLands.Add(soil);
             soil.Wells.Add(this);
         }
+
+        //########################################################
+        // Implementation for persistence and data exchange
+        //########################################################
 
         public PipeWell(Vector3i position, BlockValue bv)
             : base(position, bv)
@@ -87,11 +98,10 @@ namespace NodeManager
             bw.Write(CurrentSunLight);
         }
 
-        public override string GetCustomDescription()
-        {
-            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Soils: {5}",
-                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, FarmLands.Count);
-        }
+        //########################################################
+        // Implementation to integrate with manager
+        // Setup data to allow queries where needed
+        //########################################################
 
         protected override void OnManagerAttached(NodeManager manager)
         {
@@ -100,6 +110,19 @@ namespace NodeManager
             Manager?.RemoveWell(this);
             manager?.AddWell(this);
         }
+
+        //########################################################
+        //########################################################
+
+        public override string GetCustomDescription()
+        {
+            return string.Format("Available: {0}, Sun: {1}, Sources: {2}, Add: {3}\nIrrigators: {4}, Soils: {5}",
+                FillState, CurrentSunLight, Irrigators.Count, AddWater, Irrigators.Count, FarmLands.Count);
+        }
+
+        //########################################################
+        //########################################################
+
 
         public override bool Tick(ulong delta)
         {
@@ -161,6 +184,18 @@ namespace NodeManager
 
             return true;
         }
+
+        //########################################################
+        //########################################################
+
+
+        public float AddWater = 0;
+
+
+
+
+
+
 
         public bool ConsumeWater(float amount)
         {

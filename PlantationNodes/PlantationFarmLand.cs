@@ -5,35 +5,26 @@ using UnityEngine;
 
 namespace NodeManager
 {
-
-    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, IFarmLand, IWorldLink<IComposter>, IWorldLink<IWell>
+    public class PlantationFarmLand : NodeBlock<BlockPlantationFarmLand>, IFarmLand
     {
 
         //########################################################
         // Config settings (move to block)
         //########################################################
 
-        public readonly float MaxWaterState = 2f;
-        public readonly float MinWaterState = 0.15f;
-
-        readonly float WaterImprovementFactor = 0.1f / 1000f;
-        readonly float WaterMaintenanceFactor = 0.01f / 1000f;
-        readonly float WaterMaintenanceExponent = 1.25f;
-
-        private readonly float MaxSoilState = 3f;
-        private readonly float MinSoilState = 0.25f;
-
-        readonly float SoilImprovementFactor = 0.1f / 1000f;
-        readonly float SoilMaintenanceFactor = 0.01f / 1000f;
-        readonly float SoilMaintenanceExponent = 1.25f;
+        // public readonly float MaxWaterState = 2f;
+        // public readonly float MinWaterState = 0.15f;
+        // 
+        // private readonly float MaxSoilState = 3f;
+        // private readonly float MinSoilState = 0.25f;
 
         //########################################################
         // Setup for node manager implementation
         //########################################################
 
-        public override ulong NextTick => 5;
-
         public override uint StorageID => 8;
+
+        public override ulong NextTick => 40;
 
         //########################################################
         //########################################################
@@ -133,40 +124,36 @@ namespace NodeManager
         {
             // Abort ticking if Manager is null
             if (!base.Tick(delta)) return false;
+            if (float.IsNaN(SoilState)) SoilState = 0;
+            if (float.IsNaN(WaterState)) WaterState = 0;
             // We are ticked by plants if any is there
             // Otherwise tick ourself to fill slowly
             if (Plant == null)
             {
-                Log.Out("Ticking water for soil only");
+                // Log.Out("Ticking water for soil only");
                 // Consume water to keep and improve water state
-                TickWater(delta, WaterImprovementFactor,
-                    WaterMaintenanceFactor, WaterMaintenanceExponent);
+                TickWater(delta, BLOCK.WaterMaintenance);
                 // Consume compost to keep and improve soil state
-                TickSoil(delta, SoilImprovementFactor,
-                    SoilMaintenanceFactor, SoilMaintenanceExponent);
+                TickSoil(delta, BLOCK.SoilMaintenance);
             }
             // Keep ticking
             return true;
         }
 
         public void TickWater(ulong delta,
-            float ImprovementFactor,
-            float MaintenanceFactor,
-            float MaintenanceExponent)
+            MaintenanceOptions options)
         {
-            WaterState = PlantHelper.TickFactor(delta, Wells,
-                ImprovementFactor, MaintenanceFactor, MaintenanceExponent,
-                MinWaterState, MaxWaterState, WaterState);
+            WaterState = PlantHelper.TickFactor(delta,
+                Wells, options, WaterState,
+                BLOCK.WaterRange);
         }
 
         public void TickSoil(ulong delta,
-            float ImprovementFactor,
-            float MaintenanceFactor,
-            float MaintenanceExponent)
+            MaintenanceOptions options)
         {
-            SoilState = PlantHelper.TickFactor(delta, Composters,
-                ImprovementFactor, MaintenanceFactor, MaintenanceExponent,
-                MinSoilState, MaxSoilState, SoilState);
+            SoilState = PlantHelper.TickFactor(delta,
+                Composters, options, SoilState,
+                BLOCK.SoilRange);
         }
 
         //########################################################

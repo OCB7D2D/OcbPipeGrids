@@ -244,7 +244,8 @@ namespace NodeManager
                     if (propagator.Cur.LastWalker == propagator.WalkID)
                     {
                         // Mark the grid cyclic and abort here
-                        propagator.Cur.Grid.IsCyclic = true;
+                        if (propagator.Cur.Grid != null)
+                            propagator.Cur.Grid.IsCyclic = true;
                     }
                     else
                     {

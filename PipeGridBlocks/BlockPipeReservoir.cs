@@ -1,6 +1,6 @@
 ﻿using NodeManager;
 
-public class BlockPipeReservoir : ImpBlockPipeReservoirUnpowered
+public class BlockPipeReservoir : ImpBlockPipeReservoirUnpowered, IRotationLimitedBlock
 {
 
 	public override void CreateGridItem(Vector3i position, BlockValue bv)

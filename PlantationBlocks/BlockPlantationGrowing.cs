@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
+public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 {
+
+	//########################################################
+	//########################################################
+	Block IBlockNode.BLK => this;
+	public MaintenanceOptions SoilMaintenance { get; set; } =
+		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
+	public MaintenanceOptions WaterMaintenance { get; set; } =
+		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
+
+	public float GrowthMaintenanceFactor { get; set; } = 0.05f / 1200f;
+	public float LightMaintenance { get; set; }
+	public string IllnessEffect { get; set; } = string.Empty;
+
+	public float GrowthRate => 1f / (12f * GetGrowthRate());
 
 	//########################################################
 	// Implementation for block specialization
 	//########################################################
 
-	Block IBlockNode.BLK => this;
+	
 
-	public BlockPlantationGrowing()
+    public BlockPlantationGrowing()
     {
 		this.IsNotifyOnLoadUnload = true;
 	}
 
-	private string IllnessEffect = string.Empty;
-
 	public override void Init()
     {
         base.Init();
-		// Parse optional block XML setting properties
-		if (Properties.Contains("IllnessEffect")) IllnessEffect =
-			Properties.GetString("IllnessEffect").Trim();
+		// Init defaults or from config
+		BlockConfig.InitPlant(this);
 	}
 
 	public virtual void CreateGridItem(Vector3i position, BlockValue bv)
@@ -188,9 +199,9 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IBlockNode
 		var illness = BlockHelper.GetIllness(bv);
 		foreach (var particles in go.transform.GetComponentsInChildren<ParticleSystem>())
         {
-			var qwe = particles.main;
-			qwe.maxParticles = illness;
-			Log.Out("Changes particles to {0}", qwe.maxParticles);
+			var pmain = particles.main;
+			pmain.maxParticles = illness;
+			Log.Out("Changes particles to {0}", pmain.maxParticles);
 
 		}
 		// Check if plant is actually sick

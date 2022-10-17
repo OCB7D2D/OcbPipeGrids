@@ -23,25 +23,104 @@ namespace NodeManager
         void AddLink(T item);
     }
 
-    // Item that has reach (potentially rotated)
-    public interface IReacher : IReacherBlock, IWorldRotated
+    public struct MaintenanceOptions
     {
-        bool IsInReach(Vector3i target);
-        Vector3i Dimensions { get; }
-        Vector3i RotatedReach { get; }
-        Vector3i RotatedOffset { get; }
+        public float MaintenanceFactor;
+        public float MaintenanceExponent;
+        public float ImprovementFactor;
+
+        public MaintenanceOptions(
+            float MaintenanceFactor,
+            float MaintenanceExponent,
+            float ImprovementFactor)
+        {
+            this.MaintenanceFactor = MaintenanceFactor / 1200f;
+            this.MaintenanceExponent = MaintenanceExponent;
+            this.ImprovementFactor = ImprovementFactor / 1200f;
+        }
+
+        public void Init(DynamicProperties properties, string prefix)
+        {
+            if (properties.Contains($"{prefix}ImprovementFactor")) ImprovementFactor =
+                float.Parse(properties.GetString($"{prefix}ImprovementFactor")) / 1200f;
+            if (properties.Contains($"{prefix}MaintenanceFactor")) MaintenanceFactor =
+                float.Parse(properties.GetString($"{prefix}MaintenanceFactor")) / 1200f;
+            if (properties.Contains($"{prefix}MaintenanceExponent")) MaintenanceExponent =
+                float.Parse(properties.GetString($"{prefix}MaintenanceExponent"));
+        }
+
     }
 
-    public interface IReacherBlock// : IBlockNode
+    public struct RangeOptions
     {
-        IBlockNode IBLK { get; }
+        public float Min;
+        public float Max;
+
+        public RangeOptions(
+            float Min = 0f,
+            float Max = 1f)
+        {
+            this.Min = Min;
+            this.Max = Max;
+        }
+
+        public void Init(DynamicProperties properties, string prefix)
+        {
+            if (properties.Contains($"{prefix}RangeMin")) Min =
+                float.Parse(properties.GetString($"{prefix}RangeMin"));
+            if (properties.Contains($"{prefix}RangeMax")) Max =
+                float.Parse(properties.GetString($"{prefix}RangeMax"));
+        }
+
+    }
+
+    // Item that has reach (potentially rotated)
+    public interface IWellBlock : IBlockNode
+    {
+        float FromGround { get; set; }
+        float FromFreeSky { get; set; }
+        float FromWetSurface { get; set; }
+        float FromSnowfall { get; set; }
+        float FromRainfall { get; set; }
+        float FromIrrigation { get; set; }
+        float MaxWaterLevel { get; set; }
+    }
+
+    public interface IPlantBlock : IBlockNode
+    {
+        MaintenanceOptions SoilMaintenance { get; set; }
+        MaintenanceOptions WaterMaintenance { get; set; }
+        // float SoilMaintenanceFactor { get; set; }
+        // float SoilMaintenanceExponent { get; set; }
+        // float SoilImprovementFactor { get; set; }
+        // float WaterMaintenanceFactor { get; set; }
+        // float WaterMaintenanceExponent { get; set; }
+        // float WaterImprovementFactor { get; set; }
+        float GrowthMaintenanceFactor { get; set; }
+        float LightMaintenance { get; set; }
+        string IllnessEffect { get; set; }
+    }
+
+    public interface IReacherBlock : IBlockNode
+    {
         Vector3i BlockReach { get; set; }
         Vector3i ReachOffset { get; set; }
         Color BoundHelperColor { get; set; }
         Color ReachHelperColor { get; set; }
     }
 
-    public interface IFarmPlot : ISoil
+    public interface IReacher : IWorldRotated
+    {
+        IReacherBlock RBLK { get; }
+        Vector3i Dimensions { get; }
+        Vector3i RotatedReach { get; }
+        Vector3i RotatedOffset { get; }
+        bool IsInReach(Vector3i target);
+    }
+
+
+
+    public interface IFarmPlot : ISoil, IFilled
     {
         // float WaterState { get; }
         // float SoilState { get; }
@@ -74,7 +153,7 @@ namespace NodeManager
     {
     }
 
-    public interface IFarmLand : ISoil, IHasWells { }
+    public interface IFarmLand : ISoil, IHasWells {}
 
     public interface ISoil : IHasPlant, IHasComposters,
         ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
@@ -88,6 +167,8 @@ namespace NodeManager
     public interface IPlant : IHasPlants, ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
     {
         int Illness { get; }
+        float HealthFactor { get; }
+        void ChangeHealth(int change);
     }
 
     public interface IIrrigator : IHasWells, IFilled, IReacher, IHasPower, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>

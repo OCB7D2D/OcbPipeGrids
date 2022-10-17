@@ -1,18 +1,18 @@
 ﻿namespace NodeManager
 {
 
-    public class NetPkgActionAddFarmLand : NetPkgWorkerQuery<ActionAddFarmLand> { }
-    public class NetPkgActionRemoveFarmLand : NetPkgWorkerQuery<ActionRemoveFarmLand> { }
+    public class NetPkgActionAddFarmLand : NetPkgWorkerAction<ActionAddFarmLand> { }
+    public class NetPkgActionRemoveFarmLand : NetPkgWorkerAction<ActionRemoveFarmLand> { }
 
-    public class NetPkgActionAddFarmPlot : NetPkgWorkerQuery<ActionAddFarmPlot> { }
-    public class NetPkgActionRemoveFarmPlot : NetPkgWorkerQuery<ActionRemoveFarmPlot> { }
+    public class NetPkgActionAddFarmPlot : NetPkgWorkerAction<ActionAddFarmPlot> { }
+    public class NetPkgActionRemoveFarmPlot : NetPkgWorkerAction<ActionRemoveFarmPlot> { }
 
-    public class NetPkgActionAddPlantGrowing : NetPkgWorkerQuery<ActionAddPlantGrowing> { }
-    public class NetPkgActionRemovePlantGrowing : NetPkgWorkerQuery<ActionRemovePlantGrowing> { }
+    public class NetPkgActionAddPlantGrowing : NetPkgWorkerAction<ActionAddPlantGrowing> { }
+    public class NetPkgActionRemovePlantGrowing : NetPkgWorkerAction<ActionRemovePlantGrowing> { }
 
-    public class NetPkgActionAddComposter : NetPkgWorkerQuery<ActionAddComposter> { }
-    public class NetPkgActionRemoveComposter : NetPkgWorkerQuery<ActionRemoveComposter> { }
+    public class NetPkgActionAddComposter : NetPkgWorkerAction<ActionAddComposter> { }
+    public class NetPkgActionRemoveComposter : NetPkgWorkerAction<ActionRemoveComposter> { }
 
-
+    public class NetPkgRemotePlantInteraction : NetPkgWorkerAction<MsgPlantInteraction> { }
 
 }

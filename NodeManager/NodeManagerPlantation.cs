@@ -9,31 +9,35 @@ namespace NodeManager
 
         private const int PlantToPlantReach = 3;
 
-        // Store all powered items in a dictionary to update state
+        // Store all plants in a dictionary to update state
         public readonly Dictionary<Vector3i, IPlant> PlantsDict
             = new Dictionary<Vector3i, IPlant>();
 
+        // Store all plants in a KD tree to find plants nearby
         public readonly KdTree<MetricChebyshev>.Vector3i<IPlant> PlantsTree
             = new KdTree<MetricChebyshev>.Vector3i<IPlant>();
 
         public void AddPlantGrowing(IPlant plant)
         {
-            PlantsDict.Add(plant.WorldPos, plant);
-            PlantsTree.Add(plant.WorldPos, plant);
             ReachHelper.AddLinks(plant, PlantsTree,
                 PlantToPlantReach);
+            PlantsDict.Add(plant.WorldPos, plant);
+            PlantsTree.Add(plant.WorldPos, plant);
         }
 
-        public bool RemovePlantGrowing(IPlant plant)
+        public void RemovePlantGrowing(IPlant plant)
         {
             // Make sure to unregister us from links
             foreach (var other in plant.Plants)
+            {
+                if (other == plant) continue;
                 other.Plants.Remove(plant);
+            }
             // Clear our links
             plant.Plants.Clear();
             // Remove from tree and dictionary
-            return PlantsTree.RemoveAt(plant.WorldPos)
-                || PlantsDict.Remove(plant.WorldPos);
+            PlantsTree.RemoveAt(plant.WorldPos);
+            PlantsDict.Remove(plant.WorldPos);
         }
 
         public void UpdatePlantStats(ActionUpdatePlantStats stats)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NodeManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ abstract class ImpBlockPipeReservoirPowered : ImpBlockGridNodePowered, IBlockRes
 	{
 		base.Init();
 		// Parse optional block XML setting properties
-		PipeBlockHelper.InitBlock(this);
+		BlockConfig.InitConnection(this);
 	}
 
 }

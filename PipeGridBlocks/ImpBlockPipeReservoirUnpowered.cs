@@ -1,4 +1,6 @@
-﻿public abstract class ImpBlockPipeReservoirUnpowered : ImpBlockGridNodeUnpowered, IBlockReservoir
+﻿using NodeManager;
+
+public abstract class ImpBlockPipeReservoirUnpowered : ImpBlockGridNodeUnpowered, IBlockReservoir
 {
 	public virtual float MaxFillState { get; set; } = 150f;
 	public override bool BreakDistance => true;
@@ -8,7 +10,7 @@
 	{
 		base.Init();
 		// Parse optional block XML setting properties
-		PipeBlockHelper.InitBlock(this);
+		BlockConfig.InitConnection(this);
 	}
 
 }

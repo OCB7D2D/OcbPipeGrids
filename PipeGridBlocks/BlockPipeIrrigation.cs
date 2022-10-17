@@ -5,6 +5,7 @@ class BlockPipeIrrigation : ImpBlockGridNodePowered, IReacherBlock
 {
 
 	public IBlockNode IBLK => this;
+	public IReacherBlock RBLK => this;
 
 	public Vector3i BlockReach { get; set; } = Vector3i.zero;
 	public Vector3i ReachOffset { get; set; } = Vector3i.zero;
@@ -18,7 +19,7 @@ class BlockPipeIrrigation : ImpBlockGridNodePowered, IReacherBlock
 	{
 		base.Init();
 		// Parse block XML properties
-		ReachHelper.InitBlock(this);
+		BlockConfig.InitReacher(this);
 	}
 
 	public override void CreateGridItem(Vector3i position, BlockValue bv)

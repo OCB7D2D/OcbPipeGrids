@@ -15,13 +15,22 @@ namespace NodeManager
 
         public void AddFarmPlot(PlantationFarmPlot plot)
         {
-            Log.Warning("Add composter {0}", plot);
+            Log.Warning("Add FarmPlot {0}", plot);
             FarmPlots.Add(plot.WorldPos, plot);
+            ReachHelper.SearchLinks(plot, Composters,
+                ComposterToSoilReach);
         }
 
-        public bool RemoveFarmPlot(PlantationFarmPlot plant)
+        public void RemoveFarmPlot(PlantationFarmPlot plot)
         {
-            return FarmPlots.RemoveAt(plant.WorldPos);
+            Log.Out("Remove Farm plot called");
+            // Make sure to unregister us from links
+            foreach (var node in plot.Composters)
+                node.FarmPlots.Remove(plot);
+            // Clear our links
+            plot.Composters.Clear();
+            // Remove from KD tree
+            FarmPlots.RemoveAt(plot.WorldPos);
         }
 
     }

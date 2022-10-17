@@ -11,19 +11,6 @@ namespace NodeManager
 
     public static class ReachHelper
     {
-        public static void InitBlock(IReacherBlock block)
-        {
-            var properties = block.IBLK.BLK.Properties;
-            if (properties.Contains("BlockReach")) block.BlockReach =
-                Vector3i.Parse(properties.GetString("BlockReach"));
-            if (properties.Contains("ReachOffset")) block.ReachOffset =
-                Vector3i.Parse(properties.GetString("ReachOffset"));
-            if (properties.Contains("BoundHelperColor")) block.BoundHelperColor =
-                StringParsers.ParseColor32(properties.GetString("BoundHelperColor"));
-            if (properties.Contains("ReachHelperColor")) block.ReachHelperColor =
-                StringParsers.ParseColor32(properties.GetString("ReachHelperColor"));
-        }
-
 
         // The most simple case where we have a static radius
         // We simply add everything that is within the radius
@@ -56,21 +43,22 @@ namespace NodeManager
                 where T : IReacher where M : IMetric
         {
             Tuple<Vector3i, T>[] items = others.RadialSearch(self.WorldPos, reach, 255,
-                (Tuple<Vector3i, T> kv, int dist) => BlockHelper.IsInReach(self.WorldPos, kv));
+                (Tuple<Vector3i, T> kv, int dist) => kv.Item2.IsInReach(self.WorldPos));
             foreach (Tuple<Vector3i, T> kv in items) self.AddLink(kv.Item2);
         }
 
         public static bool IsInReach(IReacher reacher, Vector3i target)
         {
-            Log.Out("Check in reach for {0} {1}", reacher, reacher?.IBLK);
+            //Log.Out("Check in reach for {0} {1}", reacher, reacher?.IBLK);
+            IReacherBlock BLOCK = reacher.RBLK;
             Vector3i offset = target - reacher.WorldPos;
             Log.Out("Check if in reach {0}", offset);
             offset = FullRotation.InvRotate(reacher.Rotation, offset);
-            offset -= reacher.ReachOffset; // Adjust in our space
-            Log.Out("   local reach {0} with {1}", offset, reacher.BlockReach);
+            offset -= BLOCK.ReachOffset; // Adjust in our space
+            Log.Out("   local reach {0} with {1}", offset, BLOCK.BlockReach);
             // Get settings for reachable area
             Vector3i dim = reacher.Dimensions;
-            Vector3i reach = reacher.BlockReach;
+            Vector3i reach = BLOCK.BlockReach;
             Log.Out("Has Dim {0} plus {1}", dim, reach);
             // Calculate lower and upper boundary
             Vector3i max = reach + new Vector3i(

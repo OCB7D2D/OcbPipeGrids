@@ -93,7 +93,9 @@ namespace NodeManager
                 }
                 Timer.Stop();
                 if (Timer.ElapsedMilliseconds > 2)
-                    Log.Out("MS elapsed: {0}", Timer.ElapsedMilliseconds);
+                    Log.Out("MS elapsed: {0} (Schedules: {1})",
+                        Timer.ElapsedMilliseconds,
+                        Manager.Count);
                 Thread.Sleep(25);
             }
             Manager.SaveData();

@@ -64,6 +64,31 @@ public class OcbPipeGrids : IModApi
 		NodeManagerInterface.Instance.Update();
     }
 
+	[HarmonyPatch(typeof(BlockPlacement))]
+	[HarmonyPatch("supports45DegreeRotations")]
+	public class supports45DegreeRotations
+	{
+		static void Postfix(BlockValue _bv, ref bool __result)
+		{
+			Block block = _bv.Block;
+			if (block is IRotationLimitedBlock)
+            {
+				__result = (block.AllowedRotations & EBlockRotationClasses.Basic45) > 0;
+				Log.Out("Support 45 {0} {1}", __result, block.shape);
+			}
+
+
+
+			// Log.Out("+++++++++ Enable Particle and register it");
+			// Create the instance and start it
+			// Will make sure to only create server
+			// and client parts only when necessary 
+			// Log.Warning("Added Ticker At {0}",
+			// 	_wbte.scheduledTime);
+			// NodeManagerInterface.Instance.Init();
+		}
+	}
+
 
 	[HarmonyPatch(typeof(OriginParticles))]
 	[HarmonyPatch("OnEnable")]
@@ -75,7 +100,7 @@ public class OcbPipeGrids : IModApi
 
 
 
-			Log.Out("+++++++++ Enable Particle and register it");
+			// Log.Out("+++++++++ Enable Particle and register it");
 			// Create the instance and start it
 			// Will make sure to only create server
 			// and client parts only when necessary 

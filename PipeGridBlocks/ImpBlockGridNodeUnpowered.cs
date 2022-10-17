@@ -20,7 +20,7 @@ public abstract class ImpBlockGridNodeUnpowered : BlockRemote, IBlockConnection
 		base.Init();
 		// Call helper implementation
 		// Parses `IBlockPipeConnection`
-		PipeBlockHelper.InitBlock(this);
+		BlockConfig.InitConnection(this);
 	}
 
 	// *******************************************************

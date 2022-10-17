@@ -2,8 +2,18 @@
 // All other block will probably want to inherit from this
 using NodeManager;
 
-public class BlockPipeConnection : ImpBlockGridNodeUnpowered
+public interface IRotationLimitedBlock { }
+
+public class BlockPipeConnection : ImpBlockGridNodeUnpowered, IRotationLimitedBlock
 {
+	public override void Init()
+    {
+        base.Init();
+		// Only allow simple rotations (avoid code errors)
+		// AllowedRotations = EBlockRotationClasses.No45;
+		// AllowedRotations &= ~EBlockRotationClasses.Advanced;
+	}
+
 	public override void CreateGridItem(Vector3i position, BlockValue bv) 
 	{
 		var action = new ActionAddConnection();

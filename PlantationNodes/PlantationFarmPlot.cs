@@ -8,12 +8,29 @@ namespace NodeManager
     public class PlantationFarmPlot : PipeReservoir, IFarmPlot
     {
 
-        public IPlant Plant { get; set; } = null;
-        public byte CurrentSunLight { get; set; } = 0;
+        //########################################################
+        // Config settings (move to block)
+        //########################################################
+
+        // Ideally we could inherit from PipePump to pass the
+        // block class further down, but it seems not easy.
+        new readonly BlockPlantationFarmPlot BLOCK;
+
+        //########################################################
+        // Setup for node manager implementation
+        //########################################################
 
         public override ulong NextTick => 5;
 
         public override uint StorageID => 10;
+
+        //########################################################
+        // Custom Data Attributes for Node
+        //########################################################
+
+        public IPlant Plant { get; set; } = null;
+
+        public byte CurrentSunLight { get; set; } = 0;
 
         public float CurrentRain { get; set; } = 0;
 
@@ -21,16 +38,26 @@ namespace NodeManager
 
         public float SoilState { get; set; } = 1f;
 
-        public HashSet<IComposter> Composters { get; } = new HashSet<IComposter>();
+        //########################################################
+        // Cross references setup by manager
+        //########################################################
+
+        public HashSet<IComposter> Composters { get; }
+            = new HashSet<IComposter>();
 
         public void AddLink(IComposter composter)
         {
             composter.FarmPlots.Add(this);
         }
 
+        //########################################################
+        // Implementation for persistence and data exchange
+        //########################################################
+
         public PlantationFarmPlot(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
+            GetBlock(out BLOCK);
         }
 
         public PlantationFarmPlot(BinaryReader br)
@@ -38,22 +65,20 @@ namespace NodeManager
         {
             WaterState = br.ReadSingle();
             SoilState = br.ReadSingle();
+            GetBlock(out BLOCK);
         }
 
         public override void Write(BinaryWriter bw)
         {
-            // Write base data first
             base.Write(bw);
-            // Store additional data
             bw.Write(WaterState);
             bw.Write(SoilState);
         }
 
-        public override string GetCustomDescription()
-        {
-            return string.Format("Soil: {0:.00}, Water: {1:.00}\n{2}",
-                SoilState, WaterState, base.GetCustomDescription());
-        }
+        //########################################################
+        // Implementation to integrate with manager
+        // Setup data to allow queries where needed
+        //########################################################
 
         protected override void OnManagerAttached(NodeManager manager)
         {
@@ -65,39 +90,59 @@ namespace NodeManager
             manager?.AddFarmPlot(this);
         }
 
+        //########################################################
+        //########################################################
+
+        public override string GetCustomDescription()
+        {
+            return string.Format("Soil: {0:.00}, Water: {1:.00}\n{2}",
+                SoilState, WaterState, base.GetCustomDescription());
+        }
+
+        //########################################################
+        //########################################################
+
         public override bool Tick(ulong delta)
         {
-
-            var factor = delta / 100f;
-
-            if (Manager == null)
+            // Abort ticking if Manager is null
+            if (!base.Tick(delta)) return false;
+            if (float.IsNaN(SoilState)) SoilState = 0;
+            if (float.IsNaN(WaterState)) WaterState = 0;
+            // We are ticked by plants if any is there
+            // Otherwise tick ourself to fill slowly
+            if (Plant == null)
             {
-                Log.Out("No manager");
-                return true;
+                // Log.Out("Ticking water for soil only");
+                // Consume water to keep and improve water state
+                TickWater(delta, BLOCK.WaterMaintenance);
+                // Consume compost to keep and improve soil state
+                TickSoil(delta, BLOCK.SoilMaintenance);
             }
-            if (!base.Tick(delta))
-                return false;
-
-
-            var chest = Manager.GetChest(WorldPos);
-            if (chest == null) {
-                return true;
-            }
-            var action = new ExecuteChestModification();
-            for (int i = 0; i < chest.Length; i++)
-            {
-                if (chest[i].count <= 0) continue;
-                var ic = chest[i]?.itemValue?.ItemClass;
-                if (ic?.MadeOfMaterial?.ForgeCategory == "plants")
-                {
-                    //GrowProgress += 1f * factor;
-                    action.AddChange(chest[i]?.itemValue, -1);
-                }
-            }
-            action.Setup(WorldPos);
-            Manager.ToMainThread.Enqueue(action);
+            // Keep ticking
             return true;
         }
+
+        //########################################################
+        //########################################################
+
+        public void TickWater(ulong delta,
+           MaintenanceOptions options)
+        {
+            WaterState = PlantHelper.ConsumeFactor(delta,
+                this, options, WaterState,
+                BLOCK.WaterRange, 10f);
+        }
+
+        public void TickSoil(ulong delta,
+            MaintenanceOptions options)
+        {
+            SoilState = PlantHelper.TickFactor(delta,
+                Composters, options, SoilState,
+                BLOCK.SoilRange, 3f);
+        }
+
+        //########################################################
+        //########################################################
 
     }
 }

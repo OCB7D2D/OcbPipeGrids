@@ -19,11 +19,14 @@ namespace NodeManager
 
         public IBlockNode IBLK => BLOCK;
 
+        public virtual void ParseBlockConfig() { }
+
         protected NodeBlock(BinaryReader br)
             : base(br)
         {
             BV.rawData = br.ReadUInt32();
             GetBlock(out BLOCK);
+            ParseBlockConfig();
         }
 
         protected NodeBlock(Vector3i position, BlockValue bv)
@@ -31,6 +34,7 @@ namespace NodeManager
         {
             BV.rawData = bv.rawData;
             GetBlock(out BLOCK);
+            ParseBlockConfig();
         }
 
         public override void Write(BinaryWriter bw)

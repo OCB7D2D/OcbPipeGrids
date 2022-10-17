@@ -7,7 +7,7 @@ namespace NodeManager
 {
     public class PipeReservoir : PipeConnection, IPoweredNode
     {
-        public float MaxFillState => 150f;
+        public float MaxFillState = 150f;
 
         public float FillState { get; set; } = 0f;
 
@@ -21,11 +21,17 @@ namespace NodeManager
 
         public bool IsPowered { get; set; } = true;
 
-        public PipeReservoir(Vector3i position, BlockValue bv)
-            : base(position, bv)
+        public override void ParseBlockConfig()
         {
             if (BV.Block.Properties.Contains("FluidType")) FluidType =
                 ushort.Parse(BV.Block.Properties.GetString("FluidType"));
+            if (BV.Block.Properties.Contains("MaxFillState")) MaxFillState =
+                float.Parse(BV.Block.Properties.GetString("MaxFillState"));
+        }
+
+        public PipeReservoir(Vector3i position, BlockValue bv)
+            : base(position, bv)
+        {
             //if (BV.Block.Properties.Contains("IsPowered")) IsPowered =
             //    bool.Parse(BV.Block.Properties.GetString("IsPowered"));
         }
@@ -72,6 +78,8 @@ namespace NodeManager
         {
             base.Tick(delta);
 
+            if (float.IsNaN(FillState)) FillState = 0;
+
             if (!IsPowered) return true;
             // First need to be filled a little
             // Happens at source or when filled
@@ -105,8 +113,8 @@ namespace NodeManager
             });
 
             // Calculate what the wanted level would be
-            float wanted = levels / reservoirs.Count;
-            wanted = System.Math.Min(MaxFillState, wanted);
+            float average = levels / reservoirs.Count;
+            average = System.Math.Min(MaxFillState, average);
 
             // Log.Out("Found {0} Reservoirs with avg level {1}",
             //     reservoirs.Count, wanted);
@@ -119,17 +127,20 @@ namespace NodeManager
             foreach (var reservoir in reservoirs)
             {
                 // Either take or push fluid to node
-                if (reservoir.FillState > wanted)
+                if (reservoir.FillState > average)
                 {
                     intake.Add(reservoir);
-                    intakes += reservoir.FillState - wanted;
+                    intakes += reservoir.FillState - average;
                 }
-                else if (reservoir.FillState < wanted)
+                else if (reservoir.FillState < average)
                 {
                     outtake.Add(reservoir);
-                    outtakes += wanted - reservoir.FillState;
+                    outtakes += average - reservoir.FillState;
                 }
             }
+
+            if (intakes == 0) return true;
+            if (outtakes == 0) return true;
 
             // Log.Out("Have {0}/{1} intake and {2}/{3} outtake",
             //     intakes, intake.Count, outtakes, outtake.Count);
@@ -140,11 +151,29 @@ namespace NodeManager
 
             // Log.Out("Pumping at {0}", pump);
 
+            float taken = 0;
+            float out_factor = pump / outtakes;
+            foreach (var into in outtake)
+            {
+                float needed = average - into.FillState;
+                float wanting = into.MaxFillState - into.FillState;
+                if (needed > wanting) needed = wanting;
+                into.FillState += needed * out_factor;
+                into.FillState = System.Math.Min(
+                    into.MaxFillState, into.FillState);
+                if (into.FluidType != FluidType)
+                    into.SetFluidType(FluidType);
+                taken += needed * out_factor;
+                // Log.Out(" adding by {0}", needed * out_factor);
+            }
+
             // Check if we have enough to pump
             float in_factor = pump / intakes;
+            // Adjust to actual intake
+            in_factor *= taken / outtakes;
             foreach (var from in intake)
             {
-                float available = from.FillState - wanted;
+                float available = from.FillState - average;
                 from.FillState -= available * in_factor;
                 from.FillState = System.Math.Min(
                     from.MaxFillState, from.FillState);
@@ -152,21 +181,12 @@ namespace NodeManager
             }
 
 
-            float out_factor = pump / outtakes;
-            foreach (var into in outtake)
-            {
-                float needed = wanted - into.FillState;
-                into.FillState += needed * out_factor;
-                into.FillState = System.Math.Min(
-                    into.MaxFillState, into.FillState);
-                if (into.FluidType != FluidType)
-                    into.SetFluidType(FluidType);
-                // Log.Out(" adding by {0}", needed * out_factor);
-            }
 
             // Only reduce to max amount after pumping
             FillState = System.Math.Min(
                 MaxFillState, FillState);
+
+            if (FillState < 0) FillState = 0;
 
             return true;
         }

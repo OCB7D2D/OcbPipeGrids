@@ -9,6 +9,7 @@ namespace NodeManager
 {
     class PlantHelper
     {
+
         public static float ConsumeMurkyWater(ulong delta,
             HashSet<IWell> wells, float factor)
         {
@@ -68,30 +69,31 @@ namespace NodeManager
         }
 
 
-        internal static float TickFactor<T>(ulong delta, HashSet<T> providers, float WaterImprovementFactor,
-            float WaterMaintenanceFactor, float WaterMaintenanceExponent, float min, float max, float WaterState)
+        internal static float TickFactor<T>(ulong delta, HashSet<T> providers,
+            MaintenanceOptions options, float state,
+            RangeOptions range, float speed = 1f)
                 where T : IFilled
         {
 
             // We don't want to have this factor linear
             // Reaching perfect soil needs exponential care
-            float cost = Mathf.Pow(WaterState,
-                WaterMaintenanceExponent);
+            float cost = Mathf.Pow(state,
+                options.MaintenanceExponent);
             // Multiply cost with time factors
-            cost *= WaterMaintenanceFactor * delta;
+            cost *= options.MaintenanceFactor * delta;
 
             // Take maintenance
-            WaterState -= cost;
+            state -= cost;
 
-            Log.Out("Costing {0}", cost);
+            // Log.Out("Costing {0}", cost);
 
             // Note: might be always true?
-            if (WaterState < max)
+            if (state < range.Max)
             {
                 // Get the soil required to make us perfect
-                float required = max - WaterState;
+                float required = range.Max - state;
                 // Apply time time factors to prolonge improvements
-                float wanted = required * delta * WaterImprovementFactor;
+                float wanted = required * delta * options.ImprovementFactor * speed;
                 // Add maintenance costs
                 wanted += cost;
 
@@ -101,16 +103,49 @@ namespace NodeManager
                 wanted = Mathf.Min(wanted, required);
                 amount = Mathf.Min(amount, required);
                 // Try to consume `amount` from wells
-                WaterState += ConsumeFrom(providers, amount, wanted);
+                state += ConsumeFrom(providers, amount, wanted);
             }
 
             // consumedWater += FarmLand.TickWater(delta,
             //     MaintenanceCost, ref WaterState);
-            if (WaterState < min) return min;
-            else if (WaterState > max) return max;
-            else return WaterState;
-
+            if (state < range.Min) return range.Min;
+            else if (state > range.Max) return range.Max;
+            else return state;
         }
 
+        internal static float ConsumeFactor(ulong delta, IFilled source,
+            MaintenanceOptions options, float state,
+            RangeOptions range, float speed = 1f)
+        {
+            // We don't want to have this factor linear
+            // Reaching perfect soil needs exponential care
+            float cost = Mathf.Pow(state,
+                options.MaintenanceExponent);
+            // Multiply cost with time factors
+            cost *= options.MaintenanceFactor * delta;
+
+            // Take maintenance
+            state -= cost;
+
+            // Note: might be always true?
+            if (state < range.Max)
+            {
+                // Get the soil required to make us perfect
+                float required = range.Max - state;
+                // Apply time time factors to prolonge improvements
+                float wanted = required * delta * options.ImprovementFactor * speed;
+                // Add maintenance costs
+                wanted += cost;
+                // Try to consume `wanted` amount
+                var amount = Math.Min(source.FillState,
+                    Mathf.Min(wanted, required));
+                source.FillState -= amount;
+                state += amount;
+            }
+
+            if (state < range.Min) return range.Min;
+            else if (state > range.Max) return range.Max;
+            else return state;
+        }
     }
 }

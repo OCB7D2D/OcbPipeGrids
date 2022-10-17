@@ -2,84 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ImpBlockChest : BlockSecureLoot, ILootBlock, ITileEntityChangedListener
-{
-	Block IBlockNode.BLK => this;
-
-	public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);
-
-	public abstract void RemoveGridItem(Vector3i blockPos);
-
-	public override void OnBlockAdded(
-		WorldBase world, Chunk chunk,
-		Vector3i pos, BlockValue bv)
-	{
-		base.OnBlockAdded(world, chunk, pos, bv);
-		if (!NodeManagerInterface.HasServer) return;
-		if (world.GetTileEntity(chunk.ClrIdx, pos) is
-			TileEntityLootContainer container)
-		{
-			if (!container.listeners.Contains(this))
-			{
-				Log.Out("++++ Added listener");
-				container.listeners.Add(this);
-			}
-        }
-	}
-
-	public override void OnBlockRemoved(
-		WorldBase world, Chunk chunk,
-		Vector3i pos, BlockValue bv)
-	{
-		base.OnBlockRemoved(world, chunk, pos, bv);
-		if (!NodeManagerInterface.HasServer) return;
-		if (bv.isair || bv.ischild) return;
-		if (world.GetTileEntity(chunk.ClrIdx, pos) is
-			TileEntityLootContainer container)
-		{
-			Log.Out("---- Removed listener");
-			container.listeners.Remove(this);
-		}
-	}
-
-    public override void OnBlockLoaded(
-		WorldBase world, int clrIdx,
-		Vector3i pos, BlockValue bv)
-    {
-        base.OnBlockLoaded(world, clrIdx, pos, bv);
-		if (world.GetTileEntity(clrIdx, pos) is
-			TileEntityLootContainer container)
-		{
-			if (!container.listeners.Contains(this))
-			{
-				Log.Out("++++ Added listener");
-				container.listeners.Add(this);
-			}
-		}
-	}
-
-	public override void OnBlockUnloaded(
-		WorldBase world, int clrIdx,
-		Vector3i pos, BlockValue bv)
-    {
-        base.OnBlockUnloaded(world, clrIdx, pos, bv);
-		if (world.GetTileEntity(clrIdx, pos) is
-			TileEntityLootContainer container)
-		{
-			Log.Out("---- Removed listener");
-			container.listeners.Remove(this);
-		}
-	}
-
-	public void OnTileEntityChanged(TileEntity te, int dataObject)
-    {
-		Log.Warning("Tile Entity has changed {0} => {1}", te, dataObject);
-		if (!(te is TileEntityLootContainer container)) return;
-		var action = new ActionUpdateChest();
-		action.Setup(te.ToWorldPos(), container.GetItems());
-		NodeManagerInterface.Instance.ToWorker.Enqueue(action);
-	}
-}
 
 public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherBlock
 {
@@ -95,6 +17,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 	// So the manager has a copy of all items in chest!?
 
 	public IBlockNode IBLK => this;
+	public IReacherBlock RBLK => this;
 
 	public Vector3i BlockReach { get; set; } = Vector3i.zero;
 	public Vector3i ReachOffset { get; set; } = Vector3i.zero;
@@ -105,7 +28,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
     {
         base.Init();
 		// Parse block XML properties
-		ReachHelper.InitBlock(this);
+		BlockConfig.InitReacher(this);
 	}
 
 	public BlockComposter()

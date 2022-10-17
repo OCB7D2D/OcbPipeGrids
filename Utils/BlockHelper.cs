@@ -16,6 +16,12 @@ namespace NodeManager
             return world.GetChunkFromWorldPos(position) != null;
         }
 
+        public static float ParseFloat(DynamicProperties properties, string name, float def, float divide = 1)
+        {
+            properties.ParseFloat(name, ref def);
+            return def / divide;
+        }
+
         public static bool IsLoaded(Vector3i position)
         {
             if (GameManager.Instance == null) return false;
@@ -32,13 +38,13 @@ namespace NodeManager
             ScheduledTicksSorted = new HarmonyFieldProxy<SortedList>(
                 typeof(WorldBlockTicker), "scheduledTicksSorted");
 
-        internal static bool IsInReach<T>(Vector3i center, Tuple<Vector3i, T> kv) where T : IReacher
-            => IsInReach(center, kv.Item1, kv.Item2.BlockReach);
-        
-        internal static bool IsInReach(Vector3i center, Vector3i target, Vector3i dist)
-            => Math.Abs(center.x - target.x) <= dist.x
-            || Math.Abs(center.y - target.y) <= dist.y
-            || Math.Abs(center.z - target.z) <= dist.z;
+        //public static bool IsInReach<T>(Vector3i center, Tuple<Vector3i, T> kv) where T : IReacher
+        //    => IsInReach(center, kv.Item1, kv.Item2.RBLK.BlockReach);
+        //
+        //public static bool IsInReach(Vector3i center, Vector3i target, Vector3i dist)
+        //    => Math.Abs(center.x - target.x) <= dist.x
+        //    || Math.Abs(center.y - target.y) <= dist.y
+        //    || Math.Abs(center.z - target.z) <= dist.z;
 
         static readonly HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>
             ScheduledTicksDict = new HarmonyFieldProxy<Dictionary<int, WorldBlockTickerEntry>>(

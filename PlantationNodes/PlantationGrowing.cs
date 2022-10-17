@@ -13,9 +13,37 @@ namespace NodeManager
     public abstract class PlantationBase : NodeBlock<BlockPlantationGrowing>, IPlant
     {
 
-        // public HashSet<IWell> Wells { get; } = new HashSet<IWell>();
-        public HashSet<IPlant> Plants { get; } = new HashSet<IPlant>();
-        // public HashSet<IComposter> Composters { get; } = new HashSet<IComposter>();
+        public float HealthFactor { get; set; } = 6.75f;
+
+        public byte CurrentSunLight { get; set; } = 0;
+
+        public int Illness => BlockHelper.GetIllness(BV);
+
+        protected void OnHealthFactorChange()
+        {
+            HealthFactor = Math.Max(0, Math.Min(7, HealthFactor));
+            int illness = (int)(7 - HealthFactor); // round down
+            if (Illness == illness) return; // nothing changed
+            Log.Warning("Plant illness changed from {0} to {1}", Illness, illness);
+            var action = new ExecuteBlockChange();
+            BlockHelper.SetIllness(ref BV, illness);
+            action.Setup(WorldPos, BV);
+            Manager.ToMainThread.Enqueue(action);
+        }
+
+        public void ChangeHealth(int change)
+        {
+            HealthFactor += change;
+            OnHealthFactorChange();
+        }
+            // SetIllness(BlockHelper.GetIllness(BV) + change);
+
+        //########################################################
+        // Cross references setup by manager
+        //########################################################
+
+        public HashSet<IPlant> Plants { get; }
+            = new HashSet<IPlant>();
 
         public void AddLink(IPlant plant)
         {
@@ -23,30 +51,27 @@ namespace NodeManager
             plant.Plants.Add(this);
         }
 
-
-        public float HealthFactor { get; set; } = 1f;
-
-        public byte CurrentSunLight { get; set; } = 0;
-
-        public int Illness => BlockHelper.GetIllness(BV);
+        //########################################################
+        // Implementation for persistence and data exchange
+        //########################################################
 
         public PlantationBase(Vector3i position, BlockValue bv)
-            : base(position, bv)
-        {
-        }
+            : base(position, bv) { }
 
         public PlantationBase(BinaryReader br)
-            : base(br)
-        {
-        }
+            : base(br) { }
 
+        //########################################################
+        //########################################################
     }
 
-        public class PlantationGrowing : PlantationBase
+    public class PlantationGrowing : PlantationBase
     {
 
 
-        public override ulong NextTick => 5;
+        public ulong Alive = 0;
+
+        public override ulong NextTick => 50;
 
         public override uint StorageID => 11;
 
@@ -66,12 +91,12 @@ namespace NodeManager
         public float MaxWaterState = 5.0f;
 
         public float SoilState =>
-            Reservoir != null ? 5f :
+            Reservoir != null ? Reservoir.SoilState :
             FarmLand != null ? FarmLand.SoilState :
             0f;
 
         public float WaterState =>
-            Reservoir != null ? 5f :
+            Reservoir != null ? Reservoir.WaterState :
             FarmLand != null ? FarmLand.WaterState :
             0f;
 
@@ -81,7 +106,19 @@ namespace NodeManager
         public float SickFactor = 0.01f;
 
         PlantationFarmLand land;
-        private PipeReservoir Reservoir;
+        PlantationFarmPlot plot;
+        private PlantationFarmPlot Reservoir
+        {
+            get => plot; set
+            {
+                if (plot != null)
+                    plot.Plant = null;
+                plot = value;
+                if (plot != null)
+                    plot.Plant = this;
+            }
+        }
+
         private PlantationFarmLand FarmLand
         {
             get => land; set
@@ -117,6 +154,8 @@ namespace NodeManager
         public PlantationGrowing(Vector3i position, BlockValue bv)
             : base(position, bv)
         {
+            HealthFactor = 6.5f - BlockHelper.GetIllness(bv);
+            HealthFactor = Mathf.Max(0f, Mathf.Min(7f, HealthFactor));
             UpdateIllnesCheck();
         }
 
@@ -129,6 +168,7 @@ namespace NodeManager
             CurrentSunLight = br.ReadByte();
             CurrentFertility = br.ReadByte();
             CurrentRain = br.ReadSingle();
+            Alive = br.ReadUInt64();
             UpdateIllnesCheck();
         }
 
@@ -143,13 +183,14 @@ namespace NodeManager
             bw.Write(CurrentSunLight);
             bw.Write(CurrentFertility);
             bw.Write(CurrentRain);
+            bw.Write(Alive);
             // bw.Write(Flags);
         }
 
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0:.00}\nWater: {1:.00}, Light: {2}\nFert: {3}, Rain: {4:.00}\nWells: {5}, Sick: {6}\nPlants: {7}, Reservoir: {8:.00}\nSoil: {9:.00}, Health: {10:.00}, Sick: {11:.00}\nComposters: {12}",
-                GrowProgress, WaterState, CurrentSunLight, CurrentFertility, CurrentRain, null, BV.meta2, Plants.Count, Reservoir?.FillState, SoilState, HealthFactor, SickFactor, null);
+            return string.Format("Plant Growing {0:0.00}/{5:0.00}h\nWater: {1:0.00}, Soil: {2:0.00}\nGrowth: {6:0.00}, Health: {4:0.00}\nPlants: {3}",
+                GrowProgress, WaterState, SoilState, Plants.Count, HealthFactor, Alive / 3000f, GrowFactor);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -165,7 +206,7 @@ namespace NodeManager
                 WorldPos + Vector3i.down,
                 out NodeBase node))
             {
-                Reservoir = node as PipeReservoir;
+                Reservoir = node as PlantationFarmPlot;
                 FarmLand = node as PlantationFarmLand;
             }
         }
@@ -177,7 +218,7 @@ namespace NodeManager
                 WorldPos + Vector3i.down,
                 out NodeBase node))
             {
-                Reservoir = node as PipeReservoir;
+                Reservoir = node as PlantationFarmPlot;
                 FarmLand = node as PlantationFarmLand;
             }
         }
@@ -187,6 +228,38 @@ namespace NodeManager
                 typeof(BlockPlantGrowing), "nextPlant");
 
         float NextIllnesCheck = 0f;
+
+        private void DoSicknessCheck2(ulong delta)
+        {
+            float sickness = 8f - HealthFactor / 4f;
+            // Check plants nearby to spread sickness
+            // Check our soil quality for sickness chance
+            foreach (var plant in Plants)
+            {
+                if (plant == this) Log.Error("Own plant in list");
+                // Consider close by plant more often than further away
+                var dx = Math.Abs(plant.WorldPos.x - WorldPos.x);
+                var dz = Math.Abs(plant.WorldPos.z - WorldPos.z);
+                // Euclidean might use too much performance?
+                float rnd = UnityEngine.Random.value * 5f;
+                float dist = dx * dx + dz * dz;
+                if (rnd * rnd < dist) continue;
+                sickness += 7f - plant.HealthFactor / 4f;
+                // considered += 1;
+            }
+
+            // Check if plant is randomly getting sick
+            if (UnityEngine.Random.value < sickness * delta * 0.01f / 1200f)
+            {
+                HealthFactor -= 0.0025f * delta;
+            }
+
+
+            HealthFactor = Mathf.Max(0f,
+                Mathf.Min(7f, HealthFactor));
+
+            OnHealthFactorChange();
+        }
 
         public void DoSicknessCheck(ulong delta)
         {
@@ -272,16 +345,7 @@ namespace NodeManager
 
             HealthFactor = Mathf.Max(0f,
                 Mathf.Min(7f, HealthFactor));
-            int illness = 7 - (int)HealthFactor;
-            if (Illness != illness)
-            {
-                Log.Warning("Plant illness changed from {0} to {1}",
-                    Illness, illness);
-                BlockHelper.SetIllness(ref BV, illness);
-                var action = new ExecuteBlockChange();
-                action.Setup(WorldPos, BV);
-                Manager.ToMainThread.Enqueue(action);
-            }
+            OnHealthFactorChange();
 
             // HealthFactor = Illness;
         }
@@ -294,14 +358,6 @@ namespace NodeManager
             waterFactor /= span;
             return waterFactor;
         }
-
-        float FarmLandWaterImprovementFactor = 0.001f / 1000f;
-        float FarmLandWaterMaintenanceFactor = 0.05f / 1000f;
-        float FarmLandWaterMaintenanceExponent = 2.35f;
-
-        float FarmLandSoilImprovementFactor = 0.001f / 1000f;
-        float FarmLandSoilMaintenanceFactor = 0.05f / 1000f;
-        float FarmLandSoilMaintenanceExponent = 2.35f;
 
         public void UpdateSoilAndWater(ulong delta)
         {
@@ -348,19 +404,15 @@ namespace NodeManager
                     WaterState = MaxWaterState;
                 */
 
+                Reservoir.TickWater(delta, BLOCK.WaterMaintenance);
+                Reservoir.TickSoil(delta, BLOCK.SoilMaintenance);
             }
             // Plants on ground can only get murky water for soil
             // Reason is that natural soil will make it murky again
             else if (FarmLand != null)
             {
-                FarmLand.TickWater(delta,
-                    FarmLandWaterImprovementFactor,
-                    FarmLandWaterMaintenanceFactor,
-                    FarmLandWaterMaintenanceExponent);
-                FarmLand.TickSoil(delta,
-                    FarmLandSoilImprovementFactor,
-                    FarmLandSoilMaintenanceFactor,
-                    FarmLandSoilMaintenanceExponent);
+                FarmLand.TickWater(delta, BLOCK.WaterMaintenance);
+                FarmLand.TickSoil(delta, BLOCK.SoilMaintenance);
             }
             else
             {
@@ -368,93 +420,69 @@ namespace NodeManager
             }
         }
 
-        public void DoSoilQualityCheck(ulong delta)
-        {
-            /*
-            float factor = delta / 50f;
-            // Log.Out("Delta is {0}", delta); // around 50?
-            if (Composters.Count > 0)
-            {
-                float wanting = MaxSoilFactor - SoilFactor;
-                if (wanting > 0.4f * factor) wanting = 0.4f * factor
-                        + 0.2f * Composters.Count * factor;
-                wanting /= Composters.Count;
-                float taken = 0f;
-                foreach (IComposter composter in Composters)
-                {
-                    var asd = composter as PlantationComposter;
-                    if (composter.FillState < wanting)
-                    {
-                        taken += composter.FillState;
-                        composter.FillState = 0;
-                    }
-                    else
-                    {
-                        composter.FillState -= wanting;
-                        taken += wanting;
-                    }
-                }
-                SoilFactor += taken - 0.01f * factor;
-            }
-            // Bring result into expected range
-            if (SoilFactor > MaxSoilFactor)
-                SoilFactor = MaxSoilFactor;
-            else if (SoilFactor < MinSoilFactor)
-                SoilFactor = MinSoilFactor;
-            */
-        }
+        private float GrowFactor = 1;
 
         public override bool Tick(ulong delta)
         {
-            //Log.Out("1Tick plant {0}", ID);
-            if (!base.Tick(delta))
-                return false;
-            //Log.Out("2Tick plant {0}", ID);
+            // Abort ticking if Manager is null
+            if (!base.Tick(delta)) return false;
 
-            // DoSoilQualityCheck(delta);
+            Alive += delta;
 
             UpdateSoilAndWater(delta);
 
-            DoSicknessCheck(delta);
+            DoSicknessCheck2(delta);
 
 
-            // HasWater = WaterFactor;
 
-            // float SoilGrowthFactor = 0.5f;
-            // float LightGrowthFactor = 0.2f;
-            // float WaterGrowthFactor = 0.3f;
+            // DoSicknessCheck(delta);
 
-            GrowProgress += WaterState * SoilState
-                / 60f * delta * CurrentSunLight;
+            var wf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.03f, 1.5f,
+                Mathf.InverseLerp(0.1f, 2f, WaterState)), 0.65f);
+            var sf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.03f, 1.75f,
+                Mathf.InverseLerp(0.3f, 5f, SoilState)), 0.25f);
+            var lf = Mathf.Pow(EasingFunction.EaseInOutQuad(0f, 1.75f,
+                Mathf.InverseLerp(5, 25, CurrentSunLight)), 0.75f);
 
+            var hf = Mathf.Pow(EasingFunction.EaseInOutQuad(0f, 1.25f,
+                Mathf.InverseLerp(0, 7, HealthFactor)), 0.75f);
+
+            var illness = Illness;
+
+            // Log.Out("Grow W {0}, S {1}, L {2} of {3} ==> {4} * {5}", wf, sf, lf, BLOCK.GrowthRate, wf * sf * lf, hf);
+
+            GrowFactor = Mathf.Pow(wf * sf * lf * hf, 0.85f);
+
+            GrowProgress += (GrowFactor * BLOCK.GrowthRate - BLOCK.GrowthMaintenanceFactor) * delta;
+            
             //Log.Out("Ticked {0} (loaded: {1}, progress: {2:0}%, light: {3})",
             //    GetBlock().GetBlockName(),
             //    GetIsLoaded(), GrowProgress * 100f, light);
             // if (GrowProgress < 1f) RegisterScheduled();
             // else GrowToNext(world, PlantManager.Instance);
-
-
+            
+            
             // Grow to next phase
-            if (GrowProgress * 0.001f > 100f)
+            if (GrowProgress > 100f)
             {
                 Log.Warning("Grow into {0}", FieldNextPlant.Get(BLOCK).Block.GetBlockName());
 
                 BlockValue next = FieldNextPlant.Get(BLOCK);
 
+
                 next.rotation = Rotation;
+                // Inherit Illness from parent
+                // Subtract a little on growth
+                BlockHelper.SetIllness(ref next,
+                    Math.Max(0, illness - 2));
                 var action = new ExecuteBlockChange();
                 action.Setup(WorldPos, next);
-                if (Manager == null)
-                {
-                    Log.Warning("Plant withouzt Manager");
-                    return false;
-                }
                 var manager = Manager; // Remember
                 Log.Out("Enqueue to manager {0}", Manager);
                 Manager.ToMainThread.Enqueue(action);
+                // This will reset Manager to null
                 Manager.RemoveManagedNode(WorldPos);
-                // AttachToManager(null);
-
+                /*
                 if (next.Block is BlockPlantGrowing)
                 {
                     // Create the next plant right away, in order to
@@ -468,153 +496,33 @@ namespace NodeManager
                     Log.Out("Create new Plant to grow");
                     new PlantationGrowing(WorldPos, next)
                     {
-                        //WaterState = WaterState,
                         CurrentRain = CurrentRain,
                         CurrentSunLight = CurrentSunLight,
-                        CurrentFertility = CurrentFertility
+                        CurrentFertility = CurrentFertility,
+                        HealthFactor = Mathf.Min(7f, HealthFactor + 2),
                     }
                     .AttachToManager(manager);
                 }
+                */
                 // if (next.Block is BlockPlantHarvestable)
                 // {
                 // }
-                else
-                {
-                    Log.Warning("|| Plant moved to final step");
-                }
+                //else
+                //{
+                //    Log.Warning("|| Plant moved to final step");
+                //}
 
 
 
                 return false;
             }
+            else if (GrowProgress < -20f)
+            {
+                // Wither the plant
+            }
             // else if next plant is harvestable
             return true;
         }
 
-
-
-        /*
-
-            internal void AddIrrigation(PipeIrrigation irrigation)
-            {
-                Irrigators.Add(irrigation);
-            }
-
-            internal void RemoveIrrigation(PipeIrrigation irrigation)
-            {
-                Irrigators.Remove(irrigation);
-            }
-
-
-            public override void Tick(ulong delta)
-            {
-                base.Tick(delta);
-
-                // Log.Out("Ticked the well");
-                if (WaterAvailable >= MaxWaterLevel) return;
-
-                // Check if chunk is loaded to update light level
-                // This determines if rain fall can reach the well
-                //if (world.GetChunkFromWorldPos(WorldPos) is Chunk chunk)
-                //{
-                //    // Once chunk is unloaded this stays constant
-                //    // Assuming nobody is able to change anything
-                //    SunLight = chunk.GetLight(
-                //        WorldPos.x, WorldPos.y, WorldPos.z,
-                //        Chunk.LIGHT_TYPE.SUN);
-                //}
-
-                // Fill well from "free sky"
-                float fill = FromFreeSky *
-                    // Quadratic fall-off
-                    CurrentSunLight * CurrentSunLight / 225f;
-                // Some free for all
-                fill += FromGround;
-
-                // Outside effects that add water
-                // E.g. weather at loaded blocks
-                fill += AddWater;
-                AddWater /= 2;
-
-                // Add Biome weather bonus if loaded
-                //if (BlockHelper.IsLoaded(WorldPos))
-                //{
-                //    var weather = WeatherManager.Instance;
-                //    fill += FromWetSurface * weather.GetCurrentWetSurfaceValue();
-                //    fill += FromSnowfall * weather.GetCurrentSnowfallValue();
-                //    fill += FromRainfall * weather.GetCurrentRainfallValue();
-                //}
-
-                // Add factor now
-                fill *= delta;
-
-                // Fill well from water outputs
-                // ToDo: Only fill once per grid?
-                foreach (var irrigator in Irrigators)
-                {
-                    if (irrigator == null) continue;
-                    if (!irrigator.IsPowered) continue;
-                    float take = FromIrrigation * delta;
-                    take = System.Math.Min(take, irrigator.FillState);
-                    irrigator.FillState -= take;
-                    fill += take;
-                }
-
-                // Add water to well
-                FillWater(fill);
-
-            }
-
-            public bool ConsumeWater(float amount)
-            {
-                if (WaterAvailable < amount) return false;
-                WaterAvailable -= amount;
-                return true;
-            }
-
-            public void FillWater(float amount)
-            {
-                if (amount <= 0) return;
-                if (WaterAvailable > MaxWaterLevel)
-                {
-                    WaterAvailable = MaxWaterLevel;
-                    // UpdateWaterLevel();
-                }
-                else if (WaterAvailable < MaxWaterLevel)
-                {
-                    WaterAvailable += amount;
-                    if (WaterAvailable > MaxWaterLevel)
-                        WaterAvailable = MaxWaterLevel;
-                    // UpdateWaterLevel();
-                }
-            }
-
-            public static int DivideAndRoundUp(int divident, int divisor)
-            {
-                int result = (divident / divisor);
-                if (divident % divisor != 0) result++;
-                return result;
-            }
-
-            internal int ExchangeWater(int count, int factor)
-            {
-                if (factor < 0)
-                {
-                    float req = WaterAvailable - MaxWaterLevel;
-                    int buckets = (int)Mathf.Ceil(req / factor);
-                    buckets = MathUtils.Min(count, buckets);
-                    FillWater(buckets * -factor);
-                    return buckets;
-                }
-                else if (factor > 0)
-                {
-                    int buckets = (int)(WaterAvailable / factor);
-                    buckets = MathUtils.Min(count, buckets);
-                    ConsumeWater(buckets * factor);
-                    return buckets;
-                }
-                return 0;
-            }
-            */
     }
 }

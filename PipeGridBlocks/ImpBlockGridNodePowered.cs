@@ -22,7 +22,7 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 		base.Init();
 		// Call helper implementation
 		// Parses `IBlockPipeConnection`
-		PipeBlockHelper.InitBlock(this);
+		BlockConfig.InitConnection(this);
 	}
 
 	// *******************************************************

@@ -9,6 +9,8 @@ namespace NodeManager
     public class PipeIrrigation : PipePump, IPoweredNode, IIrrigator
     {
 
+        public IReacherBlock RBLK => BLOCK;
+
         //########################################################
         // Config settings from block
         //########################################################
