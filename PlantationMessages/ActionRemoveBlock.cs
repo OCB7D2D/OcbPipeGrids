@@ -16,14 +16,15 @@
         protected override void SetupNetPkg(NetPkgActionRemovePlantGrowing pkg) => pkg.Setup(this);
     }
 
+    public class ActionRemoveSprinkler : BaseActionRemoveBlock<NetPkgActionRemoveSprinkler>
+    {
+        protected override void SetupNetPkg(NetPkgActionRemoveSprinkler pkg) => pkg.Setup(this);
+    }
+
     public class ActionRemoveComposter : BaseActionRemoveChest<NetPkgActionRemoveComposter>
     {
         protected override void SetupNetPkg(NetPkgActionRemoveComposter pkg) => pkg.Setup(this);
     }
 
-    public class ActionRemoveSprinkler : BaseActionRemoveChest<NetPkgActionRemoveSprinkler>
-    {
-        protected override void SetupNetPkg(NetPkgActionRemoveSprinkler pkg) => pkg.Setup(this);
-    }
 
 }

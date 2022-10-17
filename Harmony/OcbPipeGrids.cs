@@ -26,23 +26,20 @@ public class OcbPipeGrids : IModApi
 
 		ReflectionHelpers.FindTypesImplementingBase(typeof(NetPackage), (System.Action<System.Type>)(_type => Log.Out("Package {0} vs {1}", _type.Name, _type)));
 
-        NodeManager.NodeManager.RegisterFactory(1, (br) => new PipeConnection(br));
-        NodeManager.NodeManager.RegisterFactory(2, (br) => new PipePump(br));
-        NodeManager.NodeManager.RegisterFactory(3, (br) => new PipeIrrigation(br));
-        NodeManager.NodeManager.RegisterFactory(4, (br) => new PipeSource(br));
-
-		NodeManager.NodeManager.RegisterFactory(5, (br) => new PipeWaterBoiler(br));
-		NodeManager.NodeManager.RegisterFactory(6, (br) => new PipeFluidConverter(br));
-		NodeManager.NodeManager.RegisterFactory(7, (br) => new PipeReservoir(br));
-
-		NodeManager.NodeManager.RegisterFactory(13, (br) => new PipeFluidInjector(br));
-
-		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br));
-
-		NodeManager.NodeManager.RegisterFactory(8, (br) => new PlantationFarmLand(br));
-		NodeManager.NodeManager.RegisterFactory(10, (br) => new PlantationFarmPlot(br));
-		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br));
-		NodeManager.NodeManager.RegisterFactory(12, (br) => new PlantationComposter(br));
+		NodeManager.NodeManager.RegisterFactory(1, (br) => new PipeConnection(br), (pos, bv) => new PipeConnection(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(2, (br) => new PipePump(br), (pos, bv) => new PipePump(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(3, (br) => new PipeIrrigation(br), (pos, bv) => new PipeIrrigation(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(4, (br) => new PipeSource(br), (pos, bv) => new PipeSource(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(5, (br) => new PipeWaterBoiler(br), (pos, bv) => new PipeWaterBoiler(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(6, (br) => new PipeFluidConverter(br), (pos, bv) => new PipeFluidConverter(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(7, (br) => new PipeReservoir(br), (pos, bv) => new PipeReservoir(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(13, (br) => new PipeFluidInjector(br), (pos, bv) => new PipeFluidInjector(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(14, (br) => new PlantationSprinkler(br), (pos, bv) => new PlantationSprinkler(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(9, (br) => new PipeWell(br), (pos, bv) => new PipeWell(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(8, (br) => new PlantationFarmLand(br), (pos, bv) => new PlantationFarmLand(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(10, (br) => new PlantationFarmPlot(br), (pos, bv) => new PlantationFarmPlot(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br), (pos, bv) => new PlantationGrowing(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(12, (br) => new PlantationComposter(br), (pos, bv) => new PlantationComposter(pos, bv));
 
 	}
 

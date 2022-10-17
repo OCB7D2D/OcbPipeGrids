@@ -1,6 +1,11 @@
 ﻿namespace NodeManager
 {
 
+    public class ActionRemoveBlock : BaseActionRemoveBlock<NetPkgActionRemoveBlock>
+    {
+        protected override void SetupNetPkg(NetPkgActionRemoveBlock pkg) => pkg.Setup(this);
+    }
+
     public class ActionRemoveConnection : BaseActionRemoveBlock<NetPkgActionRemoveConnection>
     {
         protected override void SetupNetPkg(NetPkgActionRemoveConnection pkg) => pkg.Setup(this);

@@ -97,6 +97,7 @@
     <Compile Include="PlantationNodes\ImpBlockChest.cs" />
     <Content Include="PlantationNodes\PlantationGrowing - Copy.css" />
     <Compile Include="PlantationNodes\PlantationSprinkler.cs" />
+    <Compile Include="Settings\Constants.cs" />
     <Compile Include="Utils\asd.cs" />
     <Compile Include="Utils\BlockConfig.cs" />
     <Compile Include="Utils\EasingFunctions.cs" />

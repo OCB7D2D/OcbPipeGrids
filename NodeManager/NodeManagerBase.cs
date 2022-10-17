@@ -22,16 +22,33 @@ namespace NodeManager
         //#####################################################################
 
         public static readonly Dictionary<uint, Func<BinaryReader, NodeBase>>
-            Factory = new Dictionary<uint, Func<BinaryReader, NodeBase>>();
+            StorageFactory = new Dictionary<uint, Func<BinaryReader, NodeBase>>();
+        public static readonly Dictionary<uint, Func<Vector3i, BlockValue, NodeBase>>
+            CreatorFactory = new Dictionary<uint, Func<Vector3i, BlockValue, NodeBase>>();
 
-        public static void RegisterFactory(uint id, Func<BinaryReader, NodeBase> creator)
+        public static void RegisterFactory(uint id,
+            Func<BinaryReader, NodeBase> stored,
+            Func<Vector3i, BlockValue, NodeBase> created)
         {
-            Factory.Add(id, creator);
+            StorageFactory.Add(id, stored);
+            CreatorFactory.Add(id, created);
+        }
+
+        public NodeBase InstantiateItem(ushort id, Vector3i pos, BlockValue bv)
+        {
+            if (CreatorFactory.TryGetValue(id, out var ctor))
+            {
+                var node = ctor(pos, bv);
+                node.AttachToManager(this);
+                return node;
+            }
+            Log.Error("Could not instantiate unknown PipeGrid Type {0}", id);
+            return null;
         }
 
         public NodeBase InstantiateItem(uint id, BinaryReader br)
         {
-            if (Factory.TryGetValue(id, out var ctor))
+            if (StorageFactory.TryGetValue(id, out var ctor))
             {
                 var node = ctor(br);
                 node.AttachToManager(this);

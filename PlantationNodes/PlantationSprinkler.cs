@@ -27,7 +27,7 @@ namespace NodeManager
         // Setup for node manager implementation
         //########################################################
 
-        public override uint StorageID => 12;
+        public override uint StorageID => (uint)TYPES.Sprinkler;
 
         public override ulong NextTick =>
             (ulong)Random.Range(300, 400);

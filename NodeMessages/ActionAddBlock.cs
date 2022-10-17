@@ -1,5 +1,13 @@
-﻿namespace NodeManager
+﻿using System;
+
+namespace NodeManager
 {
+    public class ActionAddBlock : ActionAddBlock<NetPkgActionAddBlock>
+    {
+        // public override NodeBase CreateNode() => new PipeConnection(Position, BV);
+        protected override void SetupNetPkg(NetPkgActionAddBlock pkg) => pkg.Setup(this);
+    }
+
     public class ActionAddConnection : BaseActionAddBlock<NetPkgActionAddConnection>
     {
         public override NodeBase CreateNode() => new PipeConnection(Position, BV);
@@ -88,10 +96,29 @@
 
     }
 
+    public abstract class ActionAddBlock<N> : BaseActionAddBlock<N> where N : NetPackage
+    {
+        public override void ProcessOnWorker(PipeGridWorker worker)
+            => worker.Manager.InstantiateItem(type, Position, BV);
+
+        public override NodeBase CreateNode()
+        {
+            throw new NotImplementedException("REMOVE THAT");
+            // InstantiateItem
+            // new PipeConnection(Position, BV);
+        }
+    }
+
     public abstract class BaseActionAddBlock<N> : RemoteQuery<N> where N : NetPackage
     {
 
+        protected ushort type;
         protected BlockValue BV;
+
+        public NodeBase CreateNode(ushort type)
+        {
+            return null;
+        }
 
         public abstract NodeBase CreateNode();
 
@@ -104,15 +131,22 @@
             BV = bv;
         }
 
+        public virtual void SetStorageID(TYPES type)
+        {
+
+        }
+
         public override void Read(PooledBinaryReader br)
         {
             base.Read(br);
+            type = br.ReadUInt16();
             BV.rawData = br.ReadUInt32();
         }
 
         public override void Write(PooledBinaryWriter bw)
         {
             base.Write(bw);
+            bw.Write(type);
             bw.Write(BV.rawData);
         }
 

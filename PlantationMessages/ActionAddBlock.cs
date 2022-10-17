@@ -19,16 +19,17 @@
         protected override void SetupNetPkg(NetPkgActionAddPlantGrowing pkg) => pkg.Setup(this);
     }
 
+    public class ActionAddSprinkler : BaseActionAddBlock<NetPkgActionAddSprinkler>
+    {
+        public override NodeBase CreateNode() => new PlantationSprinkler(Position, BV);
+        protected override void SetupNetPkg(NetPkgActionAddSprinkler pkg) => pkg.Setup(this);
+    }
+
     public class ActionAddComposter : BaseActionAddChest<NetPkgActionAddComposter>
     {
         public override NodeBase CreateNode() => new PlantationComposter(Position, BV);
         protected override void SetupNetPkg(NetPkgActionAddComposter pkg) => pkg.Setup(this);
     }
 
-    public class ActionAddSprinkler : BaseActionAddChest<NetPkgActionAddSprinkler>
-    {
-        public override NodeBase CreateNode() => new PlantationSprinkler(Position, BV);
-        protected override void SetupNetPkg(NetPkgActionAddSprinkler pkg) => pkg.Setup(this);
-    }
 
 }

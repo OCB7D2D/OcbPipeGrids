@@ -13,6 +13,9 @@
     public class NetPkgWaterExchangeQuery : NetPkgWorkerAction<MsgWaterExchangeQuery> { }
     public class NetPkgWaterExchangeResponse : NetPkgWorkerAnswer<MsgWaterExchangeResponse> { }
 
+    public class NetPkgActionAddBlock : NetPkgWorkerAction<ActionAddBlock> { }
+    public class NetPkgActionRemoveBlock : NetPkgWorkerAction<ActionRemoveBlock> { }
+
     public class NetPkgActionAddIrrigation : NetPkgWorkerAction<ActionAddIrrigation> { }
     public class NetPkgActionRemoveIrrigation : NetPkgWorkerAction<ActionRemoveIrrigation> { }
     public class NetPkgActionAddSource : NetPkgWorkerAction<ActionAddSource> { }

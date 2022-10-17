@@ -4,8 +4,8 @@ using System.IO;
 namespace NodeManager
 {
 
-    public abstract class BlockRemote : BlockBase
-    {
+	public abstract class BlockRemote : BlockBase
+	{
 
 		public override string GetCustomDescription(
 			Vector3i pos, BlockValue bv)
@@ -21,6 +21,10 @@ namespace NodeManager
 		{
 			return base.GetActivationText(world, bv, clrIdx, pos, focused)
 				+ "\n" + GetCustomDescription(pos, bv);
+		}
+
+		public override void CreateGridItem(Vector3i position, BlockValue bv)
+		{
 		}
 
 	}
