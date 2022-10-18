@@ -15,7 +15,7 @@ public abstract class ImpBlockGridNodePowered : PoweredBase, IBlockConnection
 	public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
 
 	public virtual bool CanConnect(byte side, byte rotation)
-		=> PipeBlockHelper.CanConnect(ConnectMask, side, rotation);
+		=> NodeBlockHelper.CanConnect(ConnectMask, side, rotation);
 
 	public override void Init()
 	{

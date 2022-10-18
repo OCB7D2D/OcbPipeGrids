@@ -10,7 +10,7 @@ namespace NodeManager
 
         public static TYPES NodeType = TYPES.PlantationFarmLand;
         public override uint StorageID => (uint)TYPES.PlantationFarmLand;
-
+        
         //########################################################
         // Config settings (move to block)
         //########################################################

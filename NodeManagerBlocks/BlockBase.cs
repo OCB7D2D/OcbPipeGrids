@@ -21,7 +21,7 @@ namespace NodeManager
 		{
 			base.OnBlockAdded(world, chunk, pos, bv);
 			if (!NodeManagerInterface.HasServer) return;
-			PipeBlockHelper.OnBlockAdded(this, pos, bv);
+			NodeBlockHelper.OnBlockAdded(this, pos, bv);
 		}
 
 		public override void OnBlockRemoved(
@@ -30,7 +30,7 @@ namespace NodeManager
 		{
 			base.OnBlockRemoved(world, chunk, pos, bv);
 			if (!NodeManagerInterface.HasServer) return;
-			PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+			NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 		}
 
 		// public abstract void CreateGridItem(Vector3i blockPos, BlockValue blockValue);

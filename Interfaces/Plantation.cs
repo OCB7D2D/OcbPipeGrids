@@ -90,6 +90,7 @@ namespace NodeManager
     {
         MaintenanceOptions SoilMaintenance { get; set; }
         MaintenanceOptions WaterMaintenance { get; set; }
+        MaintenanceOptions SprinklerMaintenance { get; set; }
         // float SoilMaintenanceFactor { get; set; }
         // float SoilMaintenanceExponent { get; set; }
         // float SoilImprovementFactor { get; set; }
@@ -120,33 +121,36 @@ namespace NodeManager
 
 
 
-    public interface IFarmPlot : ISoil, IFilled
+    public interface IReservoir : IFilled
     {
-        // float WaterState { get; }
-        // float SoilState { get; }
-
+        ushort FluidType { get; }
+        void SetFluidType(ushort type);
     }
 
 
     public interface IFilled
     {
         float FillState { get; set; }
+        // ushort FluidType { get; }
     }
 
     public interface IHasPlant { IPlant Plant { get; set; } }
     public interface IHasPower { bool IsPowered { get; set; } }
     public interface IHasWells : IWorldLink<IWell> { HashSet<IWell> Wells { get; } }
     public interface IHasPlants : IWorldLink<IPlant> { HashSet<IPlant> Plants { get; } }
-    public interface IHasSprinklers : IWorldLink<ISprinkler> { HashSet<ISprinkler> Sprinklers { get; } }
+    public interface IHasGrowLights : IWorldLink<IGrowLight> { HashSet<IGrowLight> GrowLights { get; } }
     public interface IHasIrrigator : IWorldLink<IIrrigator> { HashSet<IIrrigator> Irrigators { get; } }
+    public interface IHasSprinklers : IWorldLink<ISprinkler> { HashSet<ISprinkler> Sprinklers { get; } }
     public interface IHasComposters : IWorldLink<IComposter> { HashSet<IComposter> Composters { get; } }
     public interface IHasFarmLands : IWorldLink<IFarmLand> { HashSet<IFarmLand> FarmLands { get; } }
     public interface IHasFarmPlots : IWorldLink<IFarmPlot> { HashSet<IFarmPlot> FarmPlots { get; } }
+    public interface IHasFarmSoil : IWorldLink<IFarmSoil> { HashSet<IFarmSoil> Soils { get; } }
 
     // The composter has soils linked that will use compost from it
 
-    public interface ISprinkler : IHasPlants, IFilled, IReacher, IEqualityComparer<NodeBase> { }
-
+    public interface ISprinkler : IHasPlants, IReservoir, IReacher, IEqualityComparer<NodeBase> { }
+    public interface IGrowLight : IHasFarmPlots, IReacher, IEqualityComparer<NodeBase> { }
+    
     public interface IComposter : IHasFarmLands, IHasFarmPlots, IFilled, IReacher, IEqualityComparer<NodeBase> {}
 
 
@@ -156,9 +160,16 @@ namespace NodeManager
     {
     }
 
-    public interface IFarmLand : ISoil, IHasWells {}
+    public interface IFarmLand : IFarmSoil, IHasWells {}
 
-    public interface ISoil : IHasPlant, IHasComposters,
+    public interface IFarmPlot : IFarmSoil, IFilled, IHasGrowLights
+    {
+        // float WaterState { get; }
+        // float SoilState { get; }
+
+    }
+    
+    public interface IFarmSoil : IHasPlant, IHasComposters,
         ISunLight, ITickable, IfaceGridNodeManaged, IEqualityComparer<NodeBase>
     {
         float WaterState { get; }

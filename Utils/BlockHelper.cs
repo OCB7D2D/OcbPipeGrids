@@ -15,6 +15,8 @@ namespace NodeManager
         {
             return world.GetChunkFromWorldPos(position) != null;
         }
+        public static string ParseString(DynamicProperties properties, string name, string def = "")
+            => properties.Contains(name) ? properties.GetString(name) : def;
 
         public static float ParseFloat(DynamicProperties properties, string name, float def, float divide = 1)
         {
@@ -146,9 +148,10 @@ namespace NodeManager
             // helper.localScale = (dim + Vector3.one * reach * 2) * 2.54f;
 
             Vector3 shift = new Vector3(
-                rotated.x % 2 == 0 ? 0.0f : 0.5f,
+                rotated.x % 2 == 0 ? rotated.x < 0 ? 1f : 0.0f : 0.5f,
                 rotated.y * 0.5f,
-                rotated.z % 2 == 0 ? 0.0f : 0.5f);
+                rotated.z % 2 == 0 ? rotated.z < 0 ? 1f : 0.0f : 0.5f);
+
 
             // Origin.Add(helper.transform, -1);
             // Origin.Add(helper2.transform, -1);
@@ -160,9 +163,27 @@ namespace NodeManager
             helper.localPosition = pos.ToVector3() - Origin.position + shift;
             helper2.localPosition = helper.localPosition + offsets;
 
+            // Log.Out("DIM {0} => {1} at {2} + {3}", dim, rotated, pos, shift);
 
-            helper.gameObject.SetActive((bv.meta2 & 1) != 0);
+
+            helper.gameObject.SetActive((bv.meta2 & 1) == 1);
             helper2.gameObject.SetActive((bv.meta2 & 1) != 0);
+        }
+
+        //########################################################
+        // Helpers for generic states
+        //########################################################
+
+        public static bool GetEnabled(BlockValue bv)
+        {
+            return (bv.meta & 0b_0000_0010) > 0;
+        }
+
+        public static void SetEnabled(ref BlockValue bv, bool enabled)
+        {
+            bv.meta &= 0b_1111_1101;
+            if (enabled == false) return;
+            bv.meta |= 0b_0000_0010;
         }
 
         //########################################################

@@ -41,6 +41,7 @@ namespace NodeManager
                     Log.Warning("check material {0}, {1} => {2}",
                         inv[i]?.itemValue, ic, ic?.Name);
                     short take = (short)-Math.Min(inv[i].count, 5);
+                    Log.Out("Converting {0}", take);
                     if ((FillState == 0 || FluidType == 1) &&
                         ic?.Name == "drinkJarRiverWater")
                     {
@@ -48,6 +49,7 @@ namespace NodeManager
                         FluidType = 1; // Fluid is murky water
                         inv[i].count += take;
                         action.AddChange(inv[i]?.itemValue, take);
+                        break;
                     }
                     else if ((FillState == 0 || FluidType == 2) &&
                         ic?.Name == "drinkJarBoiledWater")
@@ -56,6 +58,16 @@ namespace NodeManager
                         FluidType = 2; // Fluid is clean water
                         inv[i].count += take;
                         action.AddChange(inv[i]?.itemValue, take);
+                        break;
+                    }
+                    else if ((FillState == 0 || FluidType == 3) &&
+                        ic?.Name == "resourcePesticide")
+                    {
+                        FillState -= take; // constant exchange factor
+                        FluidType = 3; // Fluid is clean water
+                        inv[i].count += take;
+                        action.AddChange(inv[i]?.itemValue, take);
+                        break;
                     }
                 }
                 if (action.Changes.Count > 0)

@@ -7,6 +7,9 @@ namespace NodeManager
 	public abstract class BlockRemote : BlockBase
 	{
 
+		//########################################################
+		//########################################################
+
 		public override string GetCustomDescription(
 			Vector3i pos, BlockValue bv)
 		{
@@ -24,22 +27,7 @@ namespace NodeManager
 		}
 
 		//########################################################
-		// Implementation for Grid Manager
 		//########################################################
-		// public override void CreateGridItem(Vector3i position, BlockValue bv)
-		// {
-		// 	var action = new ActionAddBlock();
-		// 	action.Setup(position, bv);
-		// 	action.SetStorageID(TYPES.Sprinkler);
-		// 	NodeManagerInterface.SendToServer(action);
-		// }
-		// 
-		// public override void RemoveGridItem(Vector3i position)
-		// {
-		// 	var action = new ActionRemoveBlock();
-		// 	action.Setup(position);
-		// 	NodeManagerInterface.SendToServer(action);
-		// }
 
 	}
 

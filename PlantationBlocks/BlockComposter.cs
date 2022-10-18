@@ -115,21 +115,6 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 	//########################################################
 
 
-	// public override void CreateGridItem(Vector3i position, BlockValue bv)
-	// {
-	// 	var action = new ActionAddComposter();
-	// 	action.Setup(position, bv);
-	// 	Log.Warning("Creating new composter {0}", bv.type);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
-	// 
-	// public override void RemoveGridItem(Vector3i position)
-	// {
-	// 	var action = new ActionRemoveComposter();
-	// 	action.Setup(position);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
-
 	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 
 	private static bool IsLoaded(WorldBase world, Vector3i position)
@@ -144,7 +129,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 		base.OnBlockAdded(world, chunk, pos, bv);
 		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
 		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockAdded(this, pos, bv);
+		NodeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
 
 	public override void OnBlockRemoved(
@@ -155,7 +140,7 @@ public class BlockComposter : ImpBlockChest, ILootBlock, IBoundHelper, IReacherB
 		if (bv.isair || bv.ischild) return;
 		BoundsHelper.RemoveBoundsHelper(pos);
 		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+		NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
 
 	public override string GetCustomDescription(

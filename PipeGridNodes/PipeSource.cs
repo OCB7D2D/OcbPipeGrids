@@ -32,7 +32,7 @@ namespace NodeManager
 
         public override bool Tick(ulong delta)
         {
-            Log.Out("Tick source {0}", IsPowered);
+            // Log.Out("Tick source {0}", IsPowered);
             if (IsPowered)
             {
                 // Add some water

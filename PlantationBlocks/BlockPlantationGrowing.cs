@@ -20,6 +20,10 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
 	public MaintenanceOptions WaterMaintenance { get; set; } =
 		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
+	public MaintenanceOptions SprinklerMaintenance { get; set; } =
+		new MaintenanceOptions(0.05f, 2.35f, 0.001f);
+
+	public RangeOptions SprinklerRange = new RangeOptions(0.00f, 5f);
 
 	public float GrowthMaintenanceFactor { get; set; } = 0.05f / 1200f;
 	public float LightMaintenance { get; set; }
@@ -45,23 +49,36 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 		BlockConfig.InitPlant(this);
 	}
 
-	// public virtual void CreateGridItem(Vector3i position, BlockValue bv)
-	// {
-	// 	Log.Out("Delegate tot Create Plant");
-	// 	var action = new ActionAddPlantGrowing();
-	// 	action.Setup(position, bv);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
-	// 
-	// public virtual void RemoveGridItem(Vector3i position)
-	// {
-	// 	Log.Out("Delegate tot Delete Plant");
-	// 	var action = new ActionRemovePlantGrowing();
-	// 	action.Setup(position);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
+    public override bool CanPlaceBlockAt(WorldBase world, int clrIdx,
+			Vector3i pos, BlockValue bc, bool omitCollideCheck = false)
+		=> base.CanPlaceBlockAt(world, clrIdx, pos, bc, omitCollideCheck)
+			|| IsAdvancedFarmPlot(world, clrIdx, pos - Vector3i.up, bc);
 
-	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
+	private bool IsAdvancedFarmPlot(WorldBase world, int clrIdx, Vector3i ps, BlockValue bv)
+	{
+		var bt = world.GetBlock(clrIdx, ps);
+		Log.Out("Checking block underneath {0} {1} {2}", bt.Block.GetBlockName(),
+			bt.Block.blockMaterial, bt.Block.blockMaterial.FertileLevel);
+		return bt.Block.blockMaterial.FertileLevel >= 20;
+	}
+
+    // public virtual void CreateGridItem(Vector3i position, BlockValue bv)
+    // {
+    // 	Log.Out("Delegate tot Create Plant");
+    // 	var action = new ActionAddPlantGrowing();
+    // 	action.Setup(position, bv);
+    // 	NodeManagerInterface.SendToServer(action);
+    // }
+    // 
+    // public virtual void RemoveGridItem(Vector3i position)
+    // {
+    // 	Log.Out("Delegate tot Delete Plant");
+    // 	var action = new ActionRemovePlantGrowing();
+    // 	action.Setup(position);
+    // 	NodeManagerInterface.SendToServer(action);
+    // }
+
+    public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 
 	private static bool IsLoaded(WorldBase world, Vector3i position)
 		=> world.GetChunkFromWorldPos(position) != null;
@@ -94,7 +111,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 		Log.Out("+ Plant Added");
 		base.OnBlockAdded(world, chunk, pos, bv);
 		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockAdded(this, pos, bv);
+		NodeBlockHelper.OnBlockAdded(this, pos, bv);
 		// Add tick to update server stuff when loaded
 		if (bv.isair || bv.ischild) return;
 		Log.Out("   +  Schedule Update {0} {1}", blockID, bv.type);
@@ -113,7 +130,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantBlock
 		if (!NodeManagerInterface.HasServer) return;
 		if (bv.isair || bv.ischild) return;
 		Log.Out("- Plant Removed");
-		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+		NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 		if (checks.TryGetValue(pos,
 			out GameObject go))
         {

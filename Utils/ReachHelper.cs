@@ -49,31 +49,44 @@ namespace NodeManager
 
         public static bool IsInReach(IReacher reacher, Vector3i target)
         {
-            //Log.Out("Check in reach for {0} {1}", reacher, reacher?.IBLK);
+
+            Log.Out("Check item reach at {0} for pos {1}", reacher.WorldPos, target);
             IReacherBlock BLOCK = reacher.RBLK;
+
+            // That doesn't work for even multidim, since rotation pivot changes
+
             Vector3i offset = target - reacher.WorldPos;
-            Log.Out("Check if in reach {0}", offset);
+            Log.Out("  offset in world space {0} with rotation {1}", offset, reacher.Rotation);
             offset = FullRotation.InvRotate(reacher.Rotation, offset);
+            Log.Out("  offset rotated into local space {0}", offset);
             offset -= BLOCK.ReachOffset; // Adjust in our space
-            Log.Out("   local reach {0} with {1}", offset, BLOCK.BlockReach);
+            Log.Out("  offset in relative world space {0}", offset);
+
+            
             // Get settings for reachable area
             Vector3i dim = reacher.Dimensions;
             Vector3i reach = BLOCK.BlockReach;
-            Log.Out("Has Dim {0} plus {1}", dim, reach);
+
+            offset.x -= dim.x / 2;
+            offset.y -= dim.y / 2;
+            offset.z -= dim.z / 2;
+
             // Calculate lower and upper boundary
-            Vector3i max = reach + new Vector3i(
-                dim.x / 2, dim.y / 2, dim.z / 2);
+            Vector3i max = reach;
             Vector3i min = max * -1;
+            min -= dim;
+            min += Vector3i.one;
+
             // Adjust for odd block shift
-            if (dim.x % 2 == 0) max.x += 1;
-            if (dim.y % 2 == 0) max.y += 1;
-            if (dim.z % 2 == 0) max.z += 1;
+            // if (dim.x % 2 == 0) max.x += 1;
+            // if (dim.y % 2 == 0) max.y += 1;
+            // if (dim.z % 2 == 0) max.z += 1;
             // Check if point is withing our boundaries
-            Log.Out("From {0} to {1}", min, max);
+            Log.Out("  min {0} to max {1} at offset {2}", min, max, offset);
             var rv = min.x <= offset.x && offset.x <= max.x
                 && min.y <= offset.y && offset.y <= max.y
                 && min.z <= offset.z && offset.z <= max.z;
-
+            
             Log.Out("  Result {0}", rv);
             return rv;
 

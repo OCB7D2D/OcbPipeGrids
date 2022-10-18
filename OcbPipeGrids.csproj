@@ -72,6 +72,9 @@
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ParticleSystem">
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
@@ -89,13 +92,18 @@
     <Compile Include="Harmony\NewShapeRenderPipeFaces.cs" />
     <Compile Include="Harmony\TerrainTest.cs" />
     <Compile Include="Interfaces\Plantation.cs" />
+    <Compile Include="NodeManager\NodeManagerGrowLights.cs" />
     <Compile Include="NodeManager\NodeManagerSprinklers.cs" />
     <Compile Include="PipeGridBlocks\BlockFluidInjector.cs" />
     <Compile Include="PipeGridNodes\PipeFluidInjector.cs" />
+    <Compile Include="PlantationBlocks\BlockPlantationGrowLight.cs" />
     <Compile Include="PlantationBlocks\BlockPlantationSprinkler.cs" />
     <Compile Include="PlantationMessages\MsgPlantInteraction.cs" />
     <Compile Include="PlantationNodes\ImpBlockChest.cs" />
+    <Content Include="Config\materials.xml" />
+    <Content Include="Config\sounds.xml" />
     <Content Include="PlantationNodes\PlantationGrowing - Copy.css" />
+    <Compile Include="PlantationNodes\PlantationGrowLight.cs" />
     <Compile Include="PlantationNodes\PlantationSprinkler.cs" />
     <Compile Include="Settings\Constants.cs" />
     <Compile Include="Utils\asd.cs" />
@@ -203,7 +211,7 @@
     <Compile Include="PipeGridBlocks\ImpBlockGridNodeUnpowered.cs" />
     <Compile Include="Harmony\OcbPipeGrids.cs" />
     <Compile Include="Harmony\AssemblyInfo.cs" />
-    <Compile Include="Helpers\PipeBlockHelper.cs" />
+    <Compile Include="Helpers\NodeBlockHelper.cs" />
     <Compile Include="ManagerProcess\NodeManagerMother.cs" />
     <Compile Include="ManagerProcess\NodeManagerInterface.cs" />
     <Compile Include="Interfaces\IfaceGridNodeFactory.cs" />

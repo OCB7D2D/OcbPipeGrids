@@ -36,7 +36,7 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 	public byte ConnectFlags => (byte)(BreakDistance ? ConnectorFlag.Breaker : ConnectorFlag.None);
 
 	public virtual bool CanConnect(byte side, byte rotation)
-		=> PipeBlockHelper.CanConnect(ConnectMask, side, rotation);
+		=> NodeBlockHelper.CanConnect(ConnectMask, side, rotation);
 
 	public override void Init()
 	{
@@ -93,22 +93,6 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 	// Implementation for node manager
 	//########################################################
 
-
-	// public override void CreateGridItem(Vector3i position, BlockValue bv)
-	// {
-	// 	var action = new ActionAddFluidInjector();
-	// 	action.Setup(position, bv);
-	// 	Log.Warning("Creating new composter {0}", bv.type);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
-	// 
-	// public override void RemoveGridItem(Vector3i position)
-	// {
-	// 	var action = new ActionRemoveFluidInjector();
-	// 	action.Setup(position);
-	// 	NodeManagerInterface.SendToServer(action);
-	// }
-
 	public override ulong GetTickRate() => 5; // (ulong)(growthRate * 20.0 * 60.0);
 
 	private static bool IsLoaded(WorldBase world, Vector3i position)
@@ -122,7 +106,7 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 	{
 		base.OnBlockAdded(world, chunk, pos, bv);
 		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockAdded(this, pos, bv);
+		NodeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
 
 	public override void OnBlockRemoved(
@@ -133,7 +117,7 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 		if (bv.isair || bv.ischild) return;
 		BoundsHelper.RemoveBoundsHelper(pos);
 		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+		NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
 
 	public override string GetCustomDescription(

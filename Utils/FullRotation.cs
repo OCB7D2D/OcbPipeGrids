@@ -96,6 +96,38 @@ public static class FullRotation
         }
     }
 
+    public static Vector3 Rotate(int rotation, Vector3 vec)
+    {
+        switch (rotation)
+        {
+            case 0: return vec;
+            case 1: return new Vector3(vec.z, vec.y, -vec.x);
+            case 2: return new Vector3(-vec.x, vec.y, -vec.z);
+            case 3: return new Vector3(-vec.z, vec.y, vec.x);
+            case 4: return new Vector3(-vec.x, -vec.y, vec.z);
+            case 5: return new Vector3(-vec.z, -vec.y, -vec.x);
+            case 6: return new Vector3(vec.x, -vec.y, -vec.z);
+            case 7: return new Vector3(vec.z, -vec.y, vec.x);
+            case 8: return new Vector3(-vec.x, vec.z, vec.y);
+            case 9: return new Vector3(-vec.z, -vec.x, vec.y);
+            case 10: return new Vector3(vec.x, -vec.z, vec.y);
+            case 11: return new Vector3(vec.z, vec.x, vec.y);
+            case 12: return new Vector3(-vec.y, vec.x, vec.z);
+            case 13: return new Vector3(-vec.y, vec.z, -vec.x);
+            case 14: return new Vector3(-vec.y, -vec.x, -vec.z);
+            case 15: return new Vector3(-vec.y, -vec.z, vec.x);
+            case 16: return new Vector3(vec.x, vec.z, -vec.y);
+            case 17: return new Vector3(vec.z, -vec.x, -vec.y);
+            case 18: return new Vector3(-vec.x, -vec.z, -vec.y);
+            case 19: return new Vector3(-vec.z, vec.x, -vec.y);
+            case 20: return new Vector3(vec.y, -vec.x, vec.z);
+            case 21: return new Vector3(vec.y, -vec.z, -vec.x);
+            case 22: return new Vector3(vec.y, vec.x, -vec.z);
+            case 23: return new Vector3(vec.y, vec.z, vec.x);
+            default: throw new ArgumentOutOfRangeException("rotation");
+        }
+    }
+
     public static Vector3i InvRotate(int rotation, Vector3i vec)
     {
         switch (rotation)

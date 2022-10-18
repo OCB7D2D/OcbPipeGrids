@@ -40,6 +40,7 @@ public class OcbPipeGrids : IModApi
 		NodeManager.NodeManager.RegisterFactory(10, (br) => new PlantationFarmPlot(br), (pos, bv) => new PlantationFarmPlot(pos, bv));
 		NodeManager.NodeManager.RegisterFactory(11, (br) => new PlantationGrowing(br), (pos, bv) => new PlantationGrowing(pos, bv));
 		NodeManager.NodeManager.RegisterFactory(12, (br) => new PlantationComposter(br), (pos, bv) => new PlantationComposter(pos, bv));
+		NodeManager.NodeManager.RegisterFactory(15, (br) => new PlantationGrowLight(br), (pos, bv) => new PlantationGrowLight(pos, bv));
 
 	}
 
@@ -62,6 +63,19 @@ public class OcbPipeGrids : IModApi
 		NodeManagerInterface.Instance.Update();
     }
 
+
+	[HarmonyPatch(typeof(BlockCampfire))]
+	[HarmonyPatch("checkParticles")]
+	public class checkParticles
+	{
+		static bool Prefix()
+		{
+			return false;
+		}
+	}
+
+
+
 	[HarmonyPatch(typeof(BlockPlacement))]
 	[HarmonyPatch("supports45DegreeRotations")]
 	public class supports45DegreeRotations
@@ -72,11 +86,11 @@ public class OcbPipeGrids : IModApi
 			if (block is IRotationLimitedBlock)
             {
 				__result = (block.AllowedRotations & EBlockRotationClasses.Basic45) > 0;
-				Log.Out("Support 45 {0} {1}", __result, block.shape);
+				// Log.Out("Support 45 {0} {1}", __result, block.shape);
 			}
 
 
-
+			
 			// Log.Out("+++++++++ Enable Particle and register it");
 			// Create the instance and start it
 			// Will make sure to only create server
@@ -87,7 +101,7 @@ public class OcbPipeGrids : IModApi
 		}
 	}
 
-
+	
 	[HarmonyPatch(typeof(OriginParticles))]
 	[HarmonyPatch("OnEnable")]
 	public class RepositionParticlesOnEnable

@@ -36,6 +36,7 @@ namespace NodeManager
 
         public NodeBase InstantiateItem(ushort id, Vector3i pos, BlockValue bv)
         {
+            Log.Out("Call Instantiate Item");
             if (CreatorFactory.TryGetValue(id, out var ctor))
             {
                 var node = ctor(pos, bv);
@@ -190,6 +191,7 @@ namespace NodeManager
                 }
             }
             ReadChests(br);
+            // Here we can 
             foreach (var node in Nodes)
                 node.Value.OnAfterLoad();
 

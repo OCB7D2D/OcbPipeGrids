@@ -31,7 +31,7 @@ namespace NodeManager
         //########################################################
 
         public override ulong NextTick =>
-            (ulong)Random.Range(300, 400);
+            (ulong)Random.Range(30, 40);
 
         //########################################################
         // Cross references setup by manager
@@ -48,6 +48,7 @@ namespace NodeManager
 
         public void AddLink(IPlant plant)
         {
+            Log.Out(" Link planty sprinkly");
             Plants.Add(plant);
             plant.Sprinklers.Add(this);
         }
@@ -96,11 +97,31 @@ namespace NodeManager
         //########################################################
         //########################################################
 
+        int waited = -400;
+
         public override bool Tick(ulong delta)
         {
             // Log.Out("Tick Composter {0}", delta);
             // Abort ticking if Manager is null
             if (!base.Tick(delta)) return false;
+            
+            waited += (int)delta;
+                
+            if (waited > 0)
+            {
+                var enable = !BlockHelper.GetEnabled(BV);
+                if (FillState <= 0.02) enable = false;
+                if (BlockHelper.GetEnabled(BV) != enable)
+                {
+                    BlockHelper.SetEnabled(ref BV, enable);
+                    var action = new ExecuteBlockChange();
+                    action.Setup(WorldPos, BV);
+                    Manager.ToMainThread.Enqueue(action);
+                }
+                if (enable) waited = -300;
+                else waited = -500;
+            }
+
             // Keep ticking
             return true;
         }

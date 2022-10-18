@@ -13,6 +13,8 @@ namespace NodeManager
 
         public float MaxFillState = 150f;
 
+        public float MinFillState = 0f;
+
         public float FillState { get; set; } = 0f;
 
         public ushort FluidType { get; protected set; } = 0;
@@ -78,7 +80,7 @@ namespace NodeManager
 
         public override bool Tick(ulong delta)
         {
-            base.Tick(delta);
+            if (!base.Tick(delta)) return false;
 
             if (float.IsNaN(FillState)) FillState = 0;
 
@@ -161,10 +163,9 @@ namespace NodeManager
                 float wanting = into.MaxFillState - into.FillState;
                 if (needed > wanting) needed = wanting;
                 into.FillState += needed * out_factor;
-                into.FillState = System.Math.Min(
-                    into.MaxFillState, into.FillState);
-                if (into.FluidType != FluidType)
-                    into.SetFluidType(FluidType);
+                into.FillState = Math.Min(into.MaxFillState, into.FillState);
+                into.FillState = Math.Max(into.MinFillState, into.FillState);
+                if (into.FluidType != FluidType) into.SetFluidType(FluidType);
                 taken += needed * out_factor;
                 // Log.Out(" adding by {0}", needed * out_factor);
             }
@@ -177,16 +178,16 @@ namespace NodeManager
             {
                 float available = from.FillState - average;
                 from.FillState -= available * in_factor;
-                from.FillState = System.Math.Min(
-                    from.MaxFillState, from.FillState);
+                from.FillState = Math.Min(from.MaxFillState, from.FillState);
+                from.FillState = Math.Max(from.MinFillState, from.FillState);
                 // Log.Out(" reduce by {0}", available * in_factor);
             }
 
 
 
             // Only reduce to max amount after pumping
-            FillState = System.Math.Min(
-                MaxFillState, FillState);
+            FillState = Math.Min(MaxFillState, FillState);
+            FillState = Math.Max(MinFillState, FillState);
 
             if (FillState < 0) FillState = 0;
 

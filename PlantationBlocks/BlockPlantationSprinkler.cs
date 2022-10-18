@@ -1,4 +1,6 @@
-﻿using NodeManager;
+﻿using Audio;
+using NodeManager;
+using System;
 using UnityEngine;
 
 public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
@@ -17,8 +19,12 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 
     public Vector3i BlockReach { get; set; } = Vector3i.zero;
     public Vector3i ReachOffset { get; set; } = Vector3i.zero;
-    public Color BoundHelperColor { get; set; } = new Color32(160, 82, 45, 255);
-    public Color ReachHelperColor { get; set; } = new Color32(160, 82, 45, 255);
+    public Color BoundHelperColor { get; set; }
+		= new Color32(160, 82, 45, 255);
+    public Color ReachHelperColor { get; set; }
+		= new Color32(160, 82, 45, 255);
+
+	private string SoundSprinklerLoop = string.Empty;
 
     //########################################################
     //########################################################
@@ -38,19 +44,25 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
     public override void Init()
     {
         base.Init();
-		// Initialize maintenance options
-		// SoilMaintenance.Init(Properties, "Soil");
-		// WaterMaintenance.Init(Properties, "Water");
+		SoundSprinklerLoop = BlockHelper.ParseString(
+			Properties, "SoundSprinklerLoop", string.Empty);
 		BlockConfig.InitReacher(this);
-    }
+	}
 
-    //########################################################
-    //########################################################
+	//########################################################
+	//########################################################
 
-    public BlockPlantationSprinkler()
+	public BlockPlantationSprinkler()
     {
         this.IsNotifyOnLoadUnload = true;
-    }
+		// Prepends `cmds` from parent to our `cmds`
+		// Will update `cmd_offset` to parents length
+		// Our commands will be moved to that position
+		// In order to use base `GetBlockActivationCommands`
+		BlockHelper.ExtendActivationCommands(this,
+			typeof(ImpBlockPipeReservoirUnpowered),
+			ref cmds, ref cmd_offset);
+	}
 
 	//########################################################
 	// Add functionality for bound helper
@@ -60,13 +72,22 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 		new BlockActivationCommand("show_bounds", "frames", true),
 	};
 
+	// Offset after parent command are added
+	private readonly int cmd_offset = 0;
+
 	// We added our own command after any parent commands on constructor
 	// Unfortunately we need to copy state from old to new array (why?)
 	public override BlockActivationCommand[] GetBlockActivationCommands(
 		WorldBase world, BlockValue bv, int clrIdx,
 		Vector3i pos, EntityAlive entityFocusing)
 	{
-		cmds[0].enabled = true;
+		// Get state for parent commands
+		var old = base.GetBlockActivationCommands(world,
+			bv, clrIdx, pos, entityFocusing);
+		// Copy state from old to new array
+		for (int i = 0; i < old.Length; i += 1)
+			cmds[i].enabled = old[i].enabled;
+		// Mine are always enabled
 		return cmds;
 	}
 
@@ -76,6 +97,12 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 		WorldBase world, int cIdx, Vector3i pos,
 		BlockValue bv, EntityAlive player)
 	{
+		// Execute for base commands
+		if (cmd < cmd_offset) return base.
+			OnBlockActivated(cmd, world,
+				cIdx, pos, bv, player);
+		// Make it zero based again
+		cmd -= cmd_offset;
 		// We only have one command
 		if (cmd != 0) return false;
 		// Toggle bit flag
@@ -91,6 +118,10 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 	{
 		base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
 		BlockHelper.UpdateBoundHelper(pos, bv_new, this, this);
+		if (BlockHelper.GetEnabled(bv_old) ==
+			BlockHelper.GetEnabled(bv_new)) return;
+		BlockEntityData model = chunk.GetBlockEntity(pos);
+		UpdateModelState(model, bv_new);
 	}
 
 	//########################################################
@@ -103,8 +134,8 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 	{
 		base.OnBlockAdded(world, chunk, pos, bv);
 		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
-		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockAdded(this, pos, bv);
+		//if (!NodeManagerInterface.HasServer) return;
+		// NodeBlockHelper.OnBlockAdded(this, pos, bv);
 	}
 
 	public override void OnBlockRemoved(
@@ -114,16 +145,18 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 		base.OnBlockRemoved(world, chunk, pos, bv);
 		if (bv.isair || bv.ischild) return;
 		BoundsHelper.RemoveBoundsHelper(pos);
-		if (!NodeManagerInterface.HasServer) return;
-		PipeBlockHelper.OnBlockRemoved(this, pos, bv);
+		//if (!NodeManagerInterface.HasServer) return;
+		// NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 	}
 
-	public override string GetCustomDescription(
-	Vector3i pos, BlockValue bv)
-	{
-		return NodeManagerInterface.Instance.Mother
-			.GetCustomDescription(pos, bv);
-	}
+	//########################################################
+	//########################################################
+
+	public override string GetCustomDescription(Vector3i pos, BlockValue bv)
+		=> NodeManagerInterface.Instance.Mother.GetCustomDescription(pos, bv);
+
+	//########################################################
+	//########################################################
 
 	public override void OnBlockUnloaded(WorldBase world, int clrIdx, Vector3i pos, BlockValue bv)
 	{
@@ -137,4 +170,65 @@ public class BlockPlantationSprinkler : BlockRemote, IReacherBlock
 		BlockHelper.UpdateBoundHelper(pos, bv, this, this);
 	}
 
+	//########################################################
+	//########################################################
+
+	private void DebugTransform(Transform transform, string ident = "  ")
+    {
+		if (transform == null) return;
+		Log.Out(ident + " {0}", transform.name);
+		foreach (Transform child in transform)
+			DebugTransform(child, ident + "  ");
+    }
+
+	private void UpdateModelState(BlockEntityData model, BlockValue bv_new)
+	{
+		Log.Out("Update model {0}", model);
+		// Do some sanity checks first (play safe)
+		if (model == null || !model.bHasTransform) return;
+		DebugTransform(model.transform);
+
+		bool enabled = BlockHelper.GetEnabled(bv_new);
+
+		var anim = model.transform.GetComponentsInChildren<Animator>(true);
+		foreach (Animator child in anim)
+		{
+			Log.Out(" Animator at {0} => {1}", child.name, enabled);
+			if (enabled) child.StopPlayback();
+			else child.StartPlayback();
+			child.enabled = true;
+		}
+
+		var sys = model.transform.GetComponentsInChildren<ParticleSystem>(true);
+		foreach (ParticleSystem child in sys)
+		{
+			Log.Out(" particles at {0} => {1}", child.name, enabled);
+			if (enabled) child.Play();
+			else child.Stop();
+			// child.set = true;
+		}
+
+		if (!string.IsNullOrEmpty(SoundSprinklerLoop))
+        {
+			Log.Warning("Trying to run {0}", SoundSprinklerLoop);
+			if (enabled) Manager.Play(model.pos, SoundSprinklerLoop);
+			else Manager.Stop(model.pos, SoundSprinklerLoop);
+		}
+
+		var audio = model.transform.GetComponentsInChildren<AudioSource>(true);
+		foreach (AudioSource child in audio)
+		{
+			child.Stop();
+			// child.set = true;
+		}
+
+
+		Log.Warning("We want to change it to {0} at {1}",
+			BlockHelper.GetEnabled(bv_new), model);
+	}
+
+	//########################################################
+	//########################################################
+
 }
+ 

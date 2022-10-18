@@ -31,14 +31,15 @@ class ItemActionPlantInteraction : ItemAction
 
     public override void ExecuteAction(ItemActionData _actionData, bool _bReleased)
     {
-        Log.Out("Implement action to pesticide {0} , {1}", _bReleased, _actionData.lastUseTime);
         if (!_bReleased || IsActionRunning(_actionData)) return;
         Vector3i pos = _actionData.invData.hitInfo.hit.blockPos;
         BlockValue bv = _actionData.invData.hitInfo.hit.blockValue;
         if (!(bv.Block is BlockPlantationGrowing)) return;
         _actionData.invData.holdingEntity.inventory.DecHoldingItem(1);
         MsgPlantInteraction action = new MsgPlantInteraction();
-        action.Setup(pos, MsgPlantInteraction.PlantInteraction.Heal, 3);
+        action.Setup(pos, MsgPlantInteraction.PlantInteraction.Heal,
+            Mathf.Pow(EasingFunction.EaseInOutQuad(1f, 4f,
+                UnityEngine.Random.value), 0.75f));
         NodeManagerInterface.SendToServer(action);
 
         //BlockHelper.SetIllness(ref bv, Mathf.Max(0,

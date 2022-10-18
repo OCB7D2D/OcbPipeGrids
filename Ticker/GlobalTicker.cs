@@ -49,19 +49,38 @@ public class GlobalTicker // : SingletonInstance<GlobalTicker>
         var tick = GameTimer.Instance.ticks;
         int todo = Utils.FastMin(Scheduled.Count,
             MaxScheduleCallsPerTick);
+        // Scheduled.RemoveWhere(scheduled =>
+        //     scheduled.Object.Manager == null);
         while (Scheduled.Count != 0)
         {
+            // Check if we reached our limit
+            // Will process more on next loop
             if (done > todo) break;
+            // Get the first item from sorted list
             var scheduled = Scheduled.First();
+            // Check if we have reached time limit
+            // Only process ticks that are really due
             if (scheduled.TickTime > tick) break;
+            // Remove the item from the scheduler
             Scheduled.Remove(scheduled);
+            // Check if Scheduled object was reset
+            // Use it to abort ticking in another way
+            if (scheduled.Object.Scheduled == null) return;
+            // Reset object now, not yet re-scheduled
+            scheduled.Object.Scheduled = null;
+            // Calculate the tick delta for this item
             ulong delta = tick - scheduled.TickStart;
+            // Execute the main Tick function
             // Reschedule if Tick returns true
             if (scheduled.Object.Tick(delta))
             {
+                // Query base object for next ticker
                 ulong iv = scheduled.Object.NextTick;
-                if (iv != 0) Schedule(iv, scheduled.Object);
+                // Re-schedule ticker if requested
+                if (iv != 0) scheduled.Object.Scheduled
+                    = Schedule(iv, scheduled.Object);
             }
+            // Account work
             done += 1;
         }
     }

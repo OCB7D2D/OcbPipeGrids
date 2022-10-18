@@ -22,6 +22,7 @@ namespace NodeManager
 			var properties = block.BLK.Properties;
 			block.SoilMaintenance.Init(properties, "Soil");
 			block.WaterMaintenance.Init(properties, "Water");
+			block.SprinklerMaintenance.Init(properties, "Water");
 			if (properties.Contains("GrowthMaintenanceFactor")) block.GrowthMaintenanceFactor =
 				float.Parse(properties.GetString("GrowthMaintenanceFactor")) / 1200f;
 			if (properties.Contains("IllnessEffect")) block.IllnessEffect =

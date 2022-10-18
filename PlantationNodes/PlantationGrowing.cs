@@ -16,7 +16,8 @@ namespace NodeManager
 
         public float HealthFactor { get; set; } = 6.75f;
 
-        public byte CurrentSunLight { get; set; } = 0;
+        private byte sunlight = 0;
+
 
         public int Illness => BlockHelper.GetIllness(BV);
 
@@ -57,8 +58,31 @@ namespace NodeManager
 
         public void AddLink(ISprinkler sprinkler)
         {
+            Log.Out(" Link sprinkly planty");
             Sprinklers.Add(sprinkler);
             sprinkler.Plants.Add(this);
+        }
+
+        public override bool Tick(ulong delta)
+        {
+            if (!base.Tick(delta)) return false;
+            TickSprinkler(delta, BLOCK.SprinklerMaintenance);
+            return true;
+        }
+
+        public float SprinklerState { get; set; } = 0.0f;
+        public float PesticideState { get; set; } = 0.0f;
+        public abstract byte CurrentSunLight { get; set; }
+
+        public void TickSprinkler(ulong delta,
+           MaintenanceOptions options)
+        {
+            SprinklerState = PlantHelper.TickFactor(delta,
+                Sprinklers.Where(x => x.FluidType == 2).ToList(),
+                options, SprinklerState, BLOCK.SprinklerRange, 10f);
+            PesticideState = PlantHelper.TickFactor(delta,
+                Sprinklers.Where(x => x.FluidType == 3).ToList(),
+                options, PesticideState, BLOCK.SprinklerRange, 10f);
         }
 
         //########################################################
@@ -78,6 +102,12 @@ namespace NodeManager
     public class PlantationGrowing : PlantationBase
     {
 
+        byte sunlight = 0;
+        public override byte CurrentSunLight
+        {
+            get { return Reservoir == null ? sunlight : (byte)12; }
+            set { sunlight = value; }
+        }
 
         public static TYPES NodeType = TYPES.PlantationGrowing;
         public override uint StorageID => (uint)TYPES.PlantationGrowing;
@@ -173,7 +203,8 @@ namespace NodeManager
         public PlantationGrowing(BinaryReader br)
             : base(br)
         {
-            // WaterState = br.ReadSingle();
+            SprinklerState = br.ReadSingle();
+            PesticideState = br.ReadSingle();
             HealthFactor = br.ReadSingle();
             GrowProgress = br.ReadSingle();
             CurrentSunLight = br.ReadByte();
@@ -188,7 +219,9 @@ namespace NodeManager
             // Write base data first
             base.Write(bw);
             // Store additional data
-            // bw.Write(WaterState);
+            
+            bw.Write(SprinklerState);
+            bw.Write(PesticideState);
             bw.Write(HealthFactor);
             bw.Write(GrowProgress);
             bw.Write(CurrentSunLight);
@@ -197,11 +230,11 @@ namespace NodeManager
             bw.Write(Alive);
             // bw.Write(Flags);
         }
-
+        
         public override string GetCustomDescription()
         {
-            return string.Format("Plant Growing {0:0.00}/{5:0.00}h\nWater: {1:0.00}, Soil: {2:0.00}\nGrowth: {6:0.00}, Health: {4:0.00}\nPlants: {3}, Sprinklers: {7}",
-                GrowProgress, WaterState, SoilState, Plants.Count, HealthFactor, Alive / 3000f, GrowFactor, Sprinklers.Count);
+            return string.Format("Plant Growing {0:0.00}/{5:0.00}h\nWater: {1:0.00}, Soil: {2:0.00}, Light: {10:0.00}\nGrowth: {6:0.00}, Health: {4:0.00}\nPlants: {3}, Sprinkly: {8:0.00}/{7}\nPest: {9:0.00}",
+                GrowProgress, WaterState, SoilState, Plants.Count, HealthFactor, Alive / 3000f, GrowFactor, Sprinklers.Count, SprinklerState, PesticideState, CurrentSunLight);
         }
 
         protected override void OnManagerAttached(NodeManager manager)
@@ -242,6 +275,10 @@ namespace NodeManager
 
         private void DoSicknessCheck2(ulong delta)
         {
+
+            var sr = Mathf.Pow(EasingFunction.EaseInQuad(1f, 0.75f,
+                Mathf.InverseLerp(0, 1, SprinklerState)), 1f);
+
             float sickness = 8f - HealthFactor / 4f;
             // Check plants nearby to spread sickness
             // Check our soil quality for sickness chance
@@ -260,7 +297,7 @@ namespace NodeManager
             }
 
             // Check if plant is randomly getting sick
-            if (UnityEngine.Random.value < sickness * delta * 0.01f / 1200f)
+            if (UnityEngine.Random.value < sickness * sr * delta * 0.01f / 1200f)
             {
                 HealthFactor -= 0.0025f * delta;
             }
@@ -415,6 +452,10 @@ namespace NodeManager
                     WaterState = MaxWaterState;
                 */
 
+                Log.Out("Ticksche Water and Soil");
+
+                CurrentSunLight = 10;
+
                 Reservoir.TickWater(delta, BLOCK.WaterMaintenance);
                 Reservoir.TickSoil(delta, BLOCK.SoilMaintenance);
             }
@@ -448,9 +489,9 @@ namespace NodeManager
 
             // DoSicknessCheck(delta);
 
-            var wf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.03f, 1.5f,
+            var wf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.05f, 1.5f,
                 Mathf.InverseLerp(0.1f, 2f, WaterState)), 0.65f);
-            var sf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.03f, 1.75f,
+            var sf = Mathf.Pow(EasingFunction.EaseInOutQuad(0.25f, 1.75f,
                 Mathf.InverseLerp(0.3f, 5f, SoilState)), 0.25f);
             var lf = Mathf.Pow(EasingFunction.EaseInOutQuad(0f, 1.75f,
                 Mathf.InverseLerp(5, 25, CurrentSunLight)), 0.75f);

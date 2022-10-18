@@ -3,6 +3,6 @@ using System.IO;
 
 public interface IfaceGridNodeFactory
 {
-    uint StorageID { get; }
-    NodeBase Create(BinaryReader br);
+    // uint StorageID { get; }
+    // NodeBase Create(BinaryReader br);
 }

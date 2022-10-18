@@ -47,7 +47,7 @@ namespace NodeManager
         }
 
 
-        private static float ConsumeFrom<T> (HashSet<T> providers, float wanted, float single) where T : IFilled
+        private static float ConsumeFrom<T> (IEnumerable<T> providers, float wanted, float single) where T : IFilled
         {
             float having = 0; float taken = 0;
             // debugger;
@@ -69,7 +69,7 @@ namespace NodeManager
         }
 
 
-        internal static float TickFactor<T>(ulong delta, HashSet<T> providers,
+        internal static float TickFactor<T>(ulong delta, ICollection<T> providers,
             MaintenanceOptions options, float state,
             RangeOptions range, float speed = 1f)
                 where T : IFilled

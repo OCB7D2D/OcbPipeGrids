@@ -12,6 +12,9 @@ namespace NodeManager
 
         public IReacherBlock RBLK => BLOCK;
 
+        // public ushort FluidType => 0;
+
+
         //########################################################
         // Implementation for `IFilled` interface
         //########################################################

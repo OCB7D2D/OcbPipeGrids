@@ -18,6 +18,8 @@ namespace NodeManager
 
         public NodeManager Manager { get; protected set; }
 
+        public ScheduledTick Scheduled { get; set; }
+
         protected NodeBase(Vector3i position, BlockValue bv)
         {
             WorldPos = position;
@@ -65,11 +67,17 @@ namespace NodeManager
             if (Manager == manager) return;
             Log.Out("On Manager Attached {0}", manager);
             // Manager?.RemoveManagedNode(WorldPos);
-            if (manager == null) return;
-            manager.AddManagedNode(this);
-            ulong tick = NextTick;
-            if (tick == 0) return;
-            manager.Schedule(tick, this);
+            if (manager != null)
+            {
+                manager.AddManagedNode(this);
+                ulong tick = NextTick;
+                if (tick != 0) Scheduled =
+                    manager.Schedule(tick, this);
+            }
+            else if (Scheduled != null)
+            {
+                Manager?.Unschedule(Scheduled);
+            }
         }
 
         public abstract string GetCustomDescription();

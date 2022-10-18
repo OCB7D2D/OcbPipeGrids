@@ -51,6 +51,14 @@ namespace NodeManager
             composter.FarmPlots.Add(this);
         }
 
+        public HashSet<IGrowLight> GrowLights { get; }
+            = new HashSet<IGrowLight>();
+
+        public void AddLink(IGrowLight light)
+        {
+            light.FarmPlots.Add(this);
+        }
+
         //########################################################
         // Implementation for persistence and data exchange
         //########################################################
@@ -96,8 +104,8 @@ namespace NodeManager
 
         public override string GetCustomDescription()
         {
-            return string.Format("Soil: {0:.00}, Water: {1:.00}\n{2}",
-                SoilState, WaterState, base.GetCustomDescription());
+            return string.Format("Soil: {0:.00}, Water: {1:.00}\nLights:  {3}\n{2}",
+                SoilState, WaterState, base.GetCustomDescription(), GrowLights.Count);
         }
 
         //########################################################

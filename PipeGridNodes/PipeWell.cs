@@ -13,6 +13,8 @@ namespace NodeManager
         public static TYPES NodeType = TYPES.PipeWell;
         public override uint StorageID => (uint)TYPES.PipeWell;
 
+        public ushort FluidType => 1;
+
         //########################################################
         // Settings for Well (from block)
         //########################################################

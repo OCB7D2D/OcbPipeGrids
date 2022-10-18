@@ -22,6 +22,11 @@
 		<property name="WaterMaintenanceFactor" value="0.05" />
 		<property name="WaterMaintenanceExponent" value="1.65" />
 		<property name="WaterImprovementFactor" value="0.01" />
+
+		<property name="SprinklerMaintenanceFactor" value="0.02" />
+		<property name="SprinklerMaintenanceExponent" value="1.65" />
+		<property name="SprinklerImprovementFactor" value="0.03" />
+		
 		<property name="GrowthMaintenanceFactor" value="0.05" />
 		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
 		<property name="DisplayInfo" value="Custom" />
@@ -35,6 +40,11 @@
 		<property name="WaterMaintenanceExponent" value="0.2" />
 		<property name="WaterImprovementFactor" value="0.02" />
 		<property name="GrowthMaintenanceFactor" value="0.25" />
+
+		<property name="SprinklerMaintenanceFactor" value="0.03" />
+		<property name="SprinklerMaintenanceExponent" value="1.65" />
+		<property name="SprinklerImprovementFactor" value="0.05" />
+		
 		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
@@ -51,11 +61,36 @@
 
 	<append xpath="/blocks">
 
+		<block name="ocbFarmLight">
+			<property name="Extends" value="ceilingLight07"/>
+			<property name="CreativeMode" value="Dev"/>
+			<property name="Class" value="PlantationGrowLight, PipeGrids"/>
+			<property name="BlockReach" value="2,2,1" />
+			<property name="ReachOffset" value="0,-3,0" />
+
+			<property name="Model" value="Entities/Lighting/fluorescentLightPrefab"/>
+			<property name="MultiBlockDim" value="1,1,2"/>
+			<property name="DisplayType" value="blockMulti"/>
+		</block>
+
+		<block name="ocbFarmTrackLight">
+			<property name="Extends" value="ceilingLight07"/>
+			<property name="CreativeMode" value="Dev"/>
+			<property name="Class" value="PlantationGrowLight, PipeGrids"/>
+			<property name="BlockReach" value="2,2,1" />
+			<property name="ReachOffset" value="0,-3,0" />
+
+			<property name="Model" value="Entities/Lighting/trackLightPrefab"/>
+			<property name="MultiBlockDim" value="1,1,3"/>
+			<property name="DisplayType" value="blockMulti"/>
+		</block>
+
 		<block name="ocbFarmPlotBlock">
-			<property name="Extends" value="farmPlotBlockPlayer"/>
+			<property name="Extends" value="farmPlotBlockPlayer" Param1="Class"/>
 			<property name="Class" value="PlantationFarmPlot, PipeGrids"/>
 			<property name="PipeConnectors" value="left,right,forward,back" />
 			<property name="DisplayInfo" value="Custom" />
+			<property name="Material" value="Mfarmplot" />
 			<property name="MaxFillState" value="15" />
 			<property name="SoilImprovementFactor" value="0.015" />
 			<property name="SoilMaintenanceFactor" value="0.005" />
@@ -70,6 +105,7 @@
 			<property name="Class" value="PlantationFarmPlot, PipeGrids"/>
 			<property name="PipeConnectors" value="left,right,forward,back" />
 			<property name="DisplayInfo" value="Custom" />
+			<property name="Material" value="Mfarmplot" />
 			<property name="MaxFillState" value="15" />
 
 			<property name="Shape" value="New" />
@@ -115,7 +151,7 @@
 
 		<block name="OcbWaterSprinkler">
 
-			<property name="BlockReach" value="16,2,16" />
+			<property name="BlockReach" value="12,2,12" />
 			<property name="ReachOffset" value="0,-1,0" />
 
 			<property name="DisplayInfo" value="Custom" />
@@ -127,6 +163,7 @@
 			<!--<property name="Tags" value="safes,hardenedSafe"/>-->
 			<property name="Class" value="PlantationSprinkler, PipeGrids"/>
 			<property name="PipeConnectors" value="down" />
+			<property name="SoundSprinklerLoop" value="SprinklerLoop"/>
 			
 			<!--
 			-->

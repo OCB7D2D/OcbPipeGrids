@@ -19,6 +19,8 @@ namespace NodeManager
             FarmPlots.Add(plot.WorldPos, plot);
             ReachHelper.SearchLinks(plot, Composters,
                 ComposterToSoilReach);
+            ReachHelper.SearchLinks(plot, GrowLights,
+                GrowLightToPlantReach);
         }
 
         public void RemoveFarmPlot(PlantationFarmPlot plot)

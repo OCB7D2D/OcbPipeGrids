@@ -13,8 +13,10 @@ namespace NodeManager
         // Invoked when new manager is attached
         public void AddSprinkler(ISprinkler sprinkler)
         {
+            Log.Out("== Add Sprinkly");
             Sprinklers.Add(sprinkler.WorldPos, sprinkler);
             ReachHelper.QueryLinks(sprinkler, PlantsTree);
+            Log.Out("== Added Sprinkly");
         }
 
         // Invoked when manager is set to `null`
