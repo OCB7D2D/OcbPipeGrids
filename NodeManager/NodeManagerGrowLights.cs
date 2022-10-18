@@ -13,6 +13,7 @@ namespace NodeManager
         // Invoked when new manager is attached
         public void AddGrowLight(IGrowLight light)
         {
+            Log.Out("Adding grow light {0} search plots {1}", light.WorldPos, FarmPlots.Count);
             GrowLights.Add(light.WorldPos, light);
             ReachHelper.QueryLinks(light, FarmPlots);
         }

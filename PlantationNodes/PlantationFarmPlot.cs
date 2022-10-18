@@ -48,6 +48,7 @@ namespace NodeManager
 
         public void AddLink(IComposter composter)
         {
+            Composters.Add(composter);
             composter.FarmPlots.Add(this);
         }
 
@@ -56,6 +57,7 @@ namespace NodeManager
 
         public void AddLink(IGrowLight light)
         {
+            GrowLights.Add(light);
             light.FarmPlots.Add(this);
         }
 

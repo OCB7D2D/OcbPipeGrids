@@ -11,8 +11,6 @@ namespace NodeManager
         public readonly KdTree<MetricChebyshev>.Vector3i<IFarmPlot> FarmPlots
             = new KdTree<MetricChebyshev>.Vector3i<IFarmPlot>();
 
-        
-
         public void AddFarmPlot(PlantationFarmPlot plot)
         {
             Log.Warning("Add FarmPlot {0}", plot);
@@ -21,6 +19,8 @@ namespace NodeManager
                 ComposterToSoilReach);
             ReachHelper.SearchLinks(plot, GrowLights,
                 GrowLightToPlantReach);
+            Log.Out("Have now {0} plots", FarmPlots.Count);
+            Log.Out(" has now {0} lights", plot.GrowLights.Count);
         }
 
         public void RemoveFarmPlot(PlantationFarmPlot plot)

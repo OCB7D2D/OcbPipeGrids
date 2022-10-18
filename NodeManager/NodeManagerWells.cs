@@ -9,7 +9,7 @@ namespace NodeManager
         int WellToSoilReach = 4;
         int ComposterToSoilReach = 3;
         int IrrigatorToWellReach = 20;
-        int GrowLightToPlantReach = 5;
+        int GrowLightToPlantReach = 8;
 
         public readonly KdTree<MetricChebyshev>.Vector3i<IWell> Wells =
             new KdTree<MetricChebyshev>.Vector3i<IWell>(AddDuplicateBehavior.Update);

@@ -362,7 +362,7 @@ namespace KdTree3
 				HyperRect rect,
 				int depth,
 				NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList nearestNeighbours,
-				Vector3i distance)
+				Vector3i min, Vector3i max)
 			{
 
 				if (node == null) return;
@@ -408,7 +408,7 @@ namespace KdTree3
 						nearerRect,
 						Increment(depth),
 						nearestNeighbours,
-						distance);
+						min, max);
 				}
 
 				// Walk down into the further branch but only if our capacity hasn't been reached 
@@ -418,7 +418,7 @@ namespace KdTree3
 				furtherRect.GetClosestPoint(target, ref closestPointInFurtherRect);
 				var distanceSquaredToTarget = metric.DistanceSquared(closestPointInFurtherRect, target);
 
-				if (IsInReach(closestPointInFurtherRect, target, distance))
+				if (IsInReach(closestPointInFurtherRect, target, min, max))
 				{
 					if (!nearestNeighbours.IsFull || distanceSquaredToTarget < nearestNeighbours.FurtherestDistance)
 					{
@@ -428,24 +428,29 @@ namespace KdTree3
 							furtherRect,
 							Increment(depth),
 							nearestNeighbours,
-							distance);
+							min ,max);
 					}
 				}
 
 				// Try to add the current node to our nearest neighbours list
 				distanceSquaredToTarget = metric.DistanceSquared(node.Point, target);
 
-				if (IsInReach(node.Point, target, distance))
+				if (IsInReach(node.Point, target, min, max))
 					nearestNeighbours.Add(new Tuple<Vector3i, TValue>(node.Point, node.Value), distanceSquaredToTarget);
 
 			}
 
-            private bool IsInReach(Vector3i center, Vector3i target, Vector3i distance)
+            private bool IsInReach(Vector3i center, Vector3i target, Vector3i min, Vector3i max)
             {
-				return Math.Abs(center.x - target.x) <= distance.x
-					|| Math.Abs(center.y - target.y) <= distance.y
-					|| Math.Abs(center.z - target.z) <= distance.z;
-
+				// ToDo: isn't it wrong around
+				var dx = target.x - center.x;
+				var dy = target.y - center.y;
+				var dz = target.z - center.z;
+				Log.Out("Check item at {0} for target {1}", center, target);
+				Log.Out("Check {0} < {1} < {2}", min.z, new Vector3i(dx, dy, dz).z, max.z);
+				return (min.x <= dx && dx <= max.x) &&
+					(min.y <= dy && dy <= max.y) &&
+					(min.z <= dz && dz <= max.z);
 			}
 
             /// <summary>
@@ -470,11 +475,21 @@ namespace KdTree3
 			{
 				var results = CreateNearestNeighbourList(maxCapacity);
 				results.Condition = condition;
-				RadialSearch(center, radius, results);
+				RadialSearch(center, radius * -1, radius, results);
 				return results.GetSortedArray();
 			}
 
-			public void RadialSearch(Vector3i center, Vector3i radius, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)
+			public Tuple<Vector3i, TValue>[] RadialSearch(
+				Vector3i center, Vector3i min, Vector3i max, int maxCapacity = int.MaxValue,
+				Func<Tuple<Vector3i, TValue>, int, bool> condition = null)
+			{
+				var results = CreateNearestNeighbourList(maxCapacity);
+				results.Condition = condition;
+				RadialSearch(center, min, max, results);
+				return results.GetSortedArray();
+			}
+
+			public void RadialSearch(Vector3i center, Vector3i min, Vector3i max, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)
 			{
 				AddNearestNeighbours(
 					root,
@@ -482,7 +497,7 @@ namespace KdTree3
 					HyperRect.Infinite,
 					0,
 					results,
-					radius);
+					min, max);
 			}
 
 			public void RadialSearch(Vector3i center, int radius, NearestNeighbourList<Tuple<Vector3i, TValue>>.INearestNeighbourList results)

@@ -1,0 +1,19 @@
+﻿<configs>
+
+	<append xpath="/Sounds">
+
+		<SoundDataNode name="SprinklerLoop">
+			<AudioSource name="Sounds/AudioSource_Amb_Small"/>
+			<AudioClip ClipName="#@modfolder:Resources/SprinklerLP.unity3d?SprinklerLP" Loop="true"/>
+			<LocalCrouchVolumeScale value="1.0"/>
+			<CrouchNoiseScale value="0.5"/>
+			<NoiseScale value="1"/>
+			<MaxVoices value="18"/>
+			<MaxVoicesPerEntity value="10"/>
+			<MaxRepeatRate value="0.000"/>
+		</SoundDataNode>
+
+	</append>
+
+</configs>
+

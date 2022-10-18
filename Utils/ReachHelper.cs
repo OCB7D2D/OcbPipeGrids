@@ -28,8 +28,60 @@ namespace NodeManager
         public static void QueryLinks<S, T, M>(S self, KdTree<M>.Vector3i<T> others)
                 where S : IReacher, IWorldLink<T> where T : IWorldPos where M : IMetric
         {
+
+            Vector3i dim = self.Dimensions;
+            Vector3i reach = self.RBLK.BlockReach;
+            Vector3i offset = self.RBLK.ReachOffset;
+
+            offset -= new Vector3i(dim.x / 2, dim.y / 2, dim.z / 2);
+
+            // Calculate lower and upper boundary
+            Vector3i max = reach;
+            Vector3i min = max * -1;
+            min -= dim;
+
+            // reach.x -= dim.x / 2;
+            // reach.y -= dim.y / 2;
+            // reach.z -= dim.z / 2;
+
+            // min += offset;
+            // max += offset;
+
+            min += Vector3i.one;
+            //max -= Vector3i.one;
+            
+            if (max.z - min.z + dim.z != dim.z + reach.z * 2 - 1)
+                Log.Error("Not here");
+
+            offset = FullRotation.Rotate(self.Rotation, offset);
+            min = FullRotation.Rotate(self.Rotation, min);
+            max = FullRotation.Rotate(self.Rotation, max);
+
+            if (min.x > max.x)
+            {
+                var tmp = min.x;
+                min.x = max.x;
+                max.x = tmp;
+            }
+            if (min.y > max.y)
+            {
+                var tmp = min.y;
+                min.y = max.y;
+                max.y = tmp;
+            }
+            if (min.z > max.z)
+            {
+                var tmp = min.z;
+                min.z = max.z;
+                max.z = tmp;
+            }
+
+
+
+            Log.Out("Apply offset {0}", offset);
+
             Tuple<Vector3i, T>[] items = others.RadialSearch(
-                self.WorldPos + self.RotatedOffset, self.RotatedReach, 255,
+                self.WorldPos + offset, min, max, 255,
                 (Tuple<Vector3i, T> kv, int dist) => self.IsInReach(kv.Item1));
             foreach (Tuple<Vector3i, T> kv in items) self.AddLink(kv.Item2);
         }
@@ -42,7 +94,7 @@ namespace NodeManager
             KdTree<M>.Vector3i<T> others, int reach)
                 where T : IReacher where M : IMetric
         {
-            Tuple<Vector3i, T>[] items = others.RadialSearch(self.WorldPos, reach, 255,
+            Tuple<Vector3i, T>[] items = others.RadialSearch(self.WorldPos, reach * 3, 255,
                 (Tuple<Vector3i, T> kv, int dist) => kv.Item2.IsInReach(self.WorldPos));
             foreach (Tuple<Vector3i, T> kv in items) self.AddLink(kv.Item2);
         }
@@ -50,23 +102,23 @@ namespace NodeManager
         public static bool IsInReach(IReacher reacher, Vector3i target)
         {
 
-            Log.Out("Check item reach at {0} for pos {1}", reacher.WorldPos, target);
+            Log.Out("Re-Check item at {0} for target {1}", reacher.WorldPos, target);
             IReacherBlock BLOCK = reacher.RBLK;
 
             // That doesn't work for even multidim, since rotation pivot changes
 
-            Vector3i offset = target - reacher.WorldPos;
+            Vector3i offset = reacher.WorldPos - target;
             Log.Out("  offset in world space {0} with rotation {1}", offset, reacher.Rotation);
             offset = FullRotation.InvRotate(reacher.Rotation, offset);
             Log.Out("  offset rotated into local space {0}", offset);
-            offset -= BLOCK.ReachOffset; // Adjust in our space
+            offset += BLOCK.ReachOffset; // Adjust in our space
             Log.Out("  offset in relative world space {0}", offset);
 
             
             // Get settings for reachable area
             Vector3i dim = reacher.Dimensions;
             Vector3i reach = BLOCK.BlockReach;
-
+            
             offset.x -= dim.x / 2;
             offset.y -= dim.y / 2;
             offset.z -= dim.z / 2;
@@ -76,6 +128,7 @@ namespace NodeManager
             Vector3i min = max * -1;
             min -= dim;
             min += Vector3i.one;
+            //max -= Vector3i.one;
 
             // Adjust for odd block shift
             // if (dim.x % 2 == 0) max.x += 1;
@@ -83,6 +136,7 @@ namespace NodeManager
             // if (dim.z % 2 == 0) max.z += 1;
             // Check if point is withing our boundaries
             Log.Out("  min {0} to max {1} at offset {2}", min, max, offset);
+            Log.Out(" ==> {0} < {1} < {2}", min.z, offset.z, max.z);
             var rv = min.x <= offset.x && offset.x <= max.x
                 && min.y <= offset.y && offset.y <= max.y
                 && min.z <= offset.z && offset.z <= max.z;
