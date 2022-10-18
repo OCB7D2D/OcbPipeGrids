@@ -116,7 +116,7 @@ namespace NodeManager
         Vector3i Dimensions { get; }
         Vector3i RotatedReach { get; }
         Vector3i RotatedOffset { get; }
-        bool IsInReach(Vector3i target);
+        bool IsInReach(Vector3i target, bool check);
     }
 
 

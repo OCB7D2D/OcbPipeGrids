@@ -149,7 +149,7 @@ namespace NodeManager
 
             Vector3 shift = new Vector3(
                 rotated.x % 2 == 0 ? rotated.x < 0 ? 1f : 0.0f : 0.5f,
-                rotated.y * 0.5f,
+                rotated.y % 2 == 0 ? rotated.y < 0 ? 1f : 0.0f : 0.5f,
                 rotated.z % 2 == 0 ? rotated.z < 0 ? 1f : 0.0f : 0.5f);
 
 

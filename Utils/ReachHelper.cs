@@ -50,9 +50,6 @@ namespace NodeManager
             min += Vector3i.one;
             //max -= Vector3i.one;
             
-            if (max.z - min.z + dim.z != dim.z + reach.z * 2 - 1)
-                Log.Error("Not here");
-
             offset = FullRotation.Rotate(self.Rotation, offset);
             min = FullRotation.Rotate(self.Rotation, min);
             max = FullRotation.Rotate(self.Rotation, max);
@@ -82,7 +79,8 @@ namespace NodeManager
 
             Tuple<Vector3i, T>[] items = others.RadialSearch(
                 self.WorldPos + offset, min, max, 255,
-                (Tuple<Vector3i, T> kv, int dist) => self.IsInReach(kv.Item1));
+                // This should ideally not be needed anymore
+                (Tuple<Vector3i, T> kv, int dist) => self.IsInReach(kv.Item1, true));
             foreach (Tuple<Vector3i, T> kv in items) self.AddLink(kv.Item2);
         }
 
@@ -94,12 +92,13 @@ namespace NodeManager
             KdTree<M>.Vector3i<T> others, int reach)
                 where T : IReacher where M : IMetric
         {
-            Tuple<Vector3i, T>[] items = others.RadialSearch(self.WorldPos, reach * 3, 255,
-                (Tuple<Vector3i, T> kv, int dist) => kv.Item2.IsInReach(self.WorldPos));
+            // We must optimize reach here, but now way around
+            Tuple<Vector3i, T>[] items = others.RadialSearch(self.WorldPos, reach, 255,
+                (Tuple<Vector3i, T> kv, int dist) => kv.Item2.IsInReach(self.WorldPos, false));
             foreach (Tuple<Vector3i, T> kv in items) self.AddLink(kv.Item2);
         }
 
-        public static bool IsInReach(IReacher reacher, Vector3i target)
+        public static bool IsInReach(IReacher reacher, Vector3i target, bool check)
         {
 
             Log.Out("Re-Check item at {0} for target {1}", reacher.WorldPos, target);
@@ -142,6 +141,8 @@ namespace NodeManager
                 && min.z <= offset.z && offset.z <= max.z;
             
             Log.Out("  Result {0}", rv);
+            if (check && rv == false)
+                Log.Error("This should not happen anymore, radial search returned failure");
             return rv;
 
 

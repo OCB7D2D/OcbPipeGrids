@@ -24,7 +24,7 @@ namespace NodeManager
         public Vector3i RotatedReach => FullRotation.Rotate(Rotation, BLOCK.BlockReach);
         public Vector3i RotatedOffset => FullRotation.Rotate(Rotation, BLOCK.ReachOffset);
         public Vector3i Dimensions => BLOCK.multiBlockPos?.dim ?? Vector3i.one;
-        public bool IsInReach(Vector3i target) => ReachHelper.IsInReach(this, target);
+        public bool IsInReach(Vector3i target, bool check) => ReachHelper.IsInReach(this, target, check);
 
         //########################################################
         // Setup for node manager implementation
