@@ -1,6 +1,5 @@
 ﻿using Audio;
 using NodeFacilitator;
-using System;
 using UnityEngine;
 
 public class BlockPlantationSprinkler : ImpBlockPipeReservoirUnpowered, ISprinklerBlock, IRotationSimpleBlock
@@ -83,34 +82,56 @@ public class BlockPlantationSprinkler : ImpBlockPipeReservoirUnpowered, ISprinkl
 		return cmds;
 	}
 
-	// Dispatch lower commands to parent
-	// Handle all other commands here
-/*
-	public override bool OnBlockActivated(int cmd,
-		WorldBase world, int cIdx, Vector3i pos,
-		BlockValue bv, EntityAlive player)
-	{
-		// Execute for base commands
-		if (cmd < cmd_offset) return base.
-			OnBlockActivated(cmd, world,
-				cIdx, pos, bv, player);
-		// Make it zero based again
-		cmd -= cmd_offset;
-		// We only have one command
-		if (cmd != 0) return false;
-		// Toggle bit flag
-		bv.meta2 ^= 1;
-		// Update block in world
-		world.SetBlockRPC(pos, bv);
-		// All is good
-		return true;
-	}
-*/
+    // Dispatch lower commands to parent
+    // Handle all other commands here
+    public override bool OnBlockActivated(string cmd, WorldBase world,
+        int cIdx, Vector3i pos, BlockValue bv, EntityAlive player)
+    {
+        if (cmd == "show_bounds")
+        {
+            // Toggle bit flag
+            bv.meta2 ^= 1;
+			Log.Out("Show meta => {0}, meta2 => {1}", bv.meta, bv.meta2);
+            // Update block in world
+            world.SetBlockRPC(pos, bv);
+            // All is good
+            return true;
+        }
+        else
+        {
+            return base.OnBlockActivated(cmd,
+                world, cIdx, pos, bv, player);
+        }
+    }
+    
+	/*
+        public override bool OnBlockActivated(int cmd,
+            WorldBase world, int cIdx, Vector3i pos,
+            BlockValue bv, EntityAlive player)
+        {
+            // Execute for base commands
+            if (cmd < cmd_offset) return base.
+                OnBlockActivated(cmd, world,
+                    cIdx, pos, bv, player);
+            // Make it zero based again
+            cmd -= cmd_offset;
+            // We only have one command
+            if (cmd != 0) return false;
+            // Toggle bit flag
+            bv.meta2 ^= 1;
+            // Update block in world
+            world.SetBlockRPC(pos, bv);
+            // All is good
+            return true;
+        }
+    */
 
-	public override void OnBlockValueChanged(WorldBase world, Chunk chunk,
+    public override void OnBlockValueChanged(WorldBase world, Chunk chunk,
 		int clrIdx, Vector3i pos, BlockValue bv_old, BlockValue bv_new)
 	{
-		base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
+        Log.Out(" was meta => {0}, meta2 => {1}", bv_old.meta, bv_old.meta2);
+        Log.Out("Changed meta => {0}, meta2 => {1}", bv_new.meta, bv_new.meta2);
+        base.OnBlockValueChanged(world, chunk, clrIdx, pos, bv_old, bv_new);
 		BlockHelper.UpdateBoundHelper(pos, bv_new, this, this);
 		if (BlockHelper.GetEnabled(bv_old) ==
 			BlockHelper.GetEnabled(bv_new)) return;

@@ -117,7 +117,7 @@
     <Content Include="Config\blocks.pipe-source.xml" />
     <Content Include="Config\blocks.pipe-drain.xml" />
     <Content Include="Config\blocks.pipe-injector.xml" />
-    <Content Include="Config\blocks.pipe-ocb.xml" />
+    <Content Include="Config\blocks.pipe-ocb-small.xml" />
     <Content Include="Config\blocks.pipe-vanilla-small.xml" />
     <Content Include="Config\blocks.sprinkler-outdoor.xml" />
     <Content Include="Config\blocks.tower-tank.xml" />

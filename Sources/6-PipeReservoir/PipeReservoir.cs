@@ -59,7 +59,7 @@ namespace NodeFacilitator
         {
             FillLevel = 0f;
             FluidType = DefaultFluidType;
-            Log.Warning("Reset reservoir 2");
+            // Log.Warning("Reset reservoir 2");
             // Grid?.CheckFluidType();
         }
         public ushort FluidType { get; set; } = 0;
@@ -185,7 +185,7 @@ namespace NodeFacilitator
                 {
                     if (reservoir.FillLevel < 1e-3)
                     {
-                        Log.Warning("Reset reservoir 1");
+                        //Log.Warning("Reset reservoir 1");
                         //reservoir.FillLevel = 0;
                         //reservoir.FluidType = 0;
                         reservoir.Reset();

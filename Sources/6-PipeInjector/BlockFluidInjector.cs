@@ -219,26 +219,42 @@ public class BlockFluidInjector : ImpBlockChest, ILootBlock, IBlockReservoir
 
     // Dispatch lower commands to parent
     // Handle all other commands here
-/*
-    public override bool OnBlockActivated(int cmd,
-        WorldBase world, int cIdx, Vector3i pos,
-        BlockValue bv, EntityAlive player)
+    public override bool OnBlockActivated(string cmd, WorldBase world,
+        int cIdx, Vector3i pos, BlockValue bv, EntityAlive player)
     {
-        // Execute for base commands
-        if (cmd < cmd_offset) return base.
-            OnBlockActivated(cmd, world,
-                cIdx, pos, bv, player);
-        // Make it zero based again
-        cmd -= cmd_offset;
-        // We only have one command
-        if (cmd != 0) return false;
-        // Send reset message to worker
-        var msg = new MsgNodeReset();
-        msg.Setup(pos); // Just pass position
-        NodeManagerInterface.SendToWorker(msg);
-        // All is good
-        return true;
+        if (cmd == "remove")
+        {
+            // Send reset message to worker
+            var msg = new MsgNodeReset();
+            msg.Setup(pos); // Just pass position
+            NodeManagerInterface.SendToWorker(msg);
+            // All is good
+            return true;
+
+        }
+        else
+        {
+            return base.OnBlockActivated(cmd,
+                world, cIdx, pos, bv, player);
+        }
     }
-*/
+    
+	/*
+        public override bool OnBlockActivated(int cmd,
+            WorldBase world, int cIdx, Vector3i pos,
+            BlockValue bv, EntityAlive player)
+        {
+            // Execute for base commands
+            if (cmd < cmd_offset) return base.
+                OnBlockActivated(cmd, world,
+                    cIdx, pos, bv, player);
+            // Make it zero based again
+            cmd -= cmd_offset;
+            // We only have one command
+            if (cmd != 0) return false;
+            // All is good
+            return true;
+        }
+    */
 
 }

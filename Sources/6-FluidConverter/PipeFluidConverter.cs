@@ -48,6 +48,16 @@ namespace NodeFacilitator
                 {
                     case "resourceCompost": return (int)Mathf.Min(FertilizerStockMax - FertilizerStock, count);
                     case "resourcePesticide": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide1": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide2": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide3": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide4": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide5": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide6": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide7": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide8": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide9": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
+                    case "resourcePesticide0": return (int)Mathf.Min(PesticideStockMax - PesticideStock, count);
                 }
             }
             return 0;
@@ -60,7 +70,16 @@ namespace NodeFacilitator
             {
                 switch (ItemClass.nameIdMapping.GetNameForId(type))
                 {
-                    case "resourcePesticide":
+                    case "resourcePesticide0":
+                    case "resourcePesticide1":
+                    case "resourcePesticide2":
+                    case "resourcePesticide3":
+                    case "resourcePesticide4":
+                    case "resourcePesticide5":
+                    case "resourcePesticide6":
+                    case "resourcePesticide7":
+                    case "resourcePesticide8":
+                    case "resourcePesticide9":
                         PesticideStock += count;
                         break;
                     case "resourceCompost":

@@ -108,7 +108,7 @@
             <property name="Material" value="Msteel"/>
             <property name="StabilitySupport" value="true"/>
             <property name="Shape" value="ModelEntity" />
-            <property name="Model" value="#@modfolder:Resources/FluidConverter.unity3d?FluidConverter" />
+            <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?FluidConverterPrefab" />
             <property name="IsTerrainDecoration" value="false"/>
             <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
             <property name="LootList" value="storageCrate"/>

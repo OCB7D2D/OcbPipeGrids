@@ -116,6 +116,28 @@ namespace NodeFacilitator
         //########################################################
         // Helpers for block activation commands
         //########################################################
+        public static int ExtendActivationCommands(
+            Block current, System.Type ptype,
+            ref BlockActivationCommand[] cmds,
+            string name = "cmds")
+        {
+            var field = AccessTools.Field(ptype, name);
+            if (field.GetValue(current) is
+                BlockActivationCommand[] parent)
+            {
+                int size = cmds.Length;
+                int offset = parent.Length;
+                Array.Resize(ref cmds, size + offset);
+                // Move existing to the back
+                for (int i = 0; i < size; i += 1)
+                    cmds[offset + i] = cmds[i];
+                // Insert new on the front
+                for (int i = 0; i < offset; i += 1)
+                    cmds[i] = parent[i];
+                return offset;
+            }
+            return 0;
+        }
 
         public static void ExtendActivationCommands(
             Block current, System.Type ptype,

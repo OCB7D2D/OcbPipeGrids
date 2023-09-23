@@ -92,7 +92,7 @@ namespace NodeFacilitator
                             break;
                         }
                         else if ((FillLevel < 1e-3 || FluidType == 3) &&
-                            ic?.Name == "resourcePesticide")
+                            ic/*?*/.Name.StartsWith("resourcePesticide"))
                         {
                             // Fluid is pesticide
                             if (AddFillLevel(-take, 3))

@@ -95,30 +95,38 @@ public class BlockPlantationGrowLight : BlockRemoteDesc, ISprinklerBlock
 		return cmds;
 	}
 
-	// Dispatch lower commands to parent
-	// Handle all other commands here
-	/*
-	public override bool OnBlockActivated(int cmd,
-		WorldBase world, int cIdx, Vector3i pos,
-		BlockValue bv, EntityAlive player)
-	{
-		// Execute for base commands
-		if (cmd < cmd_offset) return base.
-			OnBlockActivated(cmd, world,
-				cIdx, pos, bv, player);
-		// Make it zero based again
-		cmd -= cmd_offset;
-		// Toggle bit flag
-		if (cmd == 0) bv.meta ^= 2;
-        else if (cmd == 1) bv.meta2 ^= 1;
-        // Update block in world
-        world.SetBlockRPC(pos, bv);
-        // All is good
-        return true;
-	}
-	*/
+    // Dispatch lower commands to parent
+    // Handle all other commands here
+    public override bool OnBlockActivated(string cmd, WorldBase world,
+        int cIdx, Vector3i pos, BlockValue bv, EntityAlive player)
+    {
+		if (cmd == "activate")
+		{
+            // Toggle bit flag
+            bv.meta2 ^= 2;
+            // Update block in world
+            world.SetBlockRPC(pos, bv);
+            // All is good
+            return true;
 
-	public static void UpdateLightState(BlockEntityData model, Vector3i pos, BlockValue bv)
+        }
+        else if (cmd == "show_bounds")
+        {
+            // Toggle bit flag
+            bv.meta2 ^= 1;
+            // Update block in world
+            world.SetBlockRPC(pos, bv);
+            // All is good
+            return true;
+        }
+        else
+        {
+            return base.OnBlockActivated(cmd,
+                world, cIdx, pos, bv, player);
+        }
+    }
+
+    public static void UpdateLightState(BlockEntityData model, Vector3i pos, BlockValue bv)
 	{
 		if (model == null || model.bHasTransform == false) return;
         if (model.transform.FindInChildren("MainLight") is Transform transform)

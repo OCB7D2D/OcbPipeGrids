@@ -101,7 +101,9 @@ namespace NodeFacilitator
                 if (FillLevel <= 0.02) enable = false;
                 if (BlockHelper.GetEnabled(BV) != enable)
                 {
-                    BlockHelper.SetEnabled(ref BV, enable);
+                    Log.Out("Adjust sprinkler meta => {0}, meta2 => {1}", BV.meta, BV.meta2);
+                    BlockHelper.SetEnabled(ref BV, enable); // Sets Meta
+                    Log.Out("Adjusted sprinkler meta => {0}, meta2 => {1}", BV.meta, BV.meta2);
                     var action = new ExecuteBlockChange();
                     action.Setup(WorldPos, BV);
                     Manager.PushToMother(action);

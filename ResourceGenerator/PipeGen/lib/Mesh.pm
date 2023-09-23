@@ -74,8 +74,8 @@ sub Scale
 	my %seen;
 	my ($self, $scale) = @_;
 	foreach my $vertex ($self->Vertices) {
-		for (my $i = 0; $i < @{$scale}; $i++) {
-			next if exists $seen{$vertex};
+		next if exists $seen{$vertex};
+		for (my $i = 0; $i < scalar(@{$scale}); $i++) {
 			$vertex->Position->[$i] *= $scale->[$i];
 			$vertex->Normal->[$i] *= -1 if $scale->[$i] < 0;
 			$seen{$vertex} = 1;
@@ -513,14 +513,35 @@ use POSIX "fmod";
 
 sub ANGLE
 {
-	#warn "Angle $_[0]";
+	#warn "Angle $_[0] vs $_[1] => ", ($_[0] - $_[1]) / $_[2];
 	#return 0.2 if $_[0] > 0.999;
-	return $_[0];
+	return $_[0] - $_[1];
+}
+
+sub GetFaceUV
+{
+	my ($x, $w, $y, $h, $dx, $dy, $overflow) = @_;
+	# $dy += 1; $dx += 1;
+	my $rx = ($x - $w->[0]);
+	my $ry = ANGLE($y, $h->[0], $dy);
+	$ry += 2 if ($overflow && $ry <= 0);
+	return V($rx / $dx, $ry / $dy);
+}
+
+sub GetFaceUVs
+{
+	my ($proj, $w, $h, $dx, $dy) = @_;
+	return [
+		GetFaceUV($proj->[0]->[0], $w, $proj->[0]->[1], $h, $dx, $dy),
+		GetFaceUV($proj->[1]->[0], $w, $proj->[1]->[1], $h, $dx, $dy),
+		GetFaceUV($proj->[2]->[0], $w, $proj->[2]->[1], $h, $dx, $dy, 1),
+		GetFaceUV($proj->[3]->[0], $w, $proj->[3]->[1], $h, $dx, $dy, 1)
+	];
 }
 
 sub CylindricUVs
 {
-	my ($self, $axis) = @_;
+	my ($self, $axis, $dx, $dy) = @_;
 	my $w = V(1e99,-1e99); # x
 	my $h = V(1e99,-1e99); # y
 	my @projected;
@@ -528,12 +549,15 @@ sub CylindricUVs
 	my ($u,$j,$k) = $axis->rotation_base_3d;
 	my $cc = 0;
 	my $dir = 0;
+	my $q = 0;
+	warn "Project ", scalar($self->Faces), " Faces";
 	foreach my $face ($self->Faces)
 	{
+		#last if ($q++ == 1);
 		push @projected, [$face, my $projected = []];
 		$cc++;
 		#next if $cc != 2 && $cc != 3;
-		warn "ADD FACE\n";
+		# warn "ADD FACE\n";
 		my $lastrot = 0;
 		my @faced;
 		for (my $i = 0; $i < $face->Vertices; $i++)
@@ -541,7 +565,10 @@ sub CylindricUVs
 			my $v = $face->Vertice($i)->Normal;
 			my $p = $face->Vertice($i)->Position;
 			my $rot = atan2($v * $b[0], $v * $b[1]) / PI;
-			# warn "Normal $v on $axis => ", $rot;
+			warn "Normal $v on $axis => ", $rot;
+			
+			# $rot = 0 if ($rot == 1);
+			# $rot = 1 + $rot if $rot < 0;
 
 			if ($rot == 0)
 			{
@@ -564,7 +591,7 @@ sub CylindricUVs
 			my $x = 1 - $p * $axis;
 			my $y = $rot;
 
-			# warn " $x $y\n";
+			warn " $x $y\n";
 
 			# my $n = $v - ($v * $u) * $u;
 			# my $x = $j * $n;
@@ -583,29 +610,38 @@ sub CylindricUVs
 				{
 					if ($faced[0]->[1] == -1 && $faced[2]->[1] > 0)
 					{
-					{
-						$faced[0]->[1] = 1;
-						$faced[1]->[1] = 1;
-					}
+						#$faced[0]->[1] = 1;
+						#$faced[1]->[1] = 1;
 					}
 				}
 			}
 		}
+		else {
+			warn "Unsupported non quad face";
+		}
 		push @{$projected}, @faced;
 	}
-	$h->[0] = -1;
-	$h->[1] = 1;
-	#warn "====> ", $h->[1];
-	my $dx = $w->[1] - $w->[0];
-	my $dy = $h->[1] - $h->[0];
-	$dx = 1 if $dx == 0;
-	$dy = 1 if $dy == 0;
+	#$h->[0] = -1;
+	#$h->[1] = 1;
+	warn "====> ", $h->[1], " and ", $h->[1];
+	#$dx = $w->[1] - $w->[0];# unless $dx;
+	$dy = $h->[1] - $h->[0];# unless $dy;
+	#$dy = 2;
+	$dx = 0.5;
+	# Force full texture width
+	#my $dx = 2;
+	#my $dy = 2;
+	#$dx = 1 if $dx == 0;
+	#$dy = 1 if $dy == 0;
 	foreach my $projection (@projected)
 	{
-		$projection->[0]->{uvs} = [map {
-			V(($_->[0] - $w->[0]) / $dx,
-			  (ANGLE($_->[1] - $h->[0])) / $dy);
-		} @{$projection->[1]}];
+		# warn "Project ", ($_->[0] - $w->[0]), "\n";
+		$projection->[0]->{uvs} = 
+			GetFaceUVs($projection->[1], $w, $h, $dx, $dy);
+
+		# $projection->[0]->{uvs} = [map {
+		# 	GetFaceUV($_->[0], $w, $_->[1], $h, $dx, $dy)
+		# } @{$projection->[1]}];
 		warn "ADD UVs ", join(", ", @{$projection->[0]->{uvs}});
 	}
 	return $self;

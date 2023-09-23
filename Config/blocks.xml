@@ -10,11 +10,11 @@
   <include path="blocks.tower-tank.xml"/>
   <include path="blocks.sprinkler-indoor.xml"/>
   <include path="blocks.sprinkler-outdoor.xml"/>
-  <include path="blocks.pipe-ocb.xml"/>
   <include path="blocks.pipe-pump.xml"/>
   <include path="blocks.pipe-drain.xml"/>
   <include path="blocks.pipe-source.xml"/>
   <include path="blocks.pipe-injector.xml"/>
+  <include path="blocks.pipe-ocb-small.xml"/>
   <include path="blocks.pipe-vanilla-metal.xml"/>
   <include path="blocks.pipe-vanilla-small.xml"/>
 
@@ -87,8 +87,8 @@
 			<property name="Material" value="Msteel"/>
 			<property name="StabilitySupport" value="true"/>
 			<property name="Shape" value="ModelEntity" />
-			<property name="Model" value="#@modfolder:Resources/gupSprinklerBlock2.unity3d?gupLargeSprinkler2"/>
-			<property name="IsTerrainDecoration" value="false"/>
+      <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?GupSprinklerPrefab"/>
+      <property name="IsTerrainDecoration" value="false"/>
 			<property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
 			<property name="LootList" value="storageCrate"/>
 			<property name="LPHardnessScale" value="8"/>

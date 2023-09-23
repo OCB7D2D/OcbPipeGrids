@@ -2,20 +2,17 @@
 
 
   <append xpath="/items">
-
-
+<!--
     <item name="drinkJarEmpty">
       <property name="HoldType" value="3"/>
-      <property name="Meshfile" value="#Other/Items?Food/emptyJarPrefab.prefab"/>
-      <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+      <property name="Meshfile" value="@:Other/Items?Food/emptyJarPrefab.prefab"/>
+      <property name="DropMeshfile" value="@:Other/Items?Misc/sack_droppedPrefab.prefab"/>
       <property name="Material" value="Mglass"/>
       <property name="Stacknumber" value="125"/>
-      <!-- STK resource -->
       <property name="Weight" value="10"/>
       <property name="EconomicValue" value="6"/>
       <property name="CraftingIngredientTime" value="9"/>
       <property class="Action1">
-        <!-- UseAction -->
         <property name="Class" value="ExchangeItem"/>
         <property name="Delay" value="1.0"/>
         <property name="Change_item_to" value="drinkJarRiverWater"/>
@@ -29,7 +26,7 @@
       </property>
       <property name="Group" value="Resources"/>
     </item>
-    
+-->    
   </append>
   
   <setattribute xpath="/items/item[@name='bucketRiverWater']/property[@class='Action1']" name="class">Action0</setattribute>
@@ -46,6 +43,7 @@
 	</append>
 
 	<append xpath="/items/item[@name='drinkJarRiverWater']">
+    <!-- 
 		<property class="Action1">
 			<property name="Class" value="ExchangeItem"/>
 			<property name="Delay" value="1.0"/>
@@ -54,24 +52,26 @@
 			<property name="Focused_blockname_1" value="OcbWaterFarmWell"/>
 			<property name="Sound_start" value="bucketplace_water"/>
 		</property>
+    -->
 	</append>
-
+<!--
 	<append xpath="/items/item[@name='drinkJarEmpty']/property[@class='Action1']">
 		<property name="Focused_blockname_6" value="OcbWaterFarmWell"/>
 	</append>
-
+-->
 	<append xpath="/items/item[@name='bucketEmpty']/property[@class='Action1']">
 		<property name="Focused_blockname_6" value="OcbWaterFarmWell"/>
 	</append>
 
 	<append xpath="/items">
 		<item name="resourceCompost">
-			<property name="HoldType" value="45"/>
-			<property name="Tags" value="junk"/>
+      <property name="HoldType" value="74"/>
+      <property name="Tags" value="junk"/>
 			<property name="UnlockedBy" value="perkLivingOffTheLand"/>
-			<property name="Meshfile" value="#Other/Items?Misc/sackPrefab.prefab"/>
-			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
-			<property name="CustomIcon" value="resourceFertilizer"/>
+      <property name="Meshfile" value="#@modfolder:Resources/PipeGrid.unity3d?SprayBottlePrefab"/>
+      <property name="DropMeshfile" value="#@modfolder:Resources/PipeGrid.unity3d?SprayBottlePrefab"/>
+      <property name="TintColor" value="208,128,16" />
+      <property name="CustomIcon" value="resourceFertilizer"/>
 			<property name="Material" value="MresourceFertilizer"/>
 			<property name="Stacknumber" value="500"/>
 			<property name="Weight" value="0"/>
@@ -81,19 +81,20 @@
         <property name="Class" value="ExchangeInteraction, PipeGrids"/>
         <property name="Delay" value="2.5"/>
         <property name="Sound_start" value="bucketplace_water"/>
-        <property name="Create_item" value="drinkJarEmpty"/>
+        <property name="Create_item" value="drinkJarRiverWater"/>
       </property>
     </item>
 
 		<item name="resourcePesticide">
-			<property name="HoldType" value="34"/>
-			<property name="Tags" value="junk"/>
+      <property name="HoldType" value="74"/>
+      <property name="Tags" value="junk"/>
 			<property name="UnlockedBy" value="perkLivingOffTheLand"/>
-			<property name="Meshfile" value="#Other/Items?Food/bottled_waterPrefab.prefab"/>
-			<property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/>
+      <property name="Meshfile" value="#@modfolder:Resources/PipeGrid.unity3d?SprayBottlePrefab"/>
+      <property name="DropMeshfile" value="#@modfolder:Resources/PipeGrid.unity3d?SprayBottlePrefab"/>
 			<property name="CustomIcon" value="drinkJarRiverWater"/>
 			<property name="CustomIconTint" value="128,255,255" />
-			<property name="Material" value="Mglass"/>
+      <property name="TintColor" value="16,152,16" />
+      <property name="Material" value="Mglass"/>
 			<property name="Stacknumber" value="50"/>
 			<property name="Weight" value="0"/>
 			<property name="Group" value="Resources"/>
@@ -102,10 +103,13 @@
 				<property name="Class" value="ExchangeInteraction, PipeGrids"/>
 				<property name="Delay" value="2.5"/>
 				<property name="Sound_start" value="bucketplace_water"/>
-				<property name="Create_item" value="drinkJarEmpty"/>
+				<property name="Create_item" value="drinkJarRiverWater"/>
 			</property>
 		</item>
-	
-	</append>
+
+
+    <!-- 3, 9, 29, 31, 32!, 37!, 49!, 66?, 72!, 74!! -->
+    
+  </append>
 
 </configs>

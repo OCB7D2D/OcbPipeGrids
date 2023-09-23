@@ -15,7 +15,6 @@
 
       <property name="CreativeMode" value="Player"/>
       <property name="Tags" value="door"/>
-      <property name="CustomIcon" value="AutoHarvest"/>
       <property name="Material" value="Msteel"/>
       <property name="StabilitySupport" value="true"/>
       <!--
@@ -39,7 +38,7 @@
       <property name="ImposterDontBlock" value="true"/>
 
       <property name="Shape" value="New"/>
-      <property name="Model" value="#@modfolder:Resources/WaterPipeIrrigation.unity3d?WaterIrrigationPrefab"/>
+      <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?PipeIrrigationPrefab"/>
 
       <property name="IsTerrainDecoration" value="false"/>
       <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
@@ -61,8 +60,10 @@
       <drop event="Destroy" name="resourceMechanicalParts" count="5,10" tag="salvageHarvest"/>
       <drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
 
-      <!--<property name="CanPickup" value="true" />
-			<property name="TakeDelay" value="30"/>-->
+      <property name="ActivationDistance" value="12" />
+      <property name="CanPickup" value="true" />
+
+      <property name="TakeDelay" value="30"/>
       <property name="RequiredPower" value="20"/>
       <property name="AutoHarvestSpeed" value="4"/>
       <property name="LookupsPerTick" value="2000"/>

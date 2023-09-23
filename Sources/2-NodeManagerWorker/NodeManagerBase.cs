@@ -242,6 +242,15 @@ namespace NodeFacilitator
                 Nodes.Remove(position);
         }
 
+        //########################################################
+        // Hook to update the block value at manager
+        // E.g. called when meta flags change via client
+        //########################################################
+
+        public void UpdateBlockValue(Vector3i position, BlockValue bv)
+        {
+            if (TryGetNode<NodeBlockBase>(position, out var node)) node.BV = bv;
+        }
 
         //########################################################
         //########################################################

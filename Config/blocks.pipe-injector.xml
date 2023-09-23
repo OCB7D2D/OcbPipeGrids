@@ -17,13 +17,12 @@
         <property name="EconomicBundleSize" value="10"/>
         <property name="FilterTags" value="floot"/>
         <property name="DisplayType" value="blockHardened"/>
-        <property name="CustomIcon" value="AutoHarvest"/>
         <property name="DescriptionKey" value="ocbWaterPipeSource"/>
 
         <property name="Shape" value="New"/>
         <property name="Class" value="FluidInjector, PipeGrids"/>
 
-        <property name="Model" value="#@modfolder:Resources/WaterPipePump.unity3d?WaterPipePump" />
+        <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?PipePumpPrefab" />
 
         <property name="ModelOffset" value=".5,.5,.5"/>
         <property name="Path" value="solid"/>

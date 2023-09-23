@@ -44,6 +44,19 @@ public static class NodeBlockHelper
 		NodeManagerInterface.PushToWorker(action);
 	}
 
+    public static void OnBlockValueChanged(IBlockNode block,
+        Vector3i pos, BlockValue bv, bool masterOnly = true)
+    {
+        // Only register blocks on server instance
+        if (NodeManagerInterface.IsRemoteClient) return;
+        // Only process main block nodes?
+        if (masterOnly && bv.ischild) return;
+        // Dispatch to virtual implementation
+        var action = new ActionBlockValueChanged();
+        action.Setup(block.NodeType, pos, bv);
+        NodeManagerInterface.PushToWorker(action);
+    }
+
     public static float ConvertReservoir(float consume, float factor,
 		IFilledState input, IFilledState output)
     {

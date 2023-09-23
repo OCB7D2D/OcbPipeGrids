@@ -13,4 +13,10 @@
             => worker.RemoveManagedNode(Position);
     }
 
+    public class ActionBlockValueChanged : ActionBlockValue
+    {
+        public override void ProcessOnWorker(NodeManagerWorker worker)
+            => worker.UpdateBlockValue(Position, BV);
+    }
+
 }

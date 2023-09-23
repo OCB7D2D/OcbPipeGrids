@@ -22,7 +22,7 @@ public class BlockPlantationGrowing : BlockPlantGrowing, IPlantGrowingBlock, IPl
     public bool AcceptItem(ItemClass item)
     {
         string name = item.GetItemName();
-        return name == "resourcePesticide";
+        return name.StartsWith("resourcePesticide");
     }
     //########################################################
     //########################################################

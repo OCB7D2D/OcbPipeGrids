@@ -29,7 +29,7 @@ public class BlockFluidConverter : ImpBlockPipeReservoirPowered, IBlockExchangeI
     public bool AcceptItem(ItemClass item)
     {
         string name = item.GetItemName();
-        return name == "resourcePesticide"
+        return name.StartsWith("resourcePesticide")
             || name == "resourceCompost";
     }
 

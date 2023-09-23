@@ -52,7 +52,7 @@ sub MoveBy
 	# Not sure why we can't use "+=" here
 	# Note: doesn't even seem to work with `$_`
 	foreach my $vertex (@{$self->{vertices}}) {
-		warn "Move ", $vertex->Position, " + ", $offset, "\n";
+		# warn "Move ", $vertex->Position, " + ", $offset, "\n";
 		$vertex->Position->set($vertex->Position + $offset);
 	}
 	return $self;

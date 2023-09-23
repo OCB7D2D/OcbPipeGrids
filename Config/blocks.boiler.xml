@@ -32,7 +32,7 @@
         <property name="Material" value="Msteel"/>
         <property name="StabilitySupport" value="true"/>
         <property name="Shape" value="ModelEntity" />
-        <property name="Model" value="#@modfolder:Resources/OldBoiler.unity3d?OldWaterBoiler" />
+        <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?WaterBoilerPrefab" />
         <property name="IsTerrainDecoration" value="false"/>
         <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
         <property name="LootList" value="storageCrate"/>

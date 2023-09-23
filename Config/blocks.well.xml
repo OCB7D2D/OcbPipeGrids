@@ -10,7 +10,7 @@
         <property name="Material" value="Msteel"/>
         <property name="StabilitySupport" value="false"/>
         <property name="Shape" value="ModelEntity" />
-        <property name="Model" value="#@modfolder:Resources/WaterPipeWell.unity3d?WaterGridWellPrefab" />
+        <property name="Model" value="#@modfolder:Resources/PipeGrid.unity3d?WaterWellPrefab" />
         <property name="IsTerrainDecoration" value="false"/>
         <property name="Collide" value="movement,melee,bullet,arrow,rocket"/>
         <property name="Group" value="Basics,Building,advBuilding"/>

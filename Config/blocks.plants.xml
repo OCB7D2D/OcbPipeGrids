@@ -18,7 +18,7 @@
 		<property name="SprinklerMaintenanceExponent" value="1.65" />
 		<property name="SprinklerImprovementFactor" value="0.03" />
 		<property name="GrowthMaintenanceFactor" value="0.05" />
-		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 
@@ -39,7 +39,7 @@
 		<property name="SprinklerMaintenanceFactor" value="0.03" />
 		<property name="SprinklerMaintenanceExponent" value="1.65" />
 		<property name="SprinklerImprovementFactor" value="0.05" />
-		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
 		<property name="PlantGrowing.Next" value="plantedCorn1"/>
 		<property name="DisplayInfo" value="Custom" />
 	</append>
@@ -48,14 +48,14 @@
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
 		<property name="PlantScaleMin" value=".3,.5" />
 		<property name="PlantScaleFactor" value=".7,.7" />
-		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 	<append xpath="/blocks/block[@name='plantedHop2']">
 		<property name="Class" value="PlantationGrowing, PipeGrids" />
 		<property name="PlantScaleMin" value=".3,.8" />
 		<property name="PlantScaleFactor" value=".8,.5" />
-		<property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+		<property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
 		<property name="DisplayInfo" value="Custom" />
 	</append>
 
@@ -63,14 +63,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".5,.5" />
     <property name="PlantScaleFactor" value=".2,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedMushroom2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".7,.6" />
     <property name="PlantScaleFactor" value=".4,.9" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
 
@@ -78,14 +78,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedPotato2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedPotato1"/>
   </append>
@@ -94,14 +94,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedYucca2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedYucca1"/>
   </append>
@@ -110,14 +110,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".5,.6" />
     <property name="PlantScaleFactor" value=".6,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedCotton2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".5,.6" />
     <property name="PlantScaleFactor" value=".6,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedCotton1"/>
   </append>
@@ -126,14 +126,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedCoffee2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedCoffee1"/>
   </append>
@@ -142,14 +142,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedGoldenrod2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedGoldenrod1"/>
   </append>
@@ -158,14 +158,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedAloe2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedAloe1"/>
   </append>
@@ -174,14 +174,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedBlueberry2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedBlueberry1"/>
   </append>
@@ -190,14 +190,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedChrysanthemum2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedChrysanthemum1"/>
   </append>
@@ -206,14 +206,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedGraceCorn2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedGraceCorn1"/>
   </append>
@@ -222,14 +222,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedHop2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedHop1"/>
   </append>
@@ -238,14 +238,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedSnowberry2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedSnowberry1"/>
   </append>
@@ -254,14 +254,14 @@
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.5" />
     <property name="PlantScaleFactor" value=".7,.7" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
   </append>
   <append xpath="/blocks/block[@name='plantedPumpkin2']">
     <property name="Class" value="PlantationGrowing, PipeGrids" />
     <property name="PlantScaleMin" value=".3,.8" />
     <property name="PlantScaleFactor" value=".8,.5" />
-    <property name="IllnessEffect" value="#@modfolder:Resources/Effects.unity3d?EffectFlies" />
+    <property name="IllnessEffect" value="#@modfolder:Resources/PipeGrid.unity3d?ParticleFliesPrefab" />
     <property name="DisplayInfo" value="Custom" />
     <property name="PlantGrowing.Next" value="plantedPumpkin1"/>
   </append>

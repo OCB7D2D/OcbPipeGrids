@@ -29,6 +29,16 @@ namespace NodeFacilitator
 			NodeBlockHelper.OnBlockRemoved(this, pos, bv);
 		}
 
-	}
+        public override void OnBlockValueChanged(
+			WorldBase world, Chunk chunk, int clrIdx,
+			Vector3i pos, BlockValue old_bv, BlockValue new_bv)
+        {
+            base.OnBlockValueChanged(world, chunk,
+				clrIdx, pos, old_bv, new_bv);
+            if (!NodeManagerInterface.HasServer) return;
+            NodeBlockHelper.OnBlockValueChanged(this, pos, new_bv);
+        }
+
+    }
 
 }
